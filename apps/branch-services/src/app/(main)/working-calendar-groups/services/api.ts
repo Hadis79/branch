@@ -3,11 +3,12 @@ import { PaginatedData } from '@branch-services/types';
 import { ApiUtil } from '@branch-services/utils';
 
 import type { GroupListQueryParams } from '../utils/param-util';
-import { toUploadedGroupFile } from './mappers';
+import { toGroupListPage, toUploadedGroupFile } from './mappers';
 import {
   DownloadedFile,
   GroupFileUploadResponse,
   GroupListItem,
+  GroupListItemResponse,
   GroupRequestDto,
   GroupUnit,
   GroupUnitsParams,
@@ -26,11 +27,11 @@ const Api = {
     return response.data;
   },
   getGroupsHistory: async (params: GroupListQueryParams): Promise<PaginatedData<GroupListItem>> => {
-    const response = await client.get<PaginatedData<GroupListItem>>(`${GROUPS_URL}/list`, {
+    const response = await client.get<PaginatedData<GroupListItemResponse>>(`${GROUPS_URL}/list`, {
       params,
       paramsSerializer: { indexes: null },
     });
-    return response.data;
+    return toGroupListPage(response.data);
   },
   createGroups: async (values: GroupRequestDto): Promise<void> => {
     await client.post<void>(`${GROUPS_URL}/create`, values);

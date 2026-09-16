@@ -47,7 +47,8 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const fileUpload = useGroupFileUpload(form);
   // The group name and unit count come from the row picked in the list
   const selectedGroup = useGroupStore((state) => state.selectedGroup);
-  const editedGroup = isEdit && selectedGroup?.id === groupId ? selectedGroup : null;
+  // Compared as strings: the URL param is a string, and older stored rows may hold a numeric id
+  const editedGroup = isEdit && selectedGroup && String(selectedGroup.id) === groupId ? selectedGroup : null;
   const isMissingGroup = isEdit && !editedGroup;
   const createGroup = useCreateGroupsMutation();
   const updateGroup = useUpdateGroupMutation();

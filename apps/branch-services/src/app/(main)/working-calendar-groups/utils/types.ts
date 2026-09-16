@@ -1,5 +1,10 @@
 import type { UploadFile } from 'antd';
 
+// Raw list row of the service, normalized by services/mappers.ts
+export type GroupListItemResponse = Omit<GroupListItem, 'id'> & {
+  id: string | number;
+};
+
 export interface GroupListItem {
   id: string;
   name: string;

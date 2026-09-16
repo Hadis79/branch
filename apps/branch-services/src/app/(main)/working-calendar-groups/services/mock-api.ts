@@ -1,7 +1,7 @@
 import { PaginatedData } from '@branch-services/types';
 
 import type RealApi from './api';
-import { toUploadedGroupFile } from './mappers';
+import { toGroupListPage, toUploadedGroupFile } from './mappers';
 import type { GroupListQueryParams } from '../utils/param-util';
 import type {
   DownloadedFile,
@@ -89,9 +89,10 @@ const MockApi: typeof RealApi = {
   getGroupsHistory: ({ page, size, name }: GroupListQueryParams): Promise<PaginatedData<GroupListItem>> => {
     const rows = groups
       .filter((group) => !name || group.name.includes(name))
-      .map((group) => ({ id: group.id, name: group.name, size: group.units.length }));
+      // Numeric ids like the service; the shared mapper turns them into strings
+      .map((group) => ({ id: Number(group.id), name: group.name, size: group.units.length }));
 
-    return delay(paginate(rows, page, size));
+    return delay(paginate(rows, page, size)).then(toGroupListPage);
   },
 
   createGroups: ({ name, units }: GroupRequestDto) => {
