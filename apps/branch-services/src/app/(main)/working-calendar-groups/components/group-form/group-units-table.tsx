@@ -5,51 +5,57 @@ import { useTr } from '@branch-services/translation';
 import { Button, ColumnsType, Table } from '@branch-services/ui-kit';
 
 import RemoveUnitModal from '../modals/remove-unit-modal';
-import type { GroupUnit, UnitOption } from '../../utils/types';
+import type { GroupUnit, PageParams } from '../../utils/types';
 import { calculateRow } from '../../utils/utils';
 
 import { NewUnitTag, UnitsTableWrapper } from './style';
 
-type GroupUnitsTableProps = {
-  // value / onChange are injected by the wrapping Form.Item
-  value?: UnitOption[];
-  onChange?: (units: UnitOption[]) => void;
-  newCodes: string[];
-  onRemoved: (code: string) => void;
+export type GroupUnitRow = GroupUnit & {
+  isNew?: boolean;
+  // Position in the server list (server rows only)
+  serverIndex?: number;
 };
 
-const GroupUnitsTable = ({ value = [], onChange, newCodes, onRemoved }: GroupUnitsTableProps) => {
+type GroupUnitsTableProps = {
+  // Rows of the current page only, never more than the page size
+  rows: GroupUnitRow[];
+  total: number;
+  pagination: PageParams;
+  onPaginationChange: (pagination: PageParams) => void;
+  loading: boolean;
+  // False when removing would leave the group empty
+  canRemove: boolean;
+  onRemove: (row: GroupUnitRow) => void;
+};
+
+const GroupUnitsTable = ({
+  rows,
+  total,
+  pagination,
+  onPaginationChange,
+  loading,
+  canRemove,
+  onRemove,
+}: GroupUnitsTableProps) => {
   const [t] = useTr();
-  const [pagination, setPagination] = useState({ page: 1, size: 10 });
-  const [unitToRemove, setUnitToRemove] = useState<GroupUnit | null>(null);
+  const [rowToRemove, setRowToRemove] = useState<GroupUnitRow | null>(null);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 
-  const units: GroupUnit[] = value.map(({ label, value: code }) => ({ name: label, code }));
-  const isNew = (code: string) => newCodes.includes(code);
-
-  const openRemoveModal = (unit: GroupUnit) => {
-    setUnitToRemove(unit);
+  const openRemoveModal = (row: GroupUnitRow) => {
+    setRowToRemove(row);
     setIsRemoveModalOpen(true);
   };
 
   const handleRemove = () => {
-    if (!unitToRemove) return;
-
-    const remaining = value.filter((unit) => unit.value !== unitToRemove.code);
-    onChange?.(remaining);
-    onRemoved(unitToRemove.code);
+    if (rowToRemove) onRemove(rowToRemove);
     setIsRemoveModalOpen(false);
-
-    // Step back when the last row of the last page is removed
-    const lastPage = Math.max(1, Math.ceil(remaining.length / pagination.size));
-    if (pagination.page > lastPage) setPagination((current) => ({ ...current, page: lastPage }));
   };
 
   const handleTableChange = ({ current = 1, pageSize = pagination.size }: TablePaginationConfig) => {
-    setPagination({ size: pageSize, page: pageSize === pagination.size ? current : 1 });
+    onPaginationChange({ size: pageSize, page: pageSize === pagination.size ? current : 1 });
   };
 
-  const columns: ColumnsType<GroupUnit> = [
+  const columns: ColumnsType<GroupUnitRow> = [
     {
       title: '#',
       key: 'row',
@@ -60,10 +66,10 @@ const GroupUnitsTable = ({ value = [], onChange, newCodes, onRemoved }: GroupUni
       title: t('unit_name'),
       dataIndex: 'name',
       align: 'center',
-      render: (name: string, { code }) => (
+      render: (name: string, { isNew }) => (
         <>
           {name}
-          {isNew(code) && <NewUnitTag>{t('new')}</NewUnitTag>}
+          {isNew && <NewUnitTag>{t('new')}</NewUnitTag>}
         </>
       ),
     },
@@ -73,8 +79,15 @@ const GroupUnitsTable = ({ value = [], onChange, newCodes, onRemoved }: GroupUni
       key: 'actions',
       align: 'center',
       width: 120,
-      render: (_value, unit) => (
-        <Button htmlType='button' className='remove-unit' danger type='table' onClick={() => openRemoveModal(unit)}>
+      render: (_value, row) => (
+        <Button
+          htmlType='button'
+          className='remove-unit'
+          danger
+          type='table'
+          disabled={!canRemove}
+          onClick={() => openRemoveModal(row)}
+        >
           {t('delete')}
           <i className='ri-delete-bin-line' />
         </Button>
@@ -85,20 +98,24 @@ const GroupUnitsTable = ({ value = [], onChange, newCodes, onRemoved }: GroupUni
   return (
     <UnitsTableWrapper>
       <Table
-        dataSource={units}
+        loading={loading}
+        dataSource={rows}
         columns={columns}
         mobileColumns={columns}
-        rowKey='code'
-        rowClassName={({ code }: GroupUnit) => (isNew(code) ? 'new-unit-row' : '')}
-        total={units.length}
-        current={pagination.page}
-        pagination={{ current: pagination.page, pageSize: pagination.size, total: units.length }}
+        rowClassName={({ isNew }: GroupUnitRow) => (isNew ? 'new-unit-row' : '')}
         onChange={handleTableChange}
         hasContainer={false}
+        total={total}
+        current={pagination.page}
+        pagination={{
+          current: pagination.page,
+          pageSize: pagination.size,
+        }}
+        rowKey='code'
       />
       <RemoveUnitModal
         open={isRemoveModalOpen}
-        unitName={unitToRemove?.name}
+        unitName={rowToRemove?.name}
         onCancel={() => setIsRemoveModalOpen(false)}
         onConfirm={handleRemove}
       />

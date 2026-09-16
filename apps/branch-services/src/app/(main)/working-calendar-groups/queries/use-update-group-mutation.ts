@@ -11,7 +11,7 @@ const useUpdateGroupMutation = () => {
     onSuccess: (_data, { id }) =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: groupQueryKeys.lists() }),
-        queryClient.invalidateQueries({ queryKey: groupQueryKeys.details(id) }),
+        queryClient.invalidateQueries({ queryKey: groupQueryKeys.groupUnits(id) }),
       ]),
   });
 };

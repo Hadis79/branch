@@ -12,9 +12,19 @@ export type UnitOption = { label: string; value: string };
 
 export interface GroupFormValues {
   name: string;
+  // Create form: the selected units
   units?: UnitOption[];
   file?: UploadFile[];
+  // Edit form, manual mode: changes on top of the group's server-paginated units
+  addedUnits?: UnitOption[];
+  removedUnits?: RemovedUnit[];
 }
+
+export type RemovedUnit = {
+  code: string;
+  // Position in the server list, used to lay out the table pages
+  index: number;
+};
 
 export type UploadGroupFileParams = {
   file: File;
@@ -47,11 +57,19 @@ export interface GroupRequestDto {
   units: GroupUnit[];
 }
 
-export interface GroupDetails extends GroupRequestDto {
+export interface UpdateGroupParams extends GroupRequestDto {
   id: string;
 }
 
-export type UpdateGroupParams = GroupDetails;
+export type PageParams = {
+  // One-based, as shown in the table
+  page: number;
+  size: number;
+};
+
+export type GroupUnitsParams = PageParams & {
+  id: string;
+};
 
 export type GroupFormVariant = 'create' | 'edit';
 

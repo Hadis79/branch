@@ -1,15 +1,9 @@
 'use client';
 
-import { Box } from '@branch-services/ui-kit';
-import { Spin } from 'antd';
-import React from 'react';
+import { Loading as LoadingIndicator } from '@branch-services/ui-kit';
 
 function Loading() {
-  return (
-    <Box justifyContent='center' alignItems='center' height='100%'>
-      <Spin size='large' />
-    </Box>
-  );
+  return <LoadingIndicator size='large' height='100%' />;
 }
 
 export default Loading;

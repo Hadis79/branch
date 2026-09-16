@@ -1,5 +1,6 @@
 import { MessageModel, PaginationState } from '@branch-services/types';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import type { GroupListItem, GroupUnit } from '../utils/types';
 
 export type GroupListFilter = {
@@ -12,7 +13,7 @@ type State = PaginationState & {
   message: MessageModel | null;
   // Units of the last uploaded file, read by the upload details page
   uploadedUnits: GroupUnit[];
-  // List row picked for editing, shown on the edit page without waiting for the details request
+  // List row picked for editing; the edit page takes the group name and unit count from it
   selectedGroup: GroupListItem | null;
 };
 
@@ -36,14 +37,24 @@ const initialState: State = {
   },
 };
 
-const useGroupStore = create<State & Actions>()((set) => ({
-  ...initialState,
-  setUploadedUnits: (uploadedUnits) => set({ uploadedUnits }),
-  setSelectedGroup: (selectedGroup) => set({ selectedGroup }),
-  setFilter: (filter) => set({ filter }),
-  setPagination: (pagination) => set((state) => ({ pagination: { ...state.pagination, ...pagination } })),
-  setMessage: (message: MessageModel) => set({ message }),
-  resetMessage: () => set({ message: null }),
-}));
+const useGroupStore = create<State & Actions>()(
+  persist(
+    (set) => ({
+      ...initialState,
+      setUploadedUnits: (uploadedUnits) => set({ uploadedUnits }),
+      setSelectedGroup: (selectedGroup) => set({ selectedGroup }),
+      setFilter: (filter) => set({ filter }),
+      setPagination: (pagination) => set((state) => ({ pagination: { ...state.pagination, ...pagination } })),
+      setMessage: (message: MessageModel) => set({ message }),
+      resetMessage: () => set({ message: null }),
+    }),
+    {
+      // Only the picked group is kept, so the edit page survives a refresh of the same tab
+      name: 'working-calendar-groups',
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: ({ selectedGroup }) => ({ selectedGroup }),
+    }
+  )
+);
 
 export default useGroupStore;

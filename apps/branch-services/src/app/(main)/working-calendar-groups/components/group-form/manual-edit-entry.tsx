@@ -1,44 +1,103 @@
 import { useMemo, useState } from 'react';
-import { Empty, Form } from 'antd';
+import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Button, Select } from '@branch-services/ui-kit';
+import { Button, EmptyData, Select } from '@branch-services/ui-kit';
 
 import GroupNameField from './group-name-field';
-import GroupUnitsTable from './group-units-table';
+import GroupUnitsTable, { GroupUnitRow } from './group-units-table';
 import useGetUnitList from '../../queries/use-get-unit-list';
-import type { GroupFormValues, GroupUnit } from '../../utils/types';
+import useGroupUnitsPagesQuery from '../../queries/use-group-units-pages-query';
+import type { GroupFormValues, GroupListItem, GroupUnit, PageParams } from '../../utils/types';
+import { getServerPages, getUnitsPageLayout } from '../../utils/units-page';
+import { toGroupUnit, toUnitOption } from '../../utils/utils';
 
 import { ManualEditHeader, UnitOptionRow } from './style';
 
 const matchesSearch = ({ name, code }: GroupUnit, search: string) => name.includes(search) || code.includes(search);
 
-// Edit form, manual mode: rename the group and add / remove single units of its current list.
-const ManualEditEntry = () => {
+type ManualEditEntryProps = {
+  group: GroupListItem;
+};
+
+// Edit form, manual mode: rename the group and add / remove units on top of its server-paginated list.
+// Only the changes are kept in the form (`addedUnits`, `removedUnits`); the full list is built on save.
+// The table pages one combined list: new units first, then the server units that were not removed.
+const ManualEditEntry = ({ group }: ManualEditEntryProps) => {
   const [t] = useTr();
   const form = Form.useFormInstance<GroupFormValues>();
-  const units = Form.useWatch('units', { form, preserve: true }) ?? [];
-  const { data: allUnits = [], isFetching } = useGetUnitList();
+  const addedOptions = Form.useWatch('addedUnits', { form, preserve: true }) ?? [];
+  const removedUnits = Form.useWatch('removedUnits', { form, preserve: true }) ?? [];
   const [search, setSearch] = useState('');
-  // Units added in this session, shown on top with a "new" tag
-  const [newCodes, setNewCodes] = useState<string[]>([]);
+  const [pagination, setPagination] = useState<PageParams>({ page: 1, size: 10 });
+  // The service total is known after the first response; the list row gives it until then
+  const [serverTotal, setServerTotal] = useState(group.size);
 
-  const memberCodes = useMemo(() => new Set(units.map(({ value }) => value)), [units]);
-  const availableUnits = useMemo(() => allUnits.filter(({ code }) => !memberCodes.has(code)), [allUnits, memberCodes]);
-  const options = availableUnits.map(({ name, code }) => ({ label: name, value: code }));
+  const { data: allUnits = [], isFetching: isUnitListLoading } = useGetUnitList();
+
+  const addedUnits = useMemo(() => addedOptions.map(toGroupUnit), [addedOptions]);
+  const removedIndexes = useMemo(() => removedUnits.map(({ index }) => index), [removedUnits]);
+  const layout = getUnitsPageLayout({ ...pagination, addedCount: addedUnits.length, serverTotal, removedIndexes });
+
+  const serverPages = getServerPages(layout.serverIndexes, pagination.size);
+  const unitsPages = useGroupUnitsPagesQuery(group.id, serverPages, pagination.size);
+  if (unitsPages.totalElements !== undefined && unitsPages.totalElements !== serverTotal) {
+    setServerTotal(unitsPages.totalElements);
+  }
+
+  const serverRows = layout.serverIndexes.flatMap((serverIndex): GroupUnitRow[] => {
+    const page = Math.floor(serverIndex / pagination.size) + 1;
+    const unit = unitsPages.unitsByPage.get(page)?.[serverIndex % pagination.size];
+    return unit ? [{ ...unit, serverIndex }] : [];
+  });
+  const rows: GroupUnitRow[] = [
+    ...addedUnits.slice(layout.addedStart, layout.addedEnd).map((unit) => ({ ...unit, isNew: true })),
+    ...serverRows,
+  ];
+
+  // Members outside the loaded pages are not known here; duplicates are dropped when the list is saved
+  const visibleCodes = new Set([...addedUnits, ...serverRows].map(({ code }) => code));
+  const options = allUnits.filter(({ code }) => !visibleCodes.has(code)).map(toUnitOption);
 
   const trimmedSearch = search.trim();
   const isAlreadyMember =
-    !!trimmedSearch && units.some(({ label, value }) => matchesSearch({ name: label, code: value }, trimmedSearch));
+    !!trimmedSearch && [...addedUnits, ...serverRows].some((unit) => matchesSearch(unit, trimmedSearch));
+
+  const setPage = (page: number) => setPagination((current) => ({ ...current, page }));
 
   const addUnit = (code: string) => {
-    const unit = availableUnits.find((item) => item.code === code);
-    if (!unit) return;
-
-    form.setFieldValue('units', [{ label: unit.name, value: unit.code }, ...units]);
-    form.validateFields(['units']).catch(() => undefined);
-    setNewCodes((codes) => [...codes, unit.code]);
     setSearch('');
+
+    // Re-adding a removed member just restores it
+    if (removedUnits.some((unit) => unit.code === code)) {
+      form.setFieldValue(
+        'removedUnits',
+        removedUnits.filter((unit) => unit.code !== code)
+      );
+      return;
+    }
+
+    const unit = allUnits.find((item) => item.code === code);
+    if (!unit || visibleCodes.has(code)) return;
+
+    // New units go to the top of the list, so show the first page
+    form.setFieldValue('addedUnits', [toUnitOption(unit), ...addedOptions]);
+    setPage(1);
+  };
+
+  const removeUnit = ({ code, isNew, serverIndex }: GroupUnitRow) => {
+    if (isNew) {
+      form.setFieldValue(
+        'addedUnits',
+        addedOptions.filter(({ value }) => value !== code)
+      );
+    } else if (serverIndex !== undefined) {
+      form.setFieldValue('removedUnits', [...removedUnits, { code, index: serverIndex }]);
+    }
+
+    // Step back when the last row of the last page is removed
+    const lastPage = Math.max(1, Math.ceil((layout.total - 1) / pagination.size));
+    if (pagination.page > lastPage) setPage(lastPage);
   };
 
   return (
@@ -75,22 +134,22 @@ const ManualEditEntry = () => {
               </UnitOptionRow>
             )}
             notFoundContent={
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={t(isAlreadyMember ? 'unit_already_in_group' : 'unit_not_found')}
-              />
+              <EmptyData description={t(isAlreadyMember ? 'unit_already_in_group' : 'unit_not_found')} />
             }
             placeholder={t('select_or_search')}
-            loading={isFetching}
+            loading={isUnitListLoading}
           />
         </Form.Item>
       </ManualEditHeader>
-      <Form.Item name='units' rules={[{ required: true, message: t('unit_required') }]}>
-        <GroupUnitsTable
-          newCodes={newCodes}
-          onRemoved={(code) => setNewCodes((codes) => codes.filter((item) => item !== code))}
-        />
-      </Form.Item>
+      <GroupUnitsTable
+        rows={rows}
+        total={layout.total}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        loading={unitsPages.isFetching}
+        canRemove={layout.total > 1}
+        onRemove={removeUnit}
+      />
     </>
   );
 };

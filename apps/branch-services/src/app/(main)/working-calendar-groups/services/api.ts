@@ -6,11 +6,11 @@ import type { GroupListQueryParams } from '../utils/param-util';
 import { toUploadedGroupFile } from './mappers';
 import {
   DownloadedFile,
-  GroupDetails,
   GroupFileUploadResponse,
   GroupListItem,
   GroupRequestDto,
   GroupUnit,
+  GroupUnitsParams,
   UpdateGroupParams,
   UploadGroupFileParams,
   UploadedGroupFile,
@@ -35,14 +35,16 @@ const Api = {
   createGroups: async (values: GroupRequestDto): Promise<void> => {
     await client.post<void>(`${GROUPS_URL}/create`, values);
   },
-  // TODO: endpoint is not final yet, confirm with backend before disabling the mock
-  getGroupDetails: async (id: string): Promise<GroupDetails> => {
-    const response = await client.get<GroupDetails>(`${GROUPS_URL}/${id}`);
+  // The service pages are zero-based
+  getGroupUnits: async ({ id, page, size }: GroupUnitsParams): Promise<PaginatedData<GroupUnit>> => {
+    const response = await client.get<PaginatedData<GroupUnit>>(`${GROUPS_URL}/${id}`, {
+      params: { page: page - 1, size },
+    });
     return response.data;
   },
-  // TODO: endpoint is not final yet, confirm with backend before disabling the mock
-  updateGroup: async ({ id, ...values }: UpdateGroupParams): Promise<void> => {
-    await client.put<void>(`${GROUPS_URL}/update/${id}`, values);
+  // The (possibly renamed) group name goes in the query and the complete unit list in the body
+  updateGroup: async ({ id, name, units }: UpdateGroupParams): Promise<void> => {
+    await client.put<void>(`${GROUPS_URL}/update/${id}`, { units }, { params: { name } });
   },
   removeGroups: async (id: string): Promise<void> => {
     await client.delete<void>(`${GROUPS_URL}/remove/${id}`);

@@ -5,12 +5,12 @@ import { toUploadedGroupFile } from './mappers';
 import type { GroupListQueryParams } from '../utils/param-util';
 import type {
   DownloadedFile,
-  GroupDetails,
   GroupFileUploadResponse,
   UploadedGroupFile,
   GroupListItem,
   GroupRequestDto,
   GroupUnit,
+  GroupUnitsParams,
   UpdateGroupParams,
   UploadGroupFileParams,
 } from '../utils/types';
@@ -45,7 +45,7 @@ const allUnits: GroupUnit[] = UNIT_NAMES.map((name, index) => ({ name, code: Str
 let lastId = 0;
 const nextId = () => String(++lastId);
 
-let groups: GroupDetails[] = [
+let groups: UpdateGroupParams[] = [
   { id: nextId(), name: 'شعب کشیک قم', units: allUnits.slice(4, 6) },
   { id: nextId(), name: 'شعب استان تهران', units: allUnits.slice(0, 4) },
   { id: nextId(), name: 'شعب مراکز استان', units: allUnits.slice(5) },
@@ -61,6 +61,25 @@ const reject = (message: string): Promise<never> =>
 
 const findGroup = (id: string) => groups.find((group) => group.id === id);
 
+// Same shape as the service pages; `page` is one-based like the api params
+const paginate = <T>(items: T[], page: number, size: number): PaginatedData<T> => {
+  const content = items.slice((page - 1) * size, page * size);
+  const totalPages = Math.ceil(items.length / size);
+
+  return {
+    content,
+    totalElements: items.length,
+    totalPages,
+    size,
+    number: page - 1,
+    sort: { empty: true, sorted: false, unsorted: true },
+    first: page === 1,
+    last: page >= totalPages,
+    numberOfElements: content.length,
+    empty: content.length === 0,
+  };
+};
+
 const isDuplicateName = (name: string, exceptId?: string) =>
   groups.some((group) => group.id !== exceptId && group.name.trim() === name.trim());
 
@@ -68,24 +87,11 @@ const MockApi: typeof RealApi = {
   getUnitList: () => delay(allUnits),
 
   getGroupsHistory: ({ page, size, name }: GroupListQueryParams): Promise<PaginatedData<GroupListItem>> => {
-    const filtered = groups.filter((group) => !name || group.name.includes(name));
-    const content = filtered
-      .slice((page - 1) * size, page * size)
+    const rows = groups
+      .filter((group) => !name || group.name.includes(name))
       .map((group) => ({ id: group.id, name: group.name, size: group.units.length }));
-    const totalPages = Math.ceil(filtered.length / size);
 
-    return delay({
-      content,
-      totalElements: filtered.length,
-      totalPages,
-      size,
-      number: page - 1,
-      sort: { empty: true, sorted: false, unsorted: true },
-      first: page === 1,
-      last: page >= totalPages,
-      numberOfElements: content.length,
-      empty: content.length === 0,
-    });
+    return delay(paginate(rows, page, size));
   },
 
   createGroups: ({ name, units }: GroupRequestDto) => {
@@ -95,9 +101,9 @@ const MockApi: typeof RealApi = {
     return delay(undefined);
   },
 
-  getGroupDetails: (id: string) => {
+  getGroupUnits: ({ id, page, size }: GroupUnitsParams) => {
     const group = findGroup(id);
-    return group ? delay(group) : reject('گروه موردنظر یافت نشد.');
+    return group ? delay(paginate(group.units, page, size)) : reject('گروه موردنظر یافت نشد.');
   },
 
   updateGroup: ({ id, name, units }: UpdateGroupParams) => {

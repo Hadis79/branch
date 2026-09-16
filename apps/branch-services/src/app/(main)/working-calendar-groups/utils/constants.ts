@@ -1,4 +1,5 @@
 import type { GroupListQueryParams } from './param-util';
+import type { PageParams } from './types';
 
 export enum WorkingCalendarGroupPage {
   LIST = 'list',
@@ -33,12 +34,13 @@ export const WORKING_CALENDAR_GROUP_PATH = '/working-calendar-groups';
 const GROUPS_QUERY_KEY = 'groups';
 const GROUP_LISTS_KEY = [GROUPS_QUERY_KEY, 'list'] as const;
 
-// Hierarchical keys: mutations invalidate `lists` / `details(id)` and leave the unit list cached
+// Hierarchical keys: mutations invalidate `lists` / `groupUnits(id)` and leave the unit list cached
 export const groupQueryKeys = {
   units: () => [GROUPS_QUERY_KEY, 'units'] as const,
   lists: () => GROUP_LISTS_KEY,
   list: (params: GroupListQueryParams) => [...GROUP_LISTS_KEY, params] as const,
-  details: (id: string) => [GROUPS_QUERY_KEY, 'details', id] as const,
+  groupUnits: (id: string) => [GROUPS_QUERY_KEY, 'group-units', id] as const,
+  groupUnitsPage: (id: string, params: PageParams) => [GROUPS_QUERY_KEY, 'group-units', id, params] as const,
 };
 
 export const groupsMutationKeys = {
