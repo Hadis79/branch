@@ -52,8 +52,8 @@ const initialState: State = {
   downloadErrorMessage: null,
   statusRequest: RequestStatusButton.DEFAULT,
   pagination: {
-    limit: 10,
-    offset: 0,
+    size: 10,
+    page: 1,
     count: 0,
     current: 0,
   },

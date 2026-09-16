@@ -38,8 +38,8 @@ const initialState: State = {
   error: null,
   filter: {},
   pagination: {
-    limit: 10,
-    offset: 0,
+    size: 10,
+    page: 1,
     count: 0,
     current: 0,
   },
