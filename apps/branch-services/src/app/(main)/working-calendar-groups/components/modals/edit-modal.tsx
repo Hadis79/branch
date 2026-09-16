@@ -8,6 +8,7 @@ import GroupModal from './group-modal';
 import * as S from './style';
 import { EDIT_MODE_LABELS, EntryMode, WorkingCalendarGroupPage } from '../../utils/constants';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
+import useGroupStore from '../../store/use-widget-store';
 import type { GroupListItem } from '../../utils/types';
 
 type EditModalProps = {
@@ -19,11 +20,15 @@ type EditModalProps = {
 const EditModal = ({ open, onCancel, group }: EditModalProps) => {
   const [t] = useTr();
   const { navigateTo } = useWorkingCalendarGroupPage();
+  const setSelectedGroup = useGroupStore((state) => state.setSelectedGroup);
 
   const [selectedMode, setSelectedMode] = useState<EntryMode>(EntryMode.FILE);
 
   const handleConfirm = () => {
-    navigateTo(WorkingCalendarGroupPage.EDIT, { id: group?.id, mode: selectedMode });
+    if (!group) return;
+
+    setSelectedGroup(group);
+    navigateTo(WorkingCalendarGroupPage.EDIT, { id: group.id, mode: selectedMode });
     onCancel();
   };
 

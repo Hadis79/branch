@@ -16,6 +16,7 @@ import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-
 import useGroupDetailsQuery from '../../queries/use-group-details-query';
 import useCreateGroupsMutation from '../../queries/use-create-group-mutation';
 import useUpdateGroupMutation from '../../queries/use-update-group-mutation';
+import useGroupStore from '../../store/use-widget-store';
 import { formatCount } from '../../utils/utils';
 
 import { FormActions, StyledTabs, WarningBanner } from './style';
@@ -49,16 +50,26 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isReplaceWarningVisible, setIsReplaceWarningVisible] = useState(true);
   const fileUpload = useGroupFileUpload(form);
-  const groupDetails = useGroupDetailsQuery(isEdit ? groupId : null);
+  // The row picked in the list; missing after a page refresh or when the URL is opened directly
+  const selectedGroup = useGroupStore((state) => state.selectedGroup);
+  const storedGroup = isEdit && selectedGroup?.id === groupId ? selectedGroup : null;
+  // Manual editing needs the current units; replacing them only needs the stored row
+  const needsDetails = isEdit && (!isFileEntry || !storedGroup);
+  const groupDetails = useGroupDetailsQuery(needsDetails ? groupId : null);
+  const isGroupLoading = needsDetails && !groupDetails.data;
   const createGroup = useCreateGroupsMutation();
   const updateGroup = useUpdateGroupMutation();
   const isSaving = createGroup.isPending || updateGroup.isPending;
-  const previousUnitCount = groupDetails.data?.units.length;
+  const previousUnitCount = storedGroup?.size ?? groupDetails.data?.units.length;
   // Replacing members needs a new file before anything can be saved
   const isSaveDisabled = isEdit && isFileEntry && !fileUpload.units.length;
 
   // Drop messages left over from the list page
   useEffect(() => resetMessage(), [resetMessage]);
+
+  useEffect(() => {
+    if (storedGroup) form.setFieldsValue({ name: storedGroup.name });
+  }, [storedGroup, form]);
 
   useEffect(() => {
     if (groupDetails.data) form.setFieldsValue(toFormValues(groupDetails.data));
@@ -147,12 +158,7 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   return (
     <>
       <Spin spinning={groupDetails.isFetching}>
-        <Form
-          layout='vertical'
-          form={form}
-          onFinish={() => setIsConfirmModalOpen(true)}
-          disabled={isEdit && !groupDetails.data}
-        >
+        <Form layout='vertical' form={form} onFinish={() => setIsConfirmModalOpen(true)} disabled={isGroupLoading}>
           <Box minHeight={'75vh'} flexDirection='column' justifyContent='space-between' padding={'3.2rem'}>
             {entryContent}
             <FormActions>

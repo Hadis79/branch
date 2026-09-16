@@ -1,6 +1,6 @@
 import { MessageModel, PaginationState } from '@branch-services/types';
 import { create } from 'zustand';
-import type { GroupUnit } from '../utils/types';
+import type { GroupListItem, GroupUnit } from '../utils/types';
 
 export type GroupListFilter = {
   name?: string;
@@ -12,10 +12,13 @@ type State = PaginationState & {
   message: MessageModel | null;
   // Units of the last uploaded file, read by the upload details page
   uploadedUnits: GroupUnit[];
+  // List row picked for editing, shown on the edit page without waiting for the details request
+  selectedGroup: GroupListItem | null;
 };
 
 type Actions = {
   setUploadedUnits: (units: GroupUnit[]) => void;
+  setSelectedGroup: (group: GroupListItem | null) => void;
   setFilter: (filter: GroupListFilter) => void;
   setPagination: (pagination: Partial<PaginationState['pagination']>) => void;
   setMessage: (message: MessageModel) => void;
@@ -25,6 +28,7 @@ type Actions = {
 const initialState: State = {
   message: null,
   uploadedUnits: [],
+  selectedGroup: null,
   filter: {},
   pagination: {
     size: 10,
@@ -35,6 +39,7 @@ const initialState: State = {
 const useGroupStore = create<State & Actions>()((set) => ({
   ...initialState,
   setUploadedUnits: (uploadedUnits) => set({ uploadedUnits }),
+  setSelectedGroup: (selectedGroup) => set({ selectedGroup }),
   setFilter: (filter) => set({ filter }),
   setPagination: (pagination) => set((state) => ({ pagination: { ...state.pagination, ...pagination } })),
   setMessage: (message: MessageModel) => set({ message }),
