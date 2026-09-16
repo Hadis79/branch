@@ -1,13 +1,22 @@
 import { Box } from '@branch-services/ui-kit';
 import styled from 'styled-components';
 
-export const UploadFileContainer = styled.div<{ fileRequiredError: boolean | null }>`
+export const UploadFileContainer = styled.div`
   .ant-upload {
-    border: 1px dashed ${(p) => (p.fileRequiredError ? p.theme.error : p.theme.border)};
+    border: 1px dashed ${(p) => p.theme.border};
     border-radius: 10px;
   }
   .dragger-style {
     margin-bottom: 0;
+  }
+`;
+
+export const SampleFileLink = styled.div`
+  margin-top: 1.2rem;
+
+  .ant-btn-link {
+    height: auto;
+    padding: 0;
   }
 `;
 
@@ -20,6 +29,7 @@ export const UploadResult = styled.div`
   border-radius: 0.6rem;
   background: ${({ theme }) => theme.backgroundLight};
 `;
+
 export const UploadedItem = styled(Box)`
   display: flex;
   align-items: center;
@@ -30,6 +40,7 @@ export const UploadedItem = styled(Box)`
   color: ${(p) => p.theme.textPrimary};
 
   button {
+    width: fit-content;
     padding: 0;
     border: 0;
     color: inherit;
@@ -53,14 +64,6 @@ export const UploadedItem = styled(Box)`
   span {
     width: auto;
   }
-  &.similar_req_warning {
-    color: ${(p) => p.theme.warning};
-    border: 0.1rem solid ${(p) => p.theme.warning};
-    background-color: #ffc97714;
-    justify-content: flex-start;
-    gap: 0.8rem;
-    font-weight: 500;
-  }
 `;
 
 export const UploadResultHeader = styled.div`
@@ -82,8 +85,16 @@ export const UploadResultHeader = styled.div`
     font-size: 2rem;
   }
 
-  button i {
+  .ant-btn-link {
+    width: auto;
+    height: auto;
+    padding: 0;
+    white-space: nowrap;
     color: ${({ theme }) => theme.primary};
+
+    i {
+      color: ${({ theme }) => theme.primary};
+    }
   }
 `;
 
@@ -95,15 +106,4 @@ export const UploadResultRow = styled.div`
   strong {
     color: ${({ theme }) => theme.textPrimary};
   }
-`;
-
-export const UploadedUnits = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem 1.6rem;
-  max-height: 16rem;
-  padding: 1.6rem;
-  margin: 0;
-  overflow-y: auto;
-  border-top: 0.1rem solid ${({ theme }) => theme.border};
 `;

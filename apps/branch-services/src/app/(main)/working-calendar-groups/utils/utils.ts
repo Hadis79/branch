@@ -1,3 +1,5 @@
+export const formatCount = (value: number): string => value.toLocaleString('fa-IR');
+
 type CalculateRowParams = {
   index: number;
   pagination?: {

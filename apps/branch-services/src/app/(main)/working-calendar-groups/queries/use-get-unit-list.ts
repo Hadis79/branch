@@ -1,22 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import { ApiUtil } from '@branch-services/utils';
-import { Api } from '../services';
-import { GroupUnit } from '../utils/types';
-import { groupQueryKeys } from '../utils/constants';
 
-function handleError(reason: any): string {
-  return ApiUtil.getErrorMessage(reason);
-}
+import { Api } from '../services';
+import { groupQueryKeys } from '../utils/constants';
+import useQueryErrorMessage from '../hooks/use-query-error-message';
 
 const useGetUnitList = () => {
-  const { data, error, isLoading, isFetching, isError, refetch } = useQuery<GroupUnit[]>({
-    queryKey: groupQueryKeys.units,
+  const query = useQuery({
+    queryKey: groupQueryKeys.units(),
     queryFn: Api.getUnitList,
   });
 
-  const customizedError = isError && handleError(error);
+  useQueryErrorMessage(query.error);
 
-  return { data, error: customizedError, isLoading, isFetching, isError, refetch };
+  return query;
 };
 
 export default useGetUnitList;

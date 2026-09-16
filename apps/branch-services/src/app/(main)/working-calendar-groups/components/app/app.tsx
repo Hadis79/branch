@@ -1,65 +1,32 @@
-import { ComponentType } from 'react';
-
-import { MessageBox } from '@branch-services/ui-kit';
-import { useTr } from '@branch-services/translation';
-
-import AddWorkingCalendarGroup from '../../pages/add';
+import GroupForm from '../group-form';
+import GroupMessage from '../group-message';
+import GroupList from '../../pages/group-list';
 import UploadDetails from '../../pages/upload-details';
-import EditWorkingCalendarGroup from '../../pages/edit';
-import WorkingCalendarGroupList from '../../pages/list';
-import useWidgetStore from '../../store/use-widget-store';
 import { WorkingCalendarGroupPage } from '../../utils/constants';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
 
-const PAGE_COMPONENTS: Record<WorkingCalendarGroupPage, ComponentType> = {
-  [WorkingCalendarGroupPage.ADD]: AddWorkingCalendarGroup,
-  [WorkingCalendarGroupPage.EDIT]: EditWorkingCalendarGroup,
-  [WorkingCalendarGroupPage.LIST]: WorkingCalendarGroupList,
-  [WorkingCalendarGroupPage.DETAILS]: UploadDetails,
-};
-
-const GroupListMessage = () => {
-  const [t] = useTr();
-  const message = useWidgetStore((state) => state.message);
-  const resetMessage = useWidgetStore((state) => state.resetMessage);
-
-  if (!message) return null;
-
-  const { linkProps, shouldTranslate, txt, ...messageProps } = message;
-
-  return (
-    <MessageBox
-      {...messageProps}
-      message={shouldTranslate ? t(txt) : txt}
-      closable
-      shouldScroll
-      style={{ margin: '1.4rem 3.2rem 0' }}
-      linkProps={
-        linkProps && {
-          title: linkProps.title as string,
-          url: linkProps.url as string,
-        }
-      }
-      onClose={resetMessage}
-    />
-  );
-};
-
 const App = () => {
-  const { currentPage } = useWorkingCalendarGroupPage();
-  const PageComponent = PAGE_COMPONENTS[currentPage];
-  const isFormPage = currentPage === WorkingCalendarGroupPage.ADD || currentPage === WorkingCalendarGroupPage.EDIT;
+  const { currentPage, formPage, groupId } = useWorkingCalendarGroupPage();
   const isDetailsPage = currentPage === WorkingCalendarGroupPage.DETAILS;
-  console.log(currentPage);
+
+  if (currentPage === WorkingCalendarGroupPage.LIST) {
+    return (
+      <>
+        <GroupMessage />
+        <GroupList />
+      </>
+    );
+  }
+
+  // Add, edit and the upload details page opened from them.
+  // The form stays mounted (hidden) on the details page so its state survives the round trip.
   return (
     <>
-      {currentPage === WorkingCalendarGroupPage.LIST && <GroupListMessage />}
-      {(isFormPage || isDetailsPage) && (
-        <div hidden={isDetailsPage}>
-          <AddWorkingCalendarGroup />
-        </div>
-      )}
-      {!isFormPage && <PageComponent />}
+      {!isDetailsPage && <GroupMessage />}
+      <div hidden={isDetailsPage}>
+        <GroupForm key={groupId ?? 'new'} variant={formPage === WorkingCalendarGroupPage.EDIT ? 'edit' : 'create'} />
+      </div>
+      {isDetailsPage && <UploadDetails />}
     </>
   );
 };

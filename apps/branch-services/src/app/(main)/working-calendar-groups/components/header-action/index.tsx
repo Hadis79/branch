@@ -6,8 +6,9 @@ import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-
 
 const WorkingCalendarGroupHeaderAction = () => {
   const [t] = useTr();
-  const { currentPage, navigateTo } = useWorkingCalendarGroupPage();
+  const { currentPage, navigateTo, navigateToForm } = useWorkingCalendarGroupPage();
   const isListPage = currentPage === WorkingCalendarGroupPage.LIST;
+  const isDetailsPage = currentPage === WorkingCalendarGroupPage.DETAILS;
 
   const action = isListPage
     ? {
@@ -20,19 +21,13 @@ const WorkingCalendarGroupHeaderAction = () => {
         buttonType: 'link' as const,
         icon: 'ri ri-arrow-left-line',
         label: t('button.return'),
-        targetPage:
-          currentPage === WorkingCalendarGroupPage.DETAILS
-            ? WorkingCalendarGroupPage.ADD
-            : WorkingCalendarGroupPage.LIST,
+        targetPage: WorkingCalendarGroupPage.LIST,
       };
 
+  const handleClick = () => (isDetailsPage ? navigateToForm() : navigateTo(action.targetPage));
+
   return (
-    <Button
-      type={action.buttonType}
-      icon={<i className={action.icon} />}
-      iconPosition='start'
-      onClick={() => navigateTo(action.targetPage)}
-    >
+    <Button type={action.buttonType} icon={<i className={action.icon} />} iconPosition='start' onClick={handleClick}>
       {action.label}
     </Button>
   );

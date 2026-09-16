@@ -1,5 +1,4 @@
 import { Modal } from 'antd';
-import { OptionProps } from 'antd/es/select';
 import styled from 'styled-components';
 
 export const ModalWrapper = styled(Modal)`
@@ -12,84 +11,86 @@ export const ModalWrapper = styled(Modal)`
     font-size: 1.4rem;
     line-height: 2;
   }
+  .ant-radio-group {
+    width: 100%;
+  }
 `;
 
-export const Title = styled.div`
+export const Title = styled.div<{ $danger?: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.8rem;
   color: ${(props) => props.theme.textPrimary};
   .ri-error-warning-fill {
     font-size: 2.4rem;
-    color: ${(p) => p.theme.primary};
+    color: ${(p) => (p.$danger ? p.theme.error : p.theme.primary)};
+  }
+`;
+
+export const Footer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.2rem;
+  margin-top: 3.2rem;
+
+  .ant-btn {
+    min-width: 12rem;
   }
 `;
 
 export const UnitCount = styled.div`
   display: flex;
   gap: 1.6rem;
-  margin-bottom: 4rem;
   color: ${(props) => props.theme.textPrimary};
 `;
 
 export const Description = styled.div`
-  margin-bottom: 12px;
-
-  font-size: 14px;
+  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 500;
 `;
 
 export const Options = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 `;
 
-export const Option = styled.div<OptionProps>`
+export const Option = styled.div<{ $selected: boolean }>`
   display: flex;
   align-items: flex-start;
-
   width: 100%;
-  min-height: 72px;
-
-  padding: 14px 16px;
-
-  border: 1px solid ${({ selected }) => (selected ? '#008b91' : '#d9d9d9')};
-
-  border-radius: 8px;
-
-  background-color: ${({ selected }) => (selected ? '#f4ffff' : '#fff')};
-
+  min-height: 7.2rem;
+  padding: 1.4rem 1.6rem;
+  border: 0.1rem solid ${({ $selected, theme }) => ($selected ? theme.primary : theme.border)};
+  border-radius: 0.8rem;
+  background-color: ${({ $selected, theme }) => ($selected ? theme.primaryLight : theme.surface)};
   cursor: pointer;
-
   transition: all 0.2s ease;
 
   .ant-radio {
-    margin-top: 2px;
+    margin-top: 0.2rem;
   }
 
   &:hover {
-    border-color: #008b91;
+    border-color: ${({ theme }) => theme.primary};
   }
 `;
 
 export const OptionContent = styled.div`
   display: flex;
   flex-direction: column;
-
-  margin-right: 8px;
+  margin-right: 0.8rem;
 `;
 
 export const OptionTitle = styled.div`
-  margin-bottom: 4px;
-
-  font-size: 14px;
+  margin-bottom: 0.4rem;
+  font-size: 1.4rem;
   font-weight: 500;
 `;
 
 export const OptionDescription = styled.div`
-  font-size: 12px;
+  font-size: 1.2rem;
   line-height: 1.8;
-
-  color: #777;
+  color: ${({ theme }) => theme.secondary};
 `;

@@ -1,21 +1,21 @@
 'use client';
 
-import { useDateLocaleListener } from '@branch-services/hooks';
-import { loadTr } from '@branch-services/translation';
-import React, { useEffect } from 'react';
-import App from './components/app/app';
-import fa from './locales/fa';
-import en from './locales/en';
-import useWidgetStore from './store/use-widget-store';
+import { useEffect } from 'react';
 
-const WorkingCalendarGroupReportWidget: React.FC = () => {
-  loadTr({ en, fa });
+import { useDateLocaleListener } from '@branch-services/hooks';
+
+import App from './components/app/app';
+import useGroupStore from './store/use-widget-store';
+
+// Translations are loaded once in layout.tsx, which wraps this page.
+const WorkingCalendarGroupsPage = () => {
   useDateLocaleListener();
-  const { resetMessage } = useWidgetStore();
-  useEffect(() => {
-    return resetMessage;
-  }, [resetMessage]);
+  const resetMessage = useGroupStore((state) => state.resetMessage);
+
+  // Clear the message when leaving the module
+  useEffect(() => resetMessage, [resetMessage]);
+
   return <App />;
 };
 
-export default WorkingCalendarGroupReportWidget;
+export default WorkingCalendarGroupsPage;

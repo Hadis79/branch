@@ -7,9 +7,12 @@ export interface GroupListItem {
 }
 export type GroupUnit = { name: string; code: string };
 
-export interface AddGroupFormValues {
+// Units are kept in the antd `labelInValue` shape: label = unit name, value = unit code
+export type UnitOption = { label: string; value: string };
+
+export interface GroupFormValues {
   name: string;
-  units?: Array<{ label: string; value: string }>;
+  units?: UnitOption[];
   file?: UploadFile[];
 }
 
@@ -17,6 +20,7 @@ export type UploadGroupFileParams = {
   file: File;
 };
 
+// Raw response of the upload endpoint, normalized by services/mappers.ts
 export type GroupFileUploadResponse = {
   success?: boolean;
   fileName?: string;
@@ -26,30 +30,34 @@ export type GroupFileUploadResponse = {
   units?: GroupUnit[];
 };
 
+export type UploadedGroupFile = {
+  fileName?: string;
+  units: GroupUnit[];
+  unitCount: number;
+};
+
+export type DownloadedFile = {
+  data: Blob;
+  type: string;
+  fileName: string;
+};
+
 export interface GroupRequestDto {
   name: string;
   units: GroupUnit[];
 }
 
-export const toGroupRequestDto = ({ name, units = [] }: AddGroupFormValues): GroupRequestDto => ({
+export interface GroupDetails extends GroupRequestDto {
+  id: string;
+}
+
+export type UpdateGroupParams = GroupDetails;
+
+export type GroupFormVariant = 'create' | 'edit';
+
+export const toGroupRequestDto = ({ name, units = [] }: GroupFormValues): GroupRequestDto => ({
   name,
   units: units.map(({ label, value }) => ({ name: label, code: value })),
 });
 
-export interface HistoryParams {
-  name: string;
-  page?: number;
-  size?: number;
-}
-export interface HistoryPaginationParams {
-  count?: number;
-  current?: number;
-  page: number;
-  size: number;
-}
-
-export type ModalType = 'remove' | 'edit' | null;
-
 export type GroupModalType = 'edit' | 'remove';
-
-export type OpenModalHandler = (type: GroupModalType, groupId: GroupListItem['id']) => void;

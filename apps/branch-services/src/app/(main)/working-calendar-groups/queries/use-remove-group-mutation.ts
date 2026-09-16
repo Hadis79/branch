@@ -8,10 +8,10 @@ const useDeleteGroupMutation = () => {
   return useMutation({
     mutationKey: groupsMutationKeys.delete,
     mutationFn: ({ id }: { id: string }) => Api.removeGroups(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: groupQueryKeys.all,
-      }),
+    onSuccess: (_data, { id }) => {
+      queryClient.removeQueries({ queryKey: groupQueryKeys.details(id) });
+      return queryClient.invalidateQueries({ queryKey: groupQueryKeys.lists() });
+    },
   });
 };
 

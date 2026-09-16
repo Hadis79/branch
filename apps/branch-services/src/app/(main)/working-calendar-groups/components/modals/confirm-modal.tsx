@@ -1,8 +1,10 @@
-import { Box, Button } from '@branch-services/ui-kit';
 import { useTr } from '@branch-services/translation';
-import { MouseEvent } from 'react';
 
+import GroupModal from './group-modal';
 import * as S from './style';
+import { EDIT_MODE_LABELS, EntryMode } from '../../utils/constants';
+import type { GroupFormVariant } from '../../utils/types';
+import { formatCount } from '../../utils/utils';
 
 type ConfirmModalProps = {
   open: boolean;
@@ -11,58 +13,33 @@ type ConfirmModalProps = {
   confirmLoading?: boolean;
   groupName?: string;
   unitCount: number;
+  variant?: GroupFormVariant;
+  entryMode: EntryMode;
 };
 
-const ConfirmModal = ({
-  open,
-  onCancel,
-  onConfirm,
-  confirmLoading = false,
-  groupName,
-  unitCount,
-}: ConfirmModalProps) => {
+const ConfirmModal = ({ groupName, unitCount, variant = 'create', entryMode, ...modalProps }: ConfirmModalProps) => {
   const [t] = useTr();
-  const handleConfirmClick = (event: MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    onConfirm();
-  };
+  const isEdit = variant === 'edit';
+  const description = isEdit ? EDIT_MODE_LABELS[entryMode].confirm : 'confirm_create_group_description';
 
   return (
-    <S.ModalWrapper
-      centered
-      width='54.4rem'
-      title={
-        <S.Title>
-          <i className='ri-error-warning-fill' />
-          <span>{t('confirm_create_group_title')}</span>
-        </S.Title>
-      }
-      open={open}
-      onCancel={onCancel}
-      closable={false}
-      maskClosable={false}
-      keyboard={false}
-      footer={null}
+    <GroupModal
+      {...modalProps}
+      title={t(`confirm_${variant}_group_title`)}
+      confirmText={t(isEdit ? 'save_changes' : 'button.confirm')}
     >
       <S.Description>
-        {t('confirm_create_group_question', { groupName })}
+        {t(`confirm_${variant}_group_question`, { groupName })}
         <br />
-        {t('confirm_create_group_description')}
+        {t(description)}
       </S.Description>
-      <S.UnitCount>
-        <span>{t('unit_count')}:</span>
-        <span>{unitCount.toLocaleString('fa-IR')}</span>
-      </S.UnitCount>
-      <Box>
-        <Button htmlType='button' type='primaryOutlined' onClick={onCancel}>
-          {t('button.cancel')}
-        </Button>
-        <Button htmlType='button' type='primary' loading={confirmLoading} onClick={handleConfirmClick}>
-          {t('button.confirm')}
-        </Button>
-      </Box>
-    </S.ModalWrapper>
+      {!isEdit && (
+        <S.UnitCount>
+          <span>{t('unit_count')}:</span>
+          <span>{formatCount(unitCount)}</span>
+        </S.UnitCount>
+      )}
+    </GroupModal>
   );
 };
 

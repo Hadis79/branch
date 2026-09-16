@@ -3,92 +3,54 @@ import { useState } from 'react';
 import { Radio } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Box, Button } from '@branch-services/ui-kit';
 
+import GroupModal from './group-modal';
 import * as S from './style';
-import { WorkingCalendarGroupPage } from '../../utils/constants';
+import { EDIT_MODE_LABELS, EntryMode, WorkingCalendarGroupPage } from '../../utils/constants';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
-import useGroupStore from '../../store/use-widget-store';
-
-type EditMode = 'upload-file' | 'manual';
+import type { GroupListItem } from '../../utils/types';
 
 type EditModalProps = {
   open: boolean;
   onCancel: () => void;
-  onConfirm: (mode: EditMode) => void;
-  confirmLoading?: boolean;
+  group: GroupListItem | null;
 };
 
-const EditModal = ({ open, onCancel }: EditModalProps) => {
+const EditModal = ({ open, onCancel, group }: EditModalProps) => {
   const [t] = useTr();
   const { navigateTo } = useWorkingCalendarGroupPage();
-  const selectedGroupId = useGroupStore((state) => state.selectedGroupId);
 
-  const [selectedMode, setSelectedMode] = useState<EditMode>('upload-file');
+  const [selectedMode, setSelectedMode] = useState<EntryMode>(EntryMode.FILE);
 
   const handleConfirm = () => {
-    navigateTo(WorkingCalendarGroupPage.EDIT);
+    navigateTo(WorkingCalendarGroupPage.EDIT, { id: group?.id, mode: selectedMode });
+    onCancel();
   };
 
   return (
-    <S.ModalWrapper
-      centered
-      width={544}
-      title={
-        <S.Title>
-          <i className='ri-error-warning-fill' />
-          <span>ویرایش گروه</span>
-        </S.Title>
-      }
+    <GroupModal
       open={open}
       onCancel={onCancel}
-      closable={false}
-      maskClosable={false}
-      keyboard={false}
-      footer={null}
+      onConfirm={handleConfirm}
+      title={t('edit_group_title', { groupName: group?.name })}
+      confirmText={t('continue')}
     >
-      <S.Description>نحوه ویرایش گروه را انتخاب کنید:</S.Description>
+      <S.Description>{t('edit_mode_question')}</S.Description>
 
-      <Radio.Group
-        value={selectedMode}
-        onChange={(event) => setSelectedMode(event.target.value)}
-        style={{ width: '100%' }}
-      >
+      <Radio.Group value={selectedMode} onChange={(event) => setSelectedMode(event.target.value)}>
         <S.Options>
-          <S.Option selected={selectedMode === 'upload-file'} onClick={() => setSelectedMode('upload-file')}>
-            <Radio value='upload-file' />
-
-            <S.OptionContent>
-              <S.OptionTitle>جایگزینی کامل اعضا</S.OptionTitle>
-
-              <S.OptionDescription>
-                لیست فعلی اعضای گروه حذف شده و اعضای موجود در فایل جدید جایگزین می‌شوند.
-              </S.OptionDescription>
-            </S.OptionContent>
-          </S.Option>
-
-          <S.Option selected={selectedMode === 'manual'} onClick={() => setSelectedMode('manual')}>
-            <Radio value='manual' />
-
-            <S.OptionContent>
-              <S.OptionTitle>ویرایش دستی لیست</S.OptionTitle>
-
-              <S.OptionDescription>امکان حذف یا اضافه کردن واحدها به لیست فعلی گروه وجود دارد.</S.OptionDescription>
-            </S.OptionContent>
-          </S.Option>
+          {Object.values(EntryMode).map((mode) => (
+            <S.Option key={mode} $selected={selectedMode === mode} onClick={() => setSelectedMode(mode)}>
+              <Radio value={mode} />
+              <S.OptionContent>
+                <S.OptionTitle>{t(EDIT_MODE_LABELS[mode].title)}</S.OptionTitle>
+                <S.OptionDescription>{t(EDIT_MODE_LABELS[mode].description)}</S.OptionDescription>
+              </S.OptionContent>
+            </S.Option>
+          ))}
         </S.Options>
       </Radio.Group>
-
-      <Box justifyContent='flex-end' gap='1.2rem' marginTop='3.2rem'>
-        <Button htmlType='button' type='primaryOutlined' onClick={onCancel}>
-          {t('button.cancel')}
-        </Button>
-
-        <Button htmlType='button' type='primary' onClick={handleConfirm}>
-          ادامه
-        </Button>
-      </Box>
-    </S.ModalWrapper>
+    </GroupModal>
   );
 };
 

@@ -4,14 +4,14 @@ import { PaginationState } from '@branch-services/types';
 import { TFunction } from 'i18next';
 
 import { calculateRow } from '../../../utils/utils';
-import { GroupListItem, ModalType } from '../../../utils/types';
+import { GroupListItem, GroupModalType } from '../../../utils/types';
 
 import * as S from './data-table.style';
 
 type ColumnsProps = {
   t: TFunction;
   pagination: PaginationState['pagination'];
-  openModalHandler: (record: any, type: ModalType) => void;
+  openModalHandler: (record: GroupListItem, type: GroupModalType) => void;
 };
 
 export const mobileColumns = ({ t }: Pick<ColumnsProps, 't'>): ColumnsType<GroupListItem> => [

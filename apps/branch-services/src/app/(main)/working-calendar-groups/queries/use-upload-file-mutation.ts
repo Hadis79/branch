@@ -1,20 +1,13 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { Api } from '../services';
-import { groupQueryKeys, groupsMutationKeys } from '../utils/constants';
+import { groupsMutationKeys } from '../utils/constants';
 
-const useUploadFileMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+// Uploading only parses the file; no group data changes until the form is saved.
+const useUploadFileMutation = () =>
+  useMutation({
     mutationKey: groupsMutationKeys.upload,
     mutationFn: Api.uploadFile,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: groupQueryKeys.all,
-        refetchType: 'none',
-      }),
   });
-};
 
 export default useUploadFileMutation;

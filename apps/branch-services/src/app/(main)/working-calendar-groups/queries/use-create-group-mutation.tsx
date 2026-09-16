@@ -8,10 +8,7 @@ const useCreateGroupsMutation = () => {
   return useMutation({
     mutationKey: groupsMutationKeys.create,
     mutationFn: Api.createGroups,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: groupQueryKeys.all,
-      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: groupQueryKeys.lists() }),
   });
 };
 
