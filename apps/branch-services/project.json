@@ -1,0 +1,33 @@
+{
+  "name": "branch-services",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/branch-services",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project branch-services --web",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/branch-services",
+        "outputPath": "dist/apps/branch-services"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/branch-services",
+          "envFile": ".env.development"
+        },
+        "production": {
+          "envFile": ".env.production"
+        },
+        "test": {
+          "envFile": ".env.test"
+        }
+      }
+    }
+  }
+}

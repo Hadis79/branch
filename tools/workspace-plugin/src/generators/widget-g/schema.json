@@ -1,0 +1,53 @@
+{
+    "$schema": "https://json-schema.org/schema",
+    "$id": "widget-g",
+    "title": "",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Widget's name",
+            "$default": {
+                "$source": "argv",
+                "index": 0
+            },
+            "x-prompt": "What's the title of your new widget?"
+        },
+        "group": {
+            "type": "string",
+            "enum": ["main", "auth", "landing"],
+            "default": "main",
+            "x-prompt": {
+                "message": "📂 Where should the page be created?",
+                "type": "list",
+                "items": [
+                    {
+                        "label": "Main Layout (src/app/(main))",
+                        "value": "main"
+                    },
+                    {
+                        "label": "Auth Layout (src/app/(auth))",
+                        "value": "auth"
+                    },
+                    {
+                        "label": "Landing Layout (src/app/(landing))",
+                        "value": "landing"
+                    }
+                ]
+            }
+        },
+        "action": {
+            "type": "string",
+            "enum": ["add", "remove"],
+            "description": "Action to perform on the widget",
+            "x-prompt": "Do you want to add or remove the widget?"
+        }
+    },
+
+    "directory": {
+        "type": "string",
+        "description": "Widget's directory",
+        "default": "apps"
+    },
+    "required": ["name", "group"]
+}

@@ -1,0 +1,56 @@
+{
+    "name": "branch-refrences",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/branch-refrences",
+    "projectType": "application",
+    "tags": [],
+    "// targets": "to see all targets run: nx show project branch-refrences --web",
+      "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/branch-refrences",
+        "outputPath": "dist/apps/branch-refrences"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/branch-refrences",
+          "envFile": ".env.development"
+        },
+        "production": {
+          "envFile": ".env.production"
+        },
+        "test": {
+          "envFile": ".env.test"
+        }
+      }
+    },
+    "dev": {
+      "executor": "@nx/next:server",
+      "options": {
+        "buildTarget": "branch-refrences:build:development"
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "options": {
+        "buildTarget": "branch-refrences:build:development"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "branch-refrences:build:development"
+        },
+        "production": {
+          "buildTarget": "branch-refrences:build:production"
+        },
+        "test": {
+          "buildTarget": "branch-refrences:build:test"
+        }
+      }
+    }
+  }
+}

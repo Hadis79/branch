@@ -1,0 +1,9 @@
+{
+    "name": "branch-refrences-e2e",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/branch-refrences-e2e/src",
+    "tags": [],
+    "implicitDependencies": ["branch-refrences"],
+    "// targets": "to see all targets run: nx show project branch-refrences-e2e --web",
+    "targets": {}
+}

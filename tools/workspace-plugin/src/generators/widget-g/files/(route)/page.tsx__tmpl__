@@ -1,0 +1,11 @@
+'use client';
+import { useDateLocaleListener } from '@branch-services/hooks';
+import React from 'react';
+
+const <%= className %>Widget: React.FC = () => {
+  useDateLocaleListener();
+
+  return <><%= className %></>;
+};
+
+export default <%= className %>Widget;

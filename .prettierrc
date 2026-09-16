@@ -1,0 +1,39 @@
+{
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "useTabs": false,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "semi": true,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "proseWrap": "preserve",
+  "trailingComma": "es5",
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "printWidth": 120
+      }
+    },
+    {
+      "files": "*.{scss}",
+      "options": {
+        "singleQuote": true
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 80,
+        "tabWidth": 4
+      }
+    }
+  ]
+}

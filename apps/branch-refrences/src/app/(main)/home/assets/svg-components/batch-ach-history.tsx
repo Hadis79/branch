@@ -1,0 +1,42 @@
+import React from 'react';
+
+function BatchAchHistorySvg({ fill = '#FCFCFC' }) {
+  return (
+    <svg width='40' height='40' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'>
+      <path
+        d='M42 14V34C42 40 39 44 32 44H16C9 44 6 40 6 34V14C6 8 9 4 16 4H32C39 4 42 8 42 14Z'
+        stroke={fill}
+        strokeWidth='3'
+        strokeMiterlimit='10'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+      <path
+        d='M29 9V13C29 15.2 30.8 17 33 17H37'
+        stroke={fill}
+        strokeWidth='3'
+        strokeMiterlimit='10'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+      <path
+        d='M16 26H24'
+        stroke={fill}
+        strokeWidth='3'
+        strokeMiterlimit='10'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+      <path
+        d='M16 34H32'
+        stroke={fill}
+        strokeWidth='3'
+        strokeMiterlimit='10'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    </svg>
+  );
+}
+
+export default BatchAchHistorySvg;
