@@ -3,6 +3,8 @@ import axios from 'axios';
 import { LocalStorageKey } from '@branch-services/types';
 import { readFromCookieByKey, storage } from '@branch-services/utils';
 
+import { getLayoutMockAdapter, isLayoutMockEnabled } from './dev-mock';
+
 const baseUrl = '/';
 
 export const bbpUrl = process.env['NEXT_PUBLIC_BBP_PREFIX'];
@@ -86,6 +88,9 @@ client.interceptors.request.use(async (config) => {
   config.headers['Accept-Language'] = JSON.parse(appConfig).locale;
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  if (isLayoutMockEnabled) {
+    config.adapter = getLayoutMockAdapter(config) ?? config.adapter;
   }
   return config;
 });
