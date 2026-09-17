@@ -37,7 +37,7 @@ const mockMenu: MenuModel[] = [
   menuItem(3, 'تاریخچه درخواست‌ها', 'operations-requests-history', 'ri-history-line'),
   menuItem(4, 'تقویم کاری خدمات', '', 'ri-calendar-2-line', [
     menuItem(41, 'قوانین', '', '', [], 4),
-    menuItem(42, 'سرویس‌ها', '', '', [], 4),
+    menuItem(42, 'سرویس‌ها', 'working-calendar-services', '', [], 4),
     menuItem(43, 'گروه‌بندی‌ها', 'working-calendar-groups', '', [], 4),
     menuItem(44, 'واحدهای مجاز', '', '', [], 4),
     menuItem(45, 'مدیریت تعطیلات', '', '', [], 4),
