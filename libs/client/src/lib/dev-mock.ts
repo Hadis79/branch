@@ -40,7 +40,7 @@ const mockMenu: MenuModel[] = [
     menuItem(42, 'سرویس‌ها', 'working-calendar-services', '', [], 4),
     menuItem(43, 'گروه‌بندی‌ها', 'working-calendar-groups', '', [], 4),
     menuItem(44, 'واحدهای مجاز', '', '', [], 4),
-    menuItem(45, 'مدیریت تعطیلات', '', '', [], 4),
+    menuItem(45, 'مدیریت تعطیلات', 'working-calendar-holiday', '', [], 4),
     menuItem(46, 'نمای تقویم', '', '', [], 4),
   ]),
 ];
