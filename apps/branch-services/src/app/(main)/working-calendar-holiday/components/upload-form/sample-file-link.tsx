@@ -12,11 +12,12 @@ const SampleFileLink = () => {
     <Button
       htmlType='button'
       type='link'
-      icon={<i className='ri-download-2-line' />}
+      style={{ width: 'fit-content', padding: 0, fontSize: '1.4rem' }}
       loading={download.isPending}
       onClick={() => download.mutate(Api.downloadSampleFile)}
     >
       {t('download_sample_file')}
+      <i className='ri-download-line ri-2x'></i>
     </Button>
   );
 };

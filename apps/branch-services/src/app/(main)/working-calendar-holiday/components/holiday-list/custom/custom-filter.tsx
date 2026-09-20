@@ -5,11 +5,11 @@ import { Box, Button, DatePicker, Input, SearchItemsContainer, Select } from '@b
 import { Dayjs, dayjs } from '@branch-services/utils';
 
 import useCustomHolidaysQuery from '../../../queries/use-custom-holidays-query';
-import useProvincesQuery from '../../../queries/use-provinces-query';
+import useRegionsQuery from '../../../queries/use-regions-query';
 import useHolidayStore from '../../../store/use-widget-store';
 import { isSameFilter, toApiDate } from '../../../utils/utils';
 
-type CustomFilterValues = { title?: string; provinceName?: string; fromDate?: Dayjs; toDate?: Dayjs };
+type CustomFilterValues = { title?: string; regionCode?: string; fromDate?: Dayjs; toDate?: Dayjs };
 
 const CustomFilter = () => {
   const [t] = useTr();
@@ -19,7 +19,7 @@ const CustomFilter = () => {
   const page = useHolidayStore((state) => state.customPagination.page);
   const setFilter = useHolidayStore((state) => state.setCustomFilter);
   const { isFetching, refetch } = useCustomHolidaysQuery();
-  const { data: provinceOptions, isFetching: isProvincesLoading } = useProvincesQuery();
+  const { data: regionOptions, isFetching: isRegionsLoading } = useRegionsQuery();
 
   const initialValues: CustomFilterValues = {
     ...filter,
@@ -30,7 +30,7 @@ const CustomFilter = () => {
   const handleSearch = (values: CustomFilterValues) => {
     const next = {
       title: values.title?.trim() || undefined,
-      provinceName: values.provinceName || undefined,
+      regionCode: values.regionCode || undefined,
       fromDate: toApiDate(values.fromDate),
       toDate: toApiDate(values.toDate),
     };
@@ -45,13 +45,13 @@ const CustomFilter = () => {
           <Form.Item name='title' label={t('title')}>
             <Input allowClear placeholder={t('title_placeholder')} />
           </Form.Item>
-          <Form.Item name='provinceName' label={t('region')}>
+          <Form.Item name='regionCode' label={t('region')}>
             <Select
               allowClear
               showSearch
               optionFilterProp='label'
-              options={provinceOptions}
-              loading={isProvincesLoading}
+              options={regionOptions}
+              loading={isRegionsLoading}
               placeholder={t('select_placeholder')}
             />
           </Form.Item>
@@ -69,7 +69,7 @@ const CustomFilter = () => {
             </Box>
           </Form.Item>
           <Box className='full-width buttons-container'>
-            <Button htmlType='submit' type='primaryOutlined' loading={isFetching}>
+            <Button htmlType='submit' style={{ width: 'fit-content' }} type='primaryOutlined' loading={isFetching}>
               {t('search')}
             </Button>
           </Box>

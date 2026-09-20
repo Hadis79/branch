@@ -33,11 +33,12 @@ const OfficialList = () => {
         dataSource={data?.content}
         columns={columns}
         mobileColumns={columns}
-        onChange={(config) => setPagination(nextPagination(config, pagination.size))}
+        // onChange={(config) => setPagination(nextPagination(config, pagination.size))}
         hasContainer={false}
-        total={data?.totalElements}
-        current={pagination.page}
-        pagination={{ current: pagination.page, pageSize: pagination.size }}
+        // total={data?.totalElements}
+        // current={pagination.page}
+        pagination={false}
+        // pagination={{ current: pagination.page, pageSize: pagination.size }}
         rowKey='id'
       />
     </>

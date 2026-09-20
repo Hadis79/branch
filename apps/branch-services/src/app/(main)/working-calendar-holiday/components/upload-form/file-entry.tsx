@@ -32,6 +32,7 @@ const FileEntry = ({ result, loading, onUpload, onRemove, onViewDetails }: FileE
         valuePropName='fileList'
         getValueFromEvent={({ fileList }) => fileList}
         validateTrigger={[]}
+        style={{ marginBottom: 0 }}
         rules={[
           {
             validator: (_rule, fileList?: unknown[]) =>

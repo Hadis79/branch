@@ -6,6 +6,7 @@ import type { UploadedHolidayFile } from '../../utils/types';
 import { formatCount } from '../../utils/utils';
 
 import * as S from './upload-form.style';
+import { Form } from 'antd';
 
 type UploadResultProps = {
   result: UploadedHolidayFile;
@@ -18,20 +19,22 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
   const [t] = useTr();
   const theme = useAppTheme();
   const hasDuplicates = result.duplicateCount > 0;
+  const form = Form.useFormInstance();
+  const fileName = form.getFieldValue('file');
   const rows = hasDuplicates
     ? [
-        ['file_type', result.fileType],
+        ['file_type', result.fileType ?? '-'],
         ['day_count', formatCount(result.dayCount)],
         ['duplicate_count', formatCount(result.duplicateCount)],
       ]
     : [['day_count', formatCount(result.dayCount)]];
-
   return (
     <Box flexDirection='column' gap='1.2rem'>
       <S.UploadedFile $error={hasDuplicates}>
-        <Text as='span'>
-          <i className='ri-file-excel-2-line' /> {result.fileName}
-        </Text>
+        <span className='uploaded-file'>
+          <span>{fileName[0]?.name}</span>
+          <i className='ri-file-excel-line ri-2x' />
+        </span>
         <Button
           type='link'
           icon={<i className='ri-delete-bin-2-line' />}

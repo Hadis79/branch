@@ -4,13 +4,14 @@ import { Api } from '../services';
 import useHolidayStore from '../store/use-widget-store';
 import { holidayQueryKeys } from '../utils/constants';
 
-// The service returns the whole list; the table pages through it
 const useCustomHolidaysQuery = () => {
+  const pagination = useHolidayStore((state) => state.customPagination);
   const filter = useHolidayStore((state) => state.customFilter);
+  const params = { ...pagination, ...filter };
 
   return useQuery({
-    queryKey: holidayQueryKeys.customList(filter),
-    queryFn: () => Api.getCustomHolidays(filter),
+    queryKey: holidayQueryKeys.customList(params),
+    queryFn: () => Api.getCustomHolidays(params),
     placeholderData: keepPreviousData,
   });
 };

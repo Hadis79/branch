@@ -10,20 +10,17 @@ export const toStringIds = <T extends { id: string | number }>(
   content: response.content.map((item) => ({ ...item, id: String(item.id) })),
 });
 
-// e.g. "holidays-1405.xlsx" -> "Xlsx"
-const getFileType = (fileName: string) =>
-  (fileName.split('.').pop() ?? '').replace(/^./, (letter) => letter.toUpperCase());
+// `success: false` is turned into a rejection so callers only handle the error path once
+export const toUploadedHolidayFile = (response: HolidayFileUploadResponse): UploadedHolidayFile => {
+  if (response.success === false) throw new Error('Holiday file upload failed');
 
-// The uploaded file is passed in because the response repeats neither its name nor its type.
-// Duplicate rows are the rows of the file that are missing from the returned holidays
-export const toUploadedHolidayFile = (response: HolidayFileUploadResponse, file: File): UploadedHolidayFile => {
   const holidays = response.holidays ?? [];
 
   return {
-    fileName: file.name,
-    fileType: getFileType(file.name),
+    fileName: response.fileName,
+    fileType: response.fileType,
     holidays,
     dayCount: holidays.length,
-    duplicateCount: Math.max((response.rowCount ?? holidays.length) - holidays.length, 0),
+    duplicateCount: response.duplicateCount ?? 0,
   };
 };

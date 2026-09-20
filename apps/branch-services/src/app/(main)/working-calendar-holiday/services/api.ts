@@ -7,7 +7,7 @@ import type {
   CreateOfficialHolidaysDto,
   CustomHoliday,
   CustomHolidayResponse,
-  CustomListFilter,
+  CustomListParams,
   DownloadedFile,
   HolidayFileUploadResponse,
   NewCustomHoliday,
@@ -15,10 +15,11 @@ import type {
   OfficialListParams,
   OfficialYear,
   OfficialYearResponse,
-  Province,
+  Region,
   UploadedHolidayFile,
 } from '../utils/types';
 
+// TODO: endpoints are not final yet, confirm them with backend before disabling the mock
 const HOLIDAY_URL = `${bbpUrl}/calendar/holiday`;
 const EXCEL_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
@@ -32,11 +33,10 @@ const downloadExcel = async (url: string, fileName: string): Promise<DownloadedF
 });
 
 const Api = {
-  getProvinces: async (): Promise<Province[]> => (await client.get<Province[]>(`${HOLIDAY_URL}/province/list`)).data,
+  getRegions: async (): Promise<Region[]> => (await client.get<Region[]>(`${HOLIDAY_URL}/regions`)).data,
 
-  // TODO: the official holidays service is not ready yet, these four are guesses
   getOfficialYears: async (params: OfficialListParams): Promise<PaginatedData<OfficialYear>> => {
-    const response = await client.get<PaginatedData<OfficialYearResponse>>(`${HOLIDAY_URL}/official/list`, {
+    const response = await client.get<PaginatedData<OfficialYearResponse>>(`${HOLIDAY_URL}/list`, {
       params: toServicePage(params),
     });
     return toStringIds(response.data);
@@ -47,31 +47,29 @@ const Api = {
     downloadExcel(`${HOLIDAY_URL}/official/${year}/file`, `holidays-${year}.xlsx`),
   downloadSampleFile: (): Promise<DownloadedFile> =>
     downloadExcel(`${HOLIDAY_URL}/official/sample-file`, 'holidays-sample.xlsx'),
-
-  // Uploading only parses the file; the rows are saved by createOfficialHolidays
   uploadOfficialFile: async (file: File): Promise<UploadedHolidayFile> => {
     const response = await client.post<HolidayFileUploadResponse>(
       `${HOLIDAY_URL}/upload-file`,
       { file },
       { headers: { 'content-type': 'multipart/form-data' } }
     );
-    return toUploadedHolidayFile(response.data, file);
+    return toUploadedHolidayFile(response.data);
   },
   createOfficialHolidays: async (values: CreateOfficialHolidaysDto): Promise<void> => {
-    await client.post<void>(`${HOLIDAY_URL}/upload-file/confirm`, values);
+    await client.post<void>(`${HOLIDAY_URL}/create`, values);
   },
 
-  // The list is not paginated, the table pages through it
-  getCustomHolidays: async (filter: CustomListFilter): Promise<CustomHoliday[]> => {
-    const response = await client.get<CustomHolidayResponse[]>(`${HOLIDAY_URL}/list`, { params: filter });
-    return response.data.map((holiday) => ({ ...holiday, id: String(holiday.id) }));
+  getCustomHolidays: async (params: CustomListParams): Promise<PaginatedData<CustomHoliday>> => {
+    const response = await client.get<PaginatedData<CustomHolidayResponse>>(`${HOLIDAY_URL}/custom/list`, {
+      params: toServicePage(params),
+    });
+    return toStringIds(response.data);
   },
   createCustomHolidays: async (holidays: NewCustomHoliday[]): Promise<void> => {
-    await client.post<void>(`${HOLIDAY_URL}/create`, holidays);
+    await client.post<void>(`${HOLIDAY_URL}/custom/create`, holidays);
   },
-  // TODO: the delete service is not ready yet, this one is a guess
   deleteCustomHoliday: async (id: string): Promise<void> => {
-    await client.delete<void>(`${HOLIDAY_URL}/${id}`);
+    await client.delete<void>(`${HOLIDAY_URL}/custom/${id}`);
   },
 };
 

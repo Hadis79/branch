@@ -33,7 +33,7 @@ const HolidayModal = ({
   return (
     <Modal
       open={open}
-      width={430}
+      // width={430}
       centered
       footer={null}
       closable={false}

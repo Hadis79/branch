@@ -4,7 +4,7 @@ import { TFunction } from 'i18next';
 import { Button, ColumnsType } from '@branch-services/ui-kit';
 
 import type { CustomHoliday, PageParams } from '../../../utils/types';
-import { calculateRow, formatDate, isPastDate } from '../../../utils/utils';
+import { calculateRow, formatDate, isPastDate, weekdayName } from '../../../utils/utils';
 
 type ColumnsParams = {
   t: TFunction;
@@ -21,9 +21,9 @@ export const getCustomColumns = ({ t, pagination, onDelete }: ColumnsParams): Co
     render: (_value, _record, index) => calculateRow(index, pagination.page, pagination.size),
   },
   { title: t('date'), dataIndex: 'date', align: 'center', render: (date: string) => formatDate(date) },
-  { title: t('weekday'), dataIndex: 'holidayDay', align: 'center' },
+  { title: t('weekday'), key: 'weekday', align: 'center', render: (_value, { date }) => weekdayName(date) },
   { title: t('title'), dataIndex: 'title', align: 'center' },
-  { title: t('region'), key: 'province', align: 'center', render: (_value, { province }) => province.provinceName },
+  { title: t('region'), key: 'region', align: 'center', render: (_value, { region }) => region.name },
   {
     title: t('actions'),
     key: 'actions',

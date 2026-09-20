@@ -29,7 +29,7 @@ const OfficialFilter = () => {
             <Select allowClear options={getYearOptions()} placeholder={t('select_placeholder')} />
           </Form.Item>
           <Box alignItems='center'>
-            <Button htmlType='submit' type='primaryOutlined' loading={isFetching}>
+            <Button htmlType='submit' style={{ width: 'fit-content' }} type='primaryOutlined' loading={isFetching}>
               {t('search')}
             </Button>
           </Box>

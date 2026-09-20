@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTr } from '@branch-services/translation';
 import { MessageBox } from '@branch-services/ui-kit';
 
-import HolidayEntryForm from './holiday-entry-form';
+import HolidayEntryForm, { EnteredHoliday } from './holiday-entry-form';
 import EnteredHolidaysTable from './entered-holidays-table';
 import FormPage from '../form-page/form-page';
 import ConfirmCreateModal from '../holiday-modal/confirm-create-modal';
@@ -13,19 +13,18 @@ import { HolidayTab } from '../../utils/constants';
 import type { NewCustomHoliday } from '../../utils/types';
 import { formatCount } from '../../utils/utils';
 
-const isSameHoliday = (a: NewCustomHoliday, b: NewCustomHoliday) =>
-  a.date === b.date && a.province.provinceName === b.province.provinceName;
+const isSameHoliday = (a: NewCustomHoliday, b: NewCustomHoliday) => a.date === b.date && a.regionCode === b.regionCode;
 
 // Non-calendar holidays, entered one by one and saved together
 const ManualForm = () => {
   const [t] = useTr();
-  const [holidays, setHolidays] = useState<NewCustomHoliday[]>([]);
+  const [holidays, setHolidays] = useState<EnteredHoliday[]>([]);
   const [isEmptyErrorVisible, setIsEmptyErrorVisible] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const createCustom = useCreateCustomMutation();
   const finish = useFinishCreate(HolidayTab.CUSTOM);
 
-  const handleAdd = (holiday: NewCustomHoliday) => {
+  const handleAdd = (holiday: EnteredHoliday) => {
     setHolidays((current) => [...current, holiday]);
     setIsEmptyErrorVisible(false);
   };
@@ -36,11 +35,14 @@ const ManualForm = () => {
   };
 
   const handleConfirm = () =>
-    createCustom.mutate(holidays, {
-      onSuccess: () => finish.onSuccess({ txt: 'custom_success', type: 'success', shouldTranslate: true }),
-      onError: finish.onError,
-      onSettled: () => setIsConfirmOpen(false),
-    });
+    createCustom.mutate(
+      holidays.map(({ title, regionCode, date }) => ({ title, regionCode, date })),
+      {
+        onSuccess: () => finish.onSuccess({ txt: 'custom_success', type: 'success', shouldTranslate: true }),
+        onError: finish.onError,
+        onSettled: () => setIsConfirmOpen(false),
+      }
+    );
 
   return (
     <FormPage
