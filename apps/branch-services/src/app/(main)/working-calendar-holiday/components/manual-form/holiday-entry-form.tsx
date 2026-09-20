@@ -4,35 +4,43 @@ import { useTr } from '@branch-services/translation';
 import { Box, Button, DatePicker, Input, SearchItemsContainer, Select } from '@branch-services/ui-kit';
 import { Dayjs } from '@branch-services/utils';
 
-import useRegionsQuery from '../../queries/use-regions-query';
+import useProvincesQuery from '../../queries/use-provinces-query';
+import { OfficialStatus } from '../../utils/constants';
 import type { NewCustomHoliday } from '../../utils/types';
-import { formatDateWithWeekday, toApiDate } from '../../utils/utils';
+import { formatDateWithWeekday, toApiDate, weekdayName } from '../../utils/utils';
 
-type EntryValues = { title: string; regionCode: string; date: Dayjs };
-
-export type EnteredHoliday = NewCustomHoliday & { regionName: string };
+type EntryValues = { title: string; provinceName: string; date: Dayjs };
 
 type HolidayEntryFormProps = {
   isDuplicate: (holiday: NewCustomHoliday) => boolean;
-  onAdd: (holiday: EnteredHoliday) => void;
+  onAdd: (holiday: NewCustomHoliday) => void;
 };
 
 // One holiday at a time; added rows are listed below the form
 const HolidayEntryForm = ({ isDuplicate, onAdd }: HolidayEntryFormProps) => {
   const [t] = useTr();
   const [form] = Form.useForm<EntryValues>();
-  const { data: regionOptions, isFetching } = useRegionsQuery();
+  const { data: provinceOptions, isFetching } = useProvincesQuery();
 
-  const handleAdd = ({ title, regionCode, date }: EntryValues) => {
-    const holiday = { title: title.trim(), regionCode, date: toApiDate(date) as string };
+  const handleAdd = ({ title, provinceName, date }: EntryValues) => {
+    const province = provinceOptions?.find((option) => option.value === provinceName)?.province;
+    if (!province) return;
+
+    const apiDate = toApiDate(date) as string;
+    const holiday = {
+      title: title.trim(),
+      date: apiDate,
+      holidayDay: weekdayName(apiDate),
+      officialStatus: OfficialStatus.UNOFFICIAL,
+      province,
+    };
 
     if (isDuplicate(holiday)) {
       form.setFields([{ name: 'date', errors: [t('duplicate_holiday')] }]);
       return;
     }
 
-    const regionName = regionOptions?.find(({ value }) => value === regionCode)?.label ?? '';
-    onAdd({ ...holiday, regionName });
+    onAdd(holiday);
     form.resetFields();
   };
 
@@ -49,14 +57,14 @@ const HolidayEntryForm = ({ isDuplicate, onAdd }: HolidayEntryFormProps) => {
         </Form.Item>
         <Form.Item
           className='half-width'
-          name='regionCode'
+          name='provinceName'
           label={t('region')}
           rules={[{ required: true, message: t('region_required') }]}
         >
           <Select
             showSearch
             optionFilterProp='label'
-            options={regionOptions}
+            options={provinceOptions}
             loading={isFetching}
             placeholder={t('select_placeholder')}
           />

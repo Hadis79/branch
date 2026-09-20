@@ -2,19 +2,19 @@ import { PaginatedData } from '@branch-services/types';
 
 import type RealApi from './api';
 import { toStringIds, toUploadedHolidayFile } from './mappers';
-import { NATIONAL_REGION_CODE } from '../utils/constants';
+import { OfficialStatus } from '../utils/constants';
 import type {
   CreateOfficialHolidaysDto,
   CustomHolidayResponse,
-  CustomListParams,
+  CustomListFilter,
   DownloadedFile,
   NewCustomHoliday,
   OfficialHoliday,
   OfficialListParams,
   OfficialYearResponse,
-  Region,
+  Province,
 } from '../utils/types';
-import { toApiDate } from '../utils/utils';
+import { JALALI_MONTHS, toApiDate, weekdayName } from '../utils/utils';
 
 // In-memory backend with the same signatures as ./api, used while the real service is not ready.
 // Upload: a file name containing "dup" returns duplicate rows, one containing "invalid" is rejected.
@@ -23,11 +23,11 @@ const MOCK_DELAY = 600;
 // Byte order mark, so Excel reads the Persian text of the CSV as UTF-8
 const BOM = String.fromCharCode(0xfeff);
 
-const regions: Region[] = [
-  { code: NATIONAL_REGION_CODE, name: 'کشوری (تمام استان‌ها)' },
+const provinces: Province[] = [
+  { provinceName: 'کشوری (تمام استان‌ها)', unitCodes: [] },
   ...['اصفهان', 'تهران', 'خوزستان', 'قم', 'قزوین', 'فارس', 'خراسان رضوی', 'آذربایجان شرقی'].map((name, index) => ({
-    code: String(index + 1),
-    name: `استان ${name}`,
+    provinceName: `استان ${name}`,
+    unitCodes: [String(index + 1), String(index + 101)],
   })),
 ];
 
@@ -60,7 +60,7 @@ const officialHolidays: OfficialHoliday[] = (
     [12, 21, 'شهادت حضرت علی (ع)'],
     [12, 29, 'روز ملی شدن صنعت نفت'],
   ] as const
-).map(([month, day, title]) => ({ month, day, title }));
+).map(([month, day, title]) => ({ month: JALALI_MONTHS[month - 1], day, title }));
 
 let officialYears: (OfficialYearResponse & { holidays: OfficialHoliday[] })[] = [
   { id: 2, year: 1405, lastModified: '2026-09-12T10:24:00', holidays: officialHolidays },
@@ -68,22 +68,27 @@ let officialYears: (OfficialYearResponse & { holidays: OfficialHoliday[] })[] = 
 ];
 
 const daysFromToday = (days: number) => toApiDate(new Date(Date.now() + days * 86400000)) as string;
-const regionOf = (code: string) => regions.find((region) => region.code === code) ?? regions[0];
 
 let customHolidays: CustomHolidayResponse[] = (
   [
-    [-20, 'آلودگی هوا', '2'],
-    [-5, 'آلودگی هوا', '4'],
-    [3, 'آلودگی هوا', '3'],
-    [10, 'برف و کولاک', NATIONAL_REGION_CODE],
-    [16, 'آلودگی هوا', '2'],
+    [-20, 'آلودگی هوا', 2],
+    [-5, 'آلودگی هوا', 4],
+    [3, 'آلودگی هوا', 3],
+    [10, 'برف و کولاک', 0],
+    [16, 'آلودگی هوا', 2],
   ] as const
-).map(([days, title, regionCode], index) => ({
-  id: index + 1,
-  date: daysFromToday(days),
-  title,
-  region: regionOf(regionCode),
-}));
+).map(([days, title, provinceIndex], index) => {
+  const date = daysFromToday(days);
+
+  return {
+    id: index + 1,
+    date,
+    title,
+    holidayDay: weekdayName(date),
+    officialStatus: OfficialStatus.UNOFFICIAL,
+    province: provinces[provinceIndex],
+  };
+});
 
 let lastId = customHolidays.length;
 
@@ -123,7 +128,7 @@ const toCsvFile = (holidays: OfficialHoliday[], fileName: string): Promise<Downl
 };
 
 const MockApi: typeof RealApi = {
-  getRegions: () => delay(regions),
+  getProvinces: () => delay(provinces),
 
   getOfficialYears: ({ page, size, year }: OfficialListParams) => {
     const rows = officialYears
@@ -143,16 +148,11 @@ const MockApi: typeof RealApi = {
     if (file.name.includes('invalid')) return reject('فرمت فایل بارگذاری‌شده معتبر نیست.');
 
     const hasDuplicates = file.name.includes('dup');
-    return delay({
-      success: true,
-      fileName: file.name,
-      fileType: file.name
-        .split('.')
-        .pop()
-        ?.replace(/^./, (letter) => letter.toUpperCase()),
-      holidays: hasDuplicates ? officialHolidays.slice(0, 25) : officialHolidays.slice(0, 24),
-      duplicateCount: hasDuplicates ? 12 : 0,
-    }).then(toUploadedHolidayFile);
+    const holidays = officialHolidays.slice(0, hasDuplicates ? 25 : 24);
+
+    return delay({ rowCount: holidays.length + (hasDuplicates ? 12 : 0), holidays }).then((response) =>
+      toUploadedHolidayFile(response, file)
+    );
   },
   createOfficialHolidays: ({ year, holidays }: CreateOfficialHolidaysDto) => {
     if (officialYears.some((item) => item.year === year)) return reject('تعطیلات این سال قبلا ثبت شده است.');
@@ -161,24 +161,19 @@ const MockApi: typeof RealApi = {
     return delay(undefined);
   },
 
-  getCustomHolidays: ({ page, size, title, regionCode, fromDate, toDate }: CustomListParams) => {
+  getCustomHolidays: ({ title, provinceName, fromDate, toDate }: CustomListFilter) => {
     const rows = customHolidays.filter(
       (holiday) =>
         (!title || holiday.title.includes(title)) &&
-        (!regionCode || holiday.region.code === regionCode) &&
+        (!provinceName || holiday.province.provinceName === provinceName) &&
         (!fromDate || holiday.date >= fromDate) &&
         (!toDate || holiday.date <= toDate)
     );
 
-    return delay(paginate(rows, page, size)).then(toStringIds);
+    return delay(rows).then((items) => items.map((item) => ({ ...item, id: String(item.id) })));
   },
   createCustomHolidays: (holidays: NewCustomHoliday[]) => {
-    const added = holidays.map(({ title, regionCode, date }) => ({
-      id: ++lastId,
-      title,
-      date,
-      region: regionOf(regionCode),
-    }));
+    const added = holidays.map((holiday) => ({ ...holiday, id: ++lastId }));
     customHolidays = [...added, ...customHolidays].sort((a, b) => a.date.localeCompare(b.date));
     return delay(undefined);
   },

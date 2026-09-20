@@ -3,22 +3,27 @@ import { Divider } from 'antd';
 import { useTr } from '@branch-services/translation';
 import { Button, ColumnsType, Table } from '@branch-services/ui-kit';
 
-import type { EnteredHoliday } from './holiday-entry-form';
+import type { NewCustomHoliday } from '../../utils/types';
 import { formatDateWithWeekday } from '../../utils/utils';
 
 type EnteredHolidaysTableProps = {
-  holidays: EnteredHoliday[];
-  onRemove: (holiday: EnteredHoliday) => void;
+  holidays: NewCustomHoliday[];
+  onRemove: (holiday: NewCustomHoliday) => void;
 };
 
 // Rows added in the form, not saved yet
 const EnteredHolidaysTable = ({ holidays, onRemove }: EnteredHolidaysTableProps) => {
   const [t] = useTr();
 
-  const columns: ColumnsType<EnteredHoliday> = [
+  const columns: ColumnsType<NewCustomHoliday> = [
     { title: '#', key: 'row', align: 'center', width: 70, render: (_value, _record, index) => index + 1 },
     { title: t('title'), dataIndex: 'title', align: 'center' },
-    { title: t('region'), dataIndex: 'regionName', align: 'center' },
+    {
+      title: t('region'),
+      key: 'province',
+      align: 'center',
+      render: (_value, { province }) => province.provinceName,
+    },
     { title: t('date'), dataIndex: 'date', align: 'center', render: (date: string) => formatDateWithWeekday(date) },
     {
       title: t('actions'),
@@ -46,7 +51,7 @@ const EnteredHolidaysTable = ({ holidays, onRemove }: EnteredHolidaysTableProps)
         mobileColumns={columns}
         pagination={false}
         hasContainer={false}
-        rowKey={({ date, regionCode }: EnteredHoliday) => `${date}-${regionCode}`}
+        rowKey={({ date, province }: NewCustomHoliday) => `${date}-${province.provinceName}`}
       />
     </>
   );
