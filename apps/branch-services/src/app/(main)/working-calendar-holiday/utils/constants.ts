@@ -1,4 +1,4 @@
-import type { CustomListParams, OfficialListParams } from './types';
+import type { CustomListFilter, OfficialListParams } from './types';
 
 // Set to false to switch every request to the real service (services/api.ts)
 export const USE_MOCK_API = false;
@@ -19,17 +19,21 @@ export enum HolidayTab {
   CUSTOM = 'custom',
 }
 
-export const NATIONAL_REGION_CODE = 'ALL';
+// TODO: confirm the value the non-calendar holidays are saved with; the service only documents OFFICIAL
+export enum OfficialStatus {
+  OFFICIAL = 'OFFICIAL',
+  UNOFFICIAL = 'UNOFFICIAL',
+}
 
 const HOLIDAY_QUERY_KEY = 'working-calendar-holiday';
 
 export const holidayQueryKeys = {
-  regions: () => [HOLIDAY_QUERY_KEY, 'regions'] as const,
+  provinces: () => [HOLIDAY_QUERY_KEY, 'provinces'] as const,
   officialLists: () => [HOLIDAY_QUERY_KEY, 'official-list'] as const,
   officialList: (params: OfficialListParams) => [HOLIDAY_QUERY_KEY, 'official-list', params] as const,
   officialYear: (year: number) => [HOLIDAY_QUERY_KEY, 'official-year', year] as const,
   customLists: () => [HOLIDAY_QUERY_KEY, 'custom-list'] as const,
-  customList: (params: CustomListParams) => [HOLIDAY_QUERY_KEY, 'custom-list', params] as const,
+  customList: (filter: CustomListFilter) => [HOLIDAY_QUERY_KEY, 'custom-list', filter] as const,
 };
 
 export const holidayMutationKeys = {

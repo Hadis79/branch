@@ -4,7 +4,7 @@ import { useTr } from '@branch-services/translation';
 import { Box, ColumnsType, Table, Text } from '@branch-services/ui-kit';
 
 import type { OfficialHoliday } from '../../utils/types';
-import { formatCount, monthName } from '../../utils/utils';
+import { formatCount } from '../../utils/utils';
 
 type HolidaysTableProps = {
   holidays: OfficialHoliday[];
@@ -20,7 +20,7 @@ const HolidaysTable = ({ holidays, loading, extra }: HolidaysTableProps) => {
   const columns: ColumnsType<OfficialHoliday> = [
     { title: '#', key: 'row', align: 'center', width: 70, render: (_value, _record, index) => index + 1 },
     { title: t('day'), dataIndex: 'day', align: 'center' },
-    { title: t('month'), dataIndex: 'month', align: 'center', render: (month: number) => monthName(month) },
+    { title: t('month'), dataIndex: 'month', align: 'center' },
     { title: t('title'), dataIndex: 'title', align: 'center' },
   ];
 

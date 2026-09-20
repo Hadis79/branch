@@ -23,7 +23,7 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
   const fileName = form.getFieldValue('file');
   const rows = hasDuplicates
     ? [
-        ['file_type', result.fileType ?? '-'],
+        ['file_type', result.fileType],
         ['day_count', formatCount(result.dayCount)],
         ['duplicate_count', formatCount(result.duplicateCount)],
       ]

@@ -21,6 +21,9 @@ const CustomList = () => {
   const { data, error, isFetching } = useCustomHolidaysQuery();
 
   const columns = getCustomColumns({ t, pagination, onDelete: setHolidayToDelete });
+  // The whole list is loaded at once, so the table slices it itself
+  const rowsOnPage =
+    data?.slice((pagination.page - 1) * pagination.size, pagination.page * pagination.size).length ?? 0;
 
   return (
     <>
@@ -28,19 +31,18 @@ const CustomList = () => {
       <CustomFilter />
       <Table
         loading={isFetching}
-        dataSource={data?.content}
+        dataSource={data}
         columns={columns}
         mobileColumns={columns}
         onChange={(config) => setPagination(nextPagination(config, pagination.size))}
         hasContainer={false}
-        total={data?.totalElements}
         current={pagination.page}
         pagination={{ current: pagination.page, pageSize: pagination.size }}
         rowKey='id'
       />
       <DeleteHolidayModal
         holiday={holidayToDelete}
-        isLastRow={data?.numberOfElements === 1}
+        isLastRow={rowsOnPage === 1}
         onClose={() => setHolidayToDelete(null)}
       />
     </>

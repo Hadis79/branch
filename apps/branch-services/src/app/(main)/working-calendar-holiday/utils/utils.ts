@@ -21,8 +21,6 @@ export const JALALI_MONTHS = [
 
 export const formatCount = (value: number): string => value.toLocaleString('fa-IR');
 
-export const monthName = (month: number): string => JALALI_MONTHS[month - 1] ?? '-';
-
 export const weekdayName = (date: string): string => new Date(date).toLocaleDateString('fa-IR', { weekday: 'long' });
 
 export const formatDate = (date: string): string => dateLocale(date) ?? '-';
