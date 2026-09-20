@@ -1,8 +1,9 @@
 import { ReactNode, useEffect } from 'react';
 
 import { useTr } from '@branch-services/translation';
-import { Box, Button, MessageBox } from '@branch-services/ui-kit';
+import { Box, Button } from '@branch-services/ui-kit';
 
+import { GuideMessageBox } from './form-page.style';
 import useHolidayPage from '../../hooks/use-holiday-page';
 import useHolidayStore from '../../store/use-widget-store';
 import { HolidayPage } from '../../utils/constants';
@@ -31,7 +32,7 @@ const FormPage = ({ info, infoDescription, error, children, submitText, submitDi
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
       <Box flexDirection='column' gap='2.4rem'>
-        <MessageBox type='info' message={t(info)} description={infoDescription} closable />
+        <GuideMessageBox type='info' message={t(info)} description={infoDescription} closable />
         {error}
         {children}
       </Box>
