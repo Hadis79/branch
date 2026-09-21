@@ -12,11 +12,11 @@ export const UploadFileContainer = styled.div`
 `;
 
 export const SampleFileLink = styled.div`
-  margin-top: 1.2rem;
-
   .ant-btn-link {
     height: auto;
     padding: 0;
+    font-weight: 500;
+    font-size: 1.4rem;
   }
 `;
 

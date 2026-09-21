@@ -5,9 +5,8 @@ import useHolidayStore from '../store/use-widget-store';
 import { holidayQueryKeys } from '../utils/constants';
 
 const useOfficialYearsQuery = () => {
-  const pagination = useHolidayStore((state) => state.officialPagination);
   const filter = useHolidayStore((state) => state.officialFilter);
-  const params = { ...pagination, ...filter };
+  const params = { ...filter };
 
   return useQuery({
     queryKey: holidayQueryKeys.officialList(params),

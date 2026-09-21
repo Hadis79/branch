@@ -20,7 +20,7 @@ export const getServiceColumns = ({ t, theme, pagination, onEdit }: ColumnsParam
     width: 70,
     render: (_value, _record, index) => (pagination.page - 1) * pagination.size + index + 1,
   },
-  { title: t('service_name'), dataIndex: 'name', align: 'center' },
+  { title: t('service_name'), dataIndex: 'persianName', align: 'center' },
   { title: t('service_english_name'), dataIndex: 'englishName', align: 'center' },
   {
     title: t('status'),

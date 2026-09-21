@@ -24,6 +24,7 @@ export default {
   delete: 'حذف',
   search: 'جستجو',
   cancel: 'انصراف',
+  edit: 'ویرایش',
   continue: 'ادامه',
   add: 'افزودن',
   from_date: 'از تاریخ',

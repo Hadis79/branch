@@ -9,13 +9,11 @@ import useHolidayPage from '../../../hooks/use-holiday-page';
 import useOfficialYearsQuery from '../../../queries/use-official-years-query';
 import useHolidayStore from '../../../store/use-widget-store';
 import { HolidayPage } from '../../../utils/constants';
-import { nextPagination } from '../../../utils/utils';
 
 const OfficialList = () => {
   const [t] = useTr();
   const { navigateTo } = useHolidayPage();
   const pagination = useHolidayStore((state) => state.officialPagination);
-  const setPagination = useHolidayStore((state) => state.setOfficialPagination);
   const { data, error, isFetching } = useOfficialYearsQuery();
 
   const columns = getOfficialColumns({
@@ -30,15 +28,12 @@ const OfficialList = () => {
       <OfficialFilter />
       <Table
         loading={isFetching}
-        dataSource={data?.content}
+        dataSource={data ?? []}
         columns={columns}
         mobileColumns={columns}
         // onChange={(config) => setPagination(nextPagination(config, pagination.size))}
         hasContainer={false}
-        // total={data?.totalElements}
-        // current={pagination.page}
         pagination={false}
-        // pagination={{ current: pagination.page, pageSize: pagination.size }}
         rowKey='id'
       />
     </>

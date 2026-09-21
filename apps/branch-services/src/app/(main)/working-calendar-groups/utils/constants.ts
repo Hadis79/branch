@@ -9,7 +9,7 @@ export enum WorkingCalendarGroupPage {
 }
 
 // Set to false to switch every request to the real service (services/api.ts)
-export const USE_MOCK_API = true;
+export const USE_MOCK_API = false;
 
 // Values are part of the URL (`?mode=`), keep them stable
 export enum EntryMode {

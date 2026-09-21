@@ -16,11 +16,15 @@ const ServiceList = () => {
   if (!isPending && !error && !data?.totalElements && !hasFilter) return <ServiceEmptyState />;
 
   return (
-    <Box flexDirection='column' width='100%'>
-      {error && <ServiceMessage message={ApiUtil.getErrorMessage(error)} margin='2.4rem 3.2rem 0' />}
+    <>
+      {error && (
+        <Box padding='2.4rem 3.2rem 0'>
+          <ServiceMessage message={ApiUtil.getErrorMessage(error)} />
+        </Box>
+      )}
       <ServiceFilter />
       <ServiceTable />
-    </Box>
+    </>
   );
 };
 

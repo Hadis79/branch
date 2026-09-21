@@ -82,8 +82,7 @@ const GroupForm = ({ variant }: GroupFormProps) => {
 
   const handleCancel = () => {
     fileUpload.reset();
-    if (isEdit) navigateTo(WorkingCalendarGroupPage.LIST);
-    else form.resetFields();
+    form.resetFields();
   };
 
   const handleSaveSuccess = (groupName: string) => {
@@ -159,11 +158,7 @@ const GroupForm = ({ variant }: GroupFormProps) => {
           />
         </WarningBanner>
       )}
-      {!isFileEntry && (
-        <WarningBanner>
-          <MessageBox type='info' message={t('manual_edit_info')} />
-        </WarningBanner>
-      )}
+      {!isFileEntry && <MessageBox message={t('manual_edit_info')} />}
       {isFileEntry ? fileEntry : editedGroup && <ManualEditEntry group={editedGroup} />}
     </Box>
   ) : (

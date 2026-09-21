@@ -66,7 +66,7 @@ export const columns = ({ t, pagination, openModalHandler }: ColumnsProps): Colu
           {t('edit')}
           <i className='ri-edit-line' />
         </Button>
-        <Button className='ant-btn-delete' danger type='table' onClick={() => openModalHandler(record, 'remove')}>
+        <Button className='ant-btn-delete' danger type='link' onClick={() => openModalHandler(record, 'remove')}>
           {t('delete')}
           <i className='ri-delete-bin-line' />
         </Button>

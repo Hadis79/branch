@@ -35,6 +35,7 @@ const EditModal = ({ open, onCancel, group }: EditModalProps) => {
   return (
     <GroupModal
       open={open}
+      type='edit'
       onCancel={onCancel}
       onConfirm={handleConfirm}
       title={t('edit_group_title', { groupName: group?.name })}

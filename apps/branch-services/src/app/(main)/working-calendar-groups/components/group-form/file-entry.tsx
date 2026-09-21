@@ -51,11 +51,11 @@ const FileEntry = ({ loading, onRemove, onUpload, uploadResult, inlineName }: Fi
             <Button
               htmlType='button'
               type='link'
-              icon={<i className='ri-download-2-line' />}
               loading={downloadSample.isPending}
               onClick={() => downloadSample.mutate()}
             >
               {t('download_sample_file')}
+              <i className='ri-download-line ri-2x'></i>
             </Button>
           </SampleFileLink>
         </>

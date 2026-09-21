@@ -36,8 +36,9 @@ const CustomList = () => {
         mobileColumns={columns}
         onChange={(config) => setPagination(nextPagination(config, pagination.size))}
         hasContainer={false}
-        current={pagination.page}
-        pagination={{ current: pagination.page, pageSize: pagination.size }}
+        pagination={false}
+        // current={pagination.page}
+        // pagination={{ current: pagination.page, pageSize: pagination.size }}
         rowKey='id'
       />
       <DeleteHolidayModal

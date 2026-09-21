@@ -16,10 +16,15 @@ const RemoveModal = ({ groupName, ...modalProps }: RemoveModalProps) => {
   const [t] = useTr();
 
   return (
-    <GroupModal {...modalProps} danger title={t('remove_group_title', { groupName })} confirmText={t('button.delete')}>
+    <GroupModal
+      type='remove'
+      {...modalProps}
+      danger
+      title={t('remove_group_title', { groupName })}
+      confirmText={t('button.delete')}
+    >
       <S.Description>
-        <span>{t('remove_group_question')}</span>
-        <br />
+        <Text fontWeight={400}>{t('remove_group_question')}</Text>
         <Text fontWeight={500}>{t('remove_group_description')}</Text>
       </S.Description>
     </GroupModal>

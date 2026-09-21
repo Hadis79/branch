@@ -25,6 +25,7 @@ const ConfirmModal = ({ groupName, unitCount, variant = 'create', entryMode, ...
   return (
     <GroupModal
       {...modalProps}
+      type='create'
       title={t(`confirm_${variant}_group_title`)}
       confirmText={t(isEdit ? 'save_changes' : 'button.confirm')}
     >

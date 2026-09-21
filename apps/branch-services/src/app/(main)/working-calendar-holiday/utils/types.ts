@@ -12,14 +12,14 @@ export type Province = { provinceName: string; unitCodes: string[] };
 // ---- Official (calendar) holidays: uploaded per year
 export type OfficialYear = { id: string; year: number; lastModified: string };
 
-export type OfficialYearResponse = Omit<OfficialYear, 'id'> & { id: string | number };
+export type OfficialYearResponse = { id: string; year: number; lastModified: string };
 
 // `month` is a jalali month name, e.g. "فروردین"
 export type OfficialHoliday = { day: number; month: string; title: string };
 
 export type OfficialListFilter = { year?: number };
 
-export type OfficialListParams = PageParams & OfficialListFilter;
+export type OfficialListParams = OfficialListFilter;
 
 export type CreateOfficialHolidaysDto = { year: number; holidays: OfficialHoliday[] };
 
@@ -48,7 +48,7 @@ export type NewCustomHoliday = {
 
 export type CustomHoliday = NewCustomHoliday & { id: string };
 
-export type CustomHolidayResponse = Omit<CustomHoliday, 'id'> & { id: string | number };
+export type CustomHolidayResponse = CustomHoliday;
 
 export type CustomListFilter = { title?: string; provinceName?: string; fromDate?: string; toDate?: string };
 

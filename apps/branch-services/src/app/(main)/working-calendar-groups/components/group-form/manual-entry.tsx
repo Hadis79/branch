@@ -1,7 +1,7 @@
 import { Form } from 'antd';
 import { useMemo } from 'react';
 
-import { Select } from '@branch-services/ui-kit';
+import { Button, Select } from '@branch-services/ui-kit';
 import { useTr } from '@branch-services/translation';
 
 import EntryLayout from './entry-layout';
@@ -42,10 +42,10 @@ const ManualEntry = () => {
       <SelectedOptions>
         {selectedUnits.map(({ label, value }) => (
           <SelectedOption key={value}>
-            <span>{label}</span>
-            <button type='button' onClick={() => removeUnit(value)} aria-label={t('remove_unit', { unitName: label })}>
+            <Button type='link' onClick={() => removeUnit(value)} aria-label={t('remove_unit', { unitName: label })}>
               <i className='ri ri-close-line' />
-            </button>
+            </Button>
+            <span>{label}</span>
           </SelectedOption>
         ))}
       </SelectedOptions>

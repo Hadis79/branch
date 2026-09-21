@@ -31,11 +31,11 @@ const ServiceFilter = () => {
     <Box padding='2.8rem 3.2rem 4rem' flexDirection='column'>
       <Form form={form} layout='vertical' initialValues={filter} onFinish={handleSearch}>
         <SearchItemsContainer>
-          <Form.Item className='half-width' name='name' label={t('service_name')}>
+          <Form.Item name='name' label={t('service_name')}>
             <Input allowClear placeholder={t('service_name_placeholder')} />
           </Form.Item>
           <Box alignItems='center'>
-            <Button htmlType='submit' type='primaryOutlined' loading={isFetching}>
+            <Button htmlType='submit' style={{ width: 'fit-content' }} type='primaryOutlined' loading={isFetching}>
               {t('search')}
             </Button>
           </Box>

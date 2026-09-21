@@ -1,9 +1,9 @@
 import { useTr } from '@branch-services/translation';
 
-import useCreateServiceMutation from '../queries/use-create-service-mutation';
-import useUpdateServiceMutation from '../queries/use-update-service-mutation';
 import useServiceStore from '../store/use-widget-store';
 import type { ServiceFormValues } from '../utils/types';
+import useCreateServiceMutation from '../queries/use-create-service-mutation';
+import useUpdateServiceMutation from '../queries/use-update-service-mutation';
 
 // Saves the open service modal: creates or updates, then reports success and closes it
 const useSaveService = () => {
@@ -24,10 +24,10 @@ const useSaveService = () => {
     closeModal();
   };
 
-  const save = ({ name, englishName, active }: ServiceFormValues) => {
+  const save = ({ persianName, englishName, active }: ServiceFormValues) => {
     const onSuccess = () => {
       setMessage({
-        txt: t(isEdit ? 'update_service_success' : 'create_service_success', { serviceName: name }),
+        txt: t(isEdit ? 'update_service_success' : 'create_service_success', { serviceName: persianName }),
         type: 'success',
         shouldTranslate: false,
       });
@@ -35,9 +35,9 @@ const useSaveService = () => {
     };
 
     if (isEdit && selectedService) {
-      updateService.mutate({ id: selectedService.id, name, englishName, active }, { onSuccess });
+      updateService.mutate({ id: selectedService.id, persianName, englishName, active }, { onSuccess });
     } else {
-      createService.mutate({ name, englishName }, { onSuccess });
+      createService.mutate({ persianName, englishName, active: true }, { onSuccess });
     }
   };
 

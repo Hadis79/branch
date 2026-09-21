@@ -32,9 +32,8 @@ export const Footer = styled.div`
   justify-content: flex-end;
   gap: 1.2rem;
   margin-top: 3.2rem;
-
   .ant-btn {
-    min-width: 12rem;
+    width: 100%;
   }
 `;
 

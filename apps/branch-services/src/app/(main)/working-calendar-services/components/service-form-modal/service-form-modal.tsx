@@ -22,21 +22,16 @@ const ServiceFormModal = () => {
   return (
     <Modal
       open={isOpen}
-      width={430}
+      // width={430}
       centered
       footer={null}
       closable={false}
       maskClosable={!isPending}
       destroyOnClose
       onCancel={handleCancel}
-      title={
-        <S.ModalTitle>
-          <i className='ri-information-fill' />
-          {t(isEdit ? 'edit_service' : 'new_service')}
-        </S.ModalTitle>
-      }
+      title={<S.ModalTitle>{t(isEdit ? 'edit_service' : 'new_service')}</S.ModalTitle>}
     >
-      {isEdit && <MessageBox type='info' message={t('edit_service_info')} margin='0 0 2.4rem' />}
+      {isEdit && <MessageBox type='warning' message={t('edit_service_info')} margin='2.4rem 0' />}
       {error && <ServiceMessage message={ApiUtil.getErrorMessage(error)} margin='0 0 2.4rem' />}
       <ServiceForm
         isEdit={isEdit}

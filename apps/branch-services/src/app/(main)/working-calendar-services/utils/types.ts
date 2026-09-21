@@ -1,6 +1,6 @@
 export interface ServiceItem {
   id: string;
-  name: string;
+  persianName: string;
   englishName: string;
   active: boolean;
 }
@@ -12,7 +12,7 @@ export type ServiceItemResponse = Omit<ServiceItem, 'id'> & {
 
 export type ServiceFormValues = Omit<ServiceItem, 'id'>;
 
-export type CreateServiceDto = Omit<ServiceFormValues, 'active'>;
+export type CreateServiceDto = ServiceFormValues;
 
 export type UpdateServiceParams = ServiceItem;
 

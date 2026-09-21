@@ -3,6 +3,7 @@ import { Form, Switch } from 'antd';
 import { useTr } from '@branch-services/translation';
 import { Box, Button, Input } from '@branch-services/ui-kit';
 
+import { RoundedBox } from './service-form-modal.style';
 import { ENGLISH_NAME_PATTERN } from '../../utils/constants';
 import type { ServiceFormValues } from '../../utils/types';
 
@@ -20,7 +21,7 @@ const ServiceForm = ({ isEdit, initialValues, isPending, onSubmit, onCancel }: S
   return (
     <Form<ServiceFormValues> layout='vertical' initialValues={initialValues} disabled={isPending} onFinish={onSubmit}>
       <Form.Item
-        name='name'
+        name='persianName'
         label={t('service_name')}
         rules={[{ required: true, whitespace: true, message: t('service_name_required') }]}
       >
@@ -37,9 +38,15 @@ const ServiceForm = ({ isEdit, initialValues, isPending, onSubmit, onCancel }: S
         <Input dir='ltr' placeholder={t('service_english_name_placeholder')} />
       </Form.Item>
       {isEdit && (
-        <Form.Item name='active' label={t('status')} valuePropName='checked'>
-          <Switch checkedChildren={t('active')} unCheckedChildren={t('inactive')} />
-        </Form.Item>
+        <RoundedBox>
+          <Box className='rounded-box-container'>
+            <Box className='rounded-box-container__layout__inline'>
+              <Form.Item label={t('status')} name='active' valuePropName='checked'>
+                <Switch checkedChildren={t('active')} unCheckedChildren={t('inactive')} />
+              </Form.Item>
+            </Box>
+          </Box>
+        </RoundedBox>
       )}
       <Box gap='1.6rem' marginTop='2.4rem'>
         <Button htmlType='button' type='primaryOutlined' onClick={onCancel}>

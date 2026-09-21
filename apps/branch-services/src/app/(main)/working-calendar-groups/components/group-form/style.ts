@@ -36,12 +36,12 @@ export const FormActions = styled.div`
 
 export const NameRow = styled.div`
   display: flex;
-  flex: 1;
+  /* flex: 1; */
   align-items: flex-start;
   gap: 0.8rem;
 
   .group-name-input {
-    flex: 1;
+    /* flex: 1; */
     margin-bottom: 0;
   }
 
@@ -86,6 +86,9 @@ export const UnitOptionRow = styled.div`
 `;
 
 export const UnitsTableWrapper = styled.div`
+  .ant-table-wrapper {
+    padding: auto 0;
+  }
   .new-unit-row > td {
     background-color: ${(props) => props.theme.primaryLight};
   }

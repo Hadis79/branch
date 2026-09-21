@@ -1,6 +1,6 @@
 import { Form } from 'antd';
 
-import { Box, Button } from '@branch-services/ui-kit';
+import { Box, Button, Text } from '@branch-services/ui-kit';
 import { useTr } from '@branch-services/translation';
 
 import useGroupStore from '../../store/use-widget-store';
@@ -45,22 +45,23 @@ const UploadResultBox = ({ result, onRemove }: UploadResultBoxProps) => {
       <S.UploadResult>
         <S.UploadResultHeader>
           <span>
-            <i className='ri-checkbox-circle-fill' />
+            <i className='ri-checkbox-circle-fill ' />
             {t('file_information')}
           </span>
           <Button
             htmlType='button'
             type='link'
             onClick={handleViewDetails}
-            icon={<i className='ri-arrow-left-s-line' />}
             iconPosition='end'
+            style={{ fontWeight: 500, fontSize: '1.4rem' }}
           >
+            <i className='ri-arrow-left-s-line' />
             {t('view_file_details')}
           </Button>
         </S.UploadResultHeader>
         <S.UploadResultRow>
-          <span>{t('unit_count')}</span>
-          <strong>{formatCount(result.unitCount)}</strong>
+          <Text fontWeight={400}>{t('unit_count')}</Text>
+          <Text fontWeight={500}>{formatCount(result.unitCount)}</Text>
         </S.UploadResultRow>
       </S.UploadResult>
     </Box>

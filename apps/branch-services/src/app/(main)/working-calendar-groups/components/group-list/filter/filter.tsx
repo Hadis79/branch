@@ -32,7 +32,7 @@ const Filter = () => {
     <FilterWrapper>
       <Form form={form} onFinish={onFinish} layout='vertical'>
         <SearchItemsContainer>
-          <Form.Item className={'half-width'} layout='vertical' label={t('group_name')} name='name'>
+          <Form.Item layout='vertical' label={t('group_name')} name='name'>
             <Input allowClear placeholder={t('group_name_placeholder')} />
           </Form.Item>
           <Box alignItems='center' justifyContent='space-between'>

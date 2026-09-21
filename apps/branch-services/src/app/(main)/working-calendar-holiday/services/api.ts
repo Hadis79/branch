@@ -35,14 +35,17 @@ const Api = {
   getProvinces: async (): Promise<Province[]> => (await client.get<Province[]>(`${HOLIDAY_URL}/province/list`)).data,
 
   // TODO: the official holidays service is not ready yet, these four are guesses
-  getOfficialYears: async (params: OfficialListParams): Promise<PaginatedData<OfficialYear>> => {
-    const response = await client.get<PaginatedData<OfficialYearResponse>>(`${HOLIDAY_URL}/list`, {
-      params: toServicePage(params),
+  getOfficialYears: async (filter: OfficialListParams): Promise<OfficialYear[]> => {
+    const response = await client.get(`${HOLIDAY_URL}/official/list`, {
+      params: filter,
     });
-    return toStringIds(response.data);
+    return response.data;
   },
-  getOfficialHolidays: async (year: number): Promise<OfficialHoliday[]> =>
-    (await client.get<OfficialHoliday[]>(`${HOLIDAY_URL}/official/${year}`)).data,
+  // The list is not paginated, the table pages through it
+  getOfficialHolidays: async (year: number): Promise<OfficialHoliday[]> => {
+    const response = await client.get<OfficialHoliday[]>(`${HOLIDAY_URL}/official/list`, { params: year });
+    return response.data;
+  },
   downloadOfficialHolidays: (year: number): Promise<DownloadedFile> =>
     downloadExcel(`${HOLIDAY_URL}/official/${year}/file`, `holidays-${year}.xlsx`),
   downloadSampleFile: (): Promise<DownloadedFile> =>
@@ -64,14 +67,14 @@ const Api = {
   // The list is not paginated, the table pages through it
   getCustomHolidays: async (filter: CustomListFilter): Promise<CustomHoliday[]> => {
     const response = await client.get<CustomHolidayResponse[]>(`${HOLIDAY_URL}/list`, { params: filter });
-    return response.data.map((holiday) => ({ ...holiday, id: String(holiday.id) }));
+    return response.data;
   },
   createCustomHolidays: async (holidays: NewCustomHoliday[]): Promise<void> => {
     await client.post<void>(`${HOLIDAY_URL}/create`, holidays);
   },
   // TODO: the delete service is not ready yet, this one is a guess
   deleteCustomHoliday: async (id: string): Promise<void> => {
-    await client.delete<void>(`${HOLIDAY_URL}/${id}`);
+    await client.delete<void>(`${HOLIDAY_URL}/remove/${id}`);
   },
 };
 

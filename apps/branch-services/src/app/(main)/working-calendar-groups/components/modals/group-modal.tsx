@@ -14,11 +14,13 @@ export type GroupModalProps = {
   confirmLoading?: boolean;
   danger?: boolean;
   children: ReactNode;
+  type?: 'edit' | 'remove' | 'create';
 };
 
 // Shared shell of the group modals: title with icon, body, and a cancel/confirm footer.
 const GroupModal = ({
   open,
+  type,
   title,
   confirmText,
   onConfirm,
@@ -42,7 +44,7 @@ const GroupModal = ({
       width='54.4rem'
       title={
         <S.Title $danger={danger}>
-          <i className='ri-error-warning-fill' />
+          {type !== 'remove' && <i className='ri-error-warning-fill' />}
           <span>{title}</span>
         </S.Title>
       }

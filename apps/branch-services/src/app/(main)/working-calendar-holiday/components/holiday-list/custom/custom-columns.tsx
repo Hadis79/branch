@@ -23,7 +23,7 @@ export const getCustomColumns = ({ t, pagination, onDelete }: ColumnsParams): Co
   { title: t('date'), dataIndex: 'date', align: 'center', render: (date: string) => formatDate(date) },
   { title: t('weekday'), dataIndex: 'holidayDay', align: 'center' },
   { title: t('title'), dataIndex: 'title', align: 'center' },
-  { title: t('region'), key: 'province', align: 'center', render: (_value, { province }) => province.provinceName },
+  { title: t('region'), dataIndex: 'provinceName', align: 'center' },
   {
     title: t('actions'),
     key: 'actions',
@@ -36,7 +36,7 @@ export const getCustomColumns = ({ t, pagination, onDelete }: ColumnsParams): Co
       return (
         <Tooltip title={isPast ? t('past_holiday_hint') : undefined}>
           <span>
-            <Button danger type='table' disabled={isPast} onClick={() => onDelete(holiday)}>
+            <Button danger type='link' disabled={isPast} onClick={() => onDelete(holiday)}>
               {t('delete')}
               <i className='ri-delete-bin-line' />
             </Button>
