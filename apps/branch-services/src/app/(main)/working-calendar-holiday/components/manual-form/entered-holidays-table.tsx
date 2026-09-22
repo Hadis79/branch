@@ -31,7 +31,7 @@ const EnteredHolidaysTable = ({ holidays, onRemove }: EnteredHolidaysTableProps)
       align: 'center',
       width: 120,
       render: (_value, holiday) => (
-        <Button danger type='table' onClick={() => onRemove(holiday)}>
+        <Button danger type='link' onClick={() => onRemove(holiday)}>
           {t('delete')}
           <i className='ri-delete-bin-line' />
         </Button>

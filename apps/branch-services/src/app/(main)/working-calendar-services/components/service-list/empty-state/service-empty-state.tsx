@@ -8,10 +8,18 @@ const ServiceEmptyState = () => {
   const openModal = useServiceStore((state) => state.openModal);
 
   return (
-    <Box flexDirection='column' alignItems='center' gap='2.4rem' padding='3.2rem'>
-      <EmptyData description={t('no_services')} />
-      <Button type='primary' icon={<i className='ri-add-line' />} onClick={() => openModal('create')}>
+    <Box
+      flexDirection='column'
+      height={'100%'}
+      justifyContent='center'
+      alignItems='center'
+      gap='2.4rem'
+      padding='3.2rem'
+    >
+      <EmptyData />
+      <Button style={{ width: 'fit-content' }} type='primary' onClick={() => openModal('create')}>
         {t('new_service')}
+        <i className='ri-add-line' />
       </Button>
     </Box>
   );

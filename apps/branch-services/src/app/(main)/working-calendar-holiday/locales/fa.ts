@@ -74,9 +74,10 @@ export default {
   at_least_one_row: 'لطفاً برای ادامه فرایند حداقل یک ردیف اضافه کنید.',
   submit_holidays: 'ثبت تعطیلی',
   submit: 'ثبت',
-  confirm_custom_title: 'ثبت تعطیلات',
+  confirm_custom_title: 'تایید ایجاد تعطیلات',
   confirm_custom_question: 'آیا از ثبت {{holidayCount}} تعطیلی اطمینان دارید؟',
-  confirm_custom_description: 'پس از ثبت، این تعطیلات در تقویم کاری واحدهای محدوده‌ی انتخاب‌شده اعمال می‌شود.',
+  confirm_custom_description:
+    'پس از تأیید، تاریخ‌های انتخاب‌شده به‌عنوان تعطیلی ثبت شده و فعالیت واحدها در این روزها تغییر خواهد کرد.',
   custom_success: 'تعطیلات با موفقیت ثبت شد.',
 
   delete_title: 'حذف تعطیلی',

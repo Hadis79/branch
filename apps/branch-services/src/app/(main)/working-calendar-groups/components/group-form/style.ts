@@ -1,6 +1,7 @@
 import { Tabs } from 'antd';
 import styled from 'styled-components';
 import { respondTo } from '@branch-services/utils';
+import { MessageBox } from '@branch-services/ui-kit';
 
 export const StyledTabs = styled(Tabs)`
   .ant-tabs-nav-list {
@@ -39,10 +40,59 @@ export const NameRow = styled.div`
   /* flex: 1; */
   align-items: flex-start;
   gap: 0.8rem;
-
+  font-size: 1.4rem;
   .group-name-input {
     /* flex: 1; */
     margin-bottom: 0;
+    .ant-input-affix-wrapper {
+      align-items: stretch;
+      height: 4rem;
+      padding: 0;
+      border-color: ${(props) => props.theme.primary};
+      overflow: hidden;
+    }
+
+    .ant-input-suffix {
+      align-self: stretch;
+      align-items: center;
+      margin: 0;
+      padding-inline: 1.2rem;
+      background-color: ${(props) => props.theme.cardColor};
+
+      .ri-check-line {
+        display: flex;
+        color: ${(props) => props.theme.primary};
+        font-size: 1.6rem;
+        cursor: pointer;
+      }
+    }
+    .ant-input-suffix {
+      margin-inline-start: 0.8rem;
+
+      .ri-check-line {
+        display: flex;
+        color: ${(props) => props.theme.primary};
+        font-size: 1.8rem;
+        cursor: pointer;
+      }
+    }
+
+    .ant-input-affix-wrapper {
+      align-items: center;
+      padding: 0 0 0 1.2rem;
+      border-color: ${(props) => props.theme.primary};
+    }
+
+    .ant-input-suffix {
+      margin-inline-start: 0.8rem;
+
+      .ri-check-line {
+        display: flex;
+        color: ${(props) => props.theme.primary};
+        font-size: 1.8rem;
+        cursor: pointer;
+      }
+    }
   }
 
   .ant-btn-link {
@@ -117,10 +167,10 @@ export const SelectedOption = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0.6rem 0.8rem;
+  padding: 0 0.8rem;
   color: ${(props) => props.theme.textSecondary};
   background: ${(props) => props.theme.backgroundLight};
-  border-radius: 0.4rem;
+  border-radius: 0.8rem;
 
   button {
     display: inline-flex;
@@ -129,5 +179,16 @@ export const SelectedOption = styled.div`
     background: transparent;
     border: 0;
     cursor: pointer;
+  }
+`;
+
+// The guide banner is neutral gray in the design, not the blue of an info alert
+export const GuideMessageBox = styled(MessageBox)`
+  background-color: ${(props) => props.theme.backgroundLight};
+  border-color: ${(props) => props.theme.border};
+
+  .ant-alert-icon,
+  .ant-alert-close-icon {
+    color: ${(props) => props.theme.textPrimary};
   }
 `;

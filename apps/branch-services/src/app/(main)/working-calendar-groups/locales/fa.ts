@@ -69,6 +69,7 @@ export default {
   unit_not_found: 'واحدی با این مشخصات یافت نشد.',
   unit_already_in_group: 'واحد جستجوشده در لیست واحدهای این گروه وجود دارد.',
   remove_unit_title: 'حذف واحد - {{unitName}}',
-  remove_unit_question: 'آیا از حذف واحد از گروه اطمینان دارید؟',
-  remove_unit_description: 'با حذف این واحد، قوانین اعمال‌شده روی این گروه برای آن واحد حذف خواهد شد.',
+  remove_unit_question: 'آیا از حذف واحد مذکور اطمینان دارید؟',
+  remove_unit_description: 'با حذف این واحد، دسترسی آن به قوانین اعمال‌شده روی این گروه حذف خواهد شد.',
+  show_details: 'نمایش جزئیات',
 };

@@ -19,7 +19,7 @@ import useGroupStore from '../../store/use-widget-store';
 import { fetchAllGroupUnits } from '../../services/group-units';
 import { applyUnitChanges, formatCount, toGroupUnit } from '../../utils/utils';
 
-import { FormActions, StyledTabs, WarningBanner } from './style';
+import { FormActions, GuideMessageBox, StyledTabs, WarningBanner } from './style';
 
 type GroupFormProps = {
   variant: GroupFormVariant;
@@ -56,8 +56,6 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const [isCollectingUnits, setIsCollectingUnits] = useState(false);
   const isSaving = createGroup.isPending || updateGroup.isPending || isCollectingUnits;
   const previousUnitCount = editedGroup?.size;
-  // Replacing members needs a new file before anything can be saved
-  const isSaveDisabled = isEdit && isFileEntry && !fileUpload.units.length;
 
   // Drop messages left over from the list page
   useEffect(() => resetMessage(), [resetMessage]);
@@ -94,9 +92,7 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const handleSaveError = (error: unknown) => {
     setIsConfirmModalOpen(false);
     showError(error);
-  };
-
-  // Full list for a manual edit: the group's current units with the form's changes applied
+  }; // Full list for a manual edit: the group's current units with the form's changes applied
   const collectEditedUnits = async (values: GroupFormValues) => {
     const currentUnits = await fetchAllGroupUnits(groupId as string);
     return applyUnitChanges(
@@ -107,7 +103,11 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   };
 
   const buildRequestBody = async (values: GroupFormValues): Promise<GroupRequestDto> => {
-    if (isFileEntry) return { name: values.name, units: fileUpload.units };
+    if (isFileEntry) {
+      // Edit form: renaming without replacing the file keeps the group's existing units
+      const units = isEdit && !fileUpload.units.length ? await fetchAllGroupUnits(groupId as string) : fileUpload.units;
+      return { name: values.name, units };
+    }
     if (!isEdit) return toGroupRequestDto(values);
 
     setIsCollectingUnits(true);
@@ -121,7 +121,8 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const handleConfirm = async () => {
     if (isSaving) return;
 
-    if (isFileEntry && !fileUpload.validate()) {
+    // Create needs a file; edit can also just rename the group and keep its existing units
+    if (isFileEntry && !isEdit && !fileUpload.validate()) {
       setIsConfirmModalOpen(false);
       return;
     }
@@ -158,7 +159,7 @@ const GroupForm = ({ variant }: GroupFormProps) => {
           />
         </WarningBanner>
       )}
-      {!isFileEntry && <MessageBox message={t('manual_edit_info')} />}
+      {!isFileEntry && <GuideMessageBox type='info' message={t('manual_edit_info')} closable />}
       {isFileEntry ? fileEntry : editedGroup && <ManualEditEntry group={editedGroup} />}
     </Box>
   ) : (
@@ -183,10 +184,12 @@ const GroupForm = ({ variant }: GroupFormProps) => {
         <Box minHeight={'75vh'} flexDirection='column' justifyContent='space-between' padding={'3.2rem'}>
           {entryContent}
           <FormActions>
-            <Button htmlType='button' type='primaryOutlined' onClick={handleCancel}>
-              {t('button.cancel')}
-            </Button>
-            <Button htmlType='submit' type='primary' disabled={isSaveDisabled}>
+            {!isEdit && (
+              <Button htmlType='button' type='primaryOutlined' onClick={handleCancel}>
+                {t('button.cancel')}
+              </Button>
+            )}
+            <Button htmlType='submit' type='primary'>
               {t(isEdit ? 'save_changes' : 'create_group')}
             </Button>
           </FormActions>

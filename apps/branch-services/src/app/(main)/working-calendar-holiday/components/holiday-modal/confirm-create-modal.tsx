@@ -36,8 +36,6 @@ const ConfirmCreateModal = ({
       onCancel={onCancel}
     >
       <Text as='span' fontWeight={400}>
-        {t(`${textKey}_question`, params)}
-        <br />
         {t(`${textKey}_description`)}
       </Text>
     </HolidayModal>

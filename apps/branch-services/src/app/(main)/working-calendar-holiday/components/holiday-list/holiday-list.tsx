@@ -1,9 +1,9 @@
 import { useTr } from '@branch-services/translation';
 
-import OfficialList from './official/official-list';
 import CustomList from './custom/custom-list';
-import useHolidayStore from '../../store/use-widget-store';
 import { HolidayTab } from '../../utils/constants';
+import OfficialList from './official/official-list';
+import useHolidayStore from '../../store/use-widget-store';
 
 import * as S from './holiday-list.style';
 

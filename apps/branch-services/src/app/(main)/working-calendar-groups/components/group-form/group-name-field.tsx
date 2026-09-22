@@ -33,6 +33,17 @@ const GroupNameField = ({ inline = false }: GroupNameFieldProps) => {
     confirmName();
   };
 
+  const suffix = inline ? (
+    <i
+      className='ri-check-line'
+      role='button'
+      aria-label={t('confirm_name')}
+      // Keep focus on the input so the click isn't lost to a blur first
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={confirmName}
+    />
+  ) : undefined;
+
   const field = (
     <Form.Item
       name='name'
@@ -41,7 +52,7 @@ const GroupNameField = ({ inline = false }: GroupNameFieldProps) => {
       hidden={!isInputVisible}
       className='group-name-input'
     >
-      <Input placeholder={t('group_name_placeholder')} onPressEnter={handlePressEnter} />
+      <Input placeholder={t('group_name_placeholder')} onPressEnter={handlePressEnter} suffix={suffix} />
     </Form.Item>
   );
 
@@ -52,21 +63,13 @@ const GroupNameField = ({ inline = false }: GroupNameFieldProps) => {
       {!isEditing && (
         <>
           <GroupName>{name}</GroupName>
-          <Button type='link' icon={<i className='ri-edit-line' />} onClick={() => setIsEditing(true)}>
+          <Button type='link' onClick={() => setIsEditing(true)}>
             {t('edit_name')}
+            <i className='ri-edit-line' />
           </Button>
         </>
       )}
       {field}
-      {isEditing && (
-        <Button
-          htmlType='button'
-          type='primaryOutlined'
-          icon={<i className='ri-check-line' />}
-          onClick={confirmName}
-          aria-label={t('confirm_name')}
-        />
-      )}
     </NameRow>
   );
 };
