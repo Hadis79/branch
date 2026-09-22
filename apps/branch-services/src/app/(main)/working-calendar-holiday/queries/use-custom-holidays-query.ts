@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { Api } from '../services';
 import useHolidayStore from '../store/use-widget-store';
@@ -11,7 +11,6 @@ const useCustomHolidaysQuery = () => {
   return useQuery({
     queryKey: holidayQueryKeys.customList(filter),
     queryFn: () => Api.getCustomHolidays(filter),
-    placeholderData: keepPreviousData,
   });
 };
 

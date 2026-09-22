@@ -1,13 +1,14 @@
 import { Form } from 'antd';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 
 import { useTr } from '@branch-services/translation';
 import { Box, Button, DatePicker, Input, SearchItemsContainer, Select } from '@branch-services/ui-kit';
 import { Dayjs, dayjs } from '@branch-services/utils';
 
-import useCustomHolidaysQuery from '../../../queries/use-custom-holidays-query';
 import useProvincesQuery from '../../../queries/use-provinces-query';
 import useHolidayStore from '../../../store/use-widget-store';
-import { isSameFilter, toApiDate } from '../../../utils/utils';
+import { toApiDate } from '../../../utils/utils';
+import { holidayQueryKeys } from '../../../utils/constants';
 
 type CustomFilterValues = { title?: string; provinceName?: string; fromDate?: Dayjs; toDate?: Dayjs };
 
@@ -16,9 +17,9 @@ const CustomFilter = () => {
   const [form] = Form.useForm<CustomFilterValues>();
   const fromDate = Form.useWatch('fromDate', form);
   const filter = useHolidayStore((state) => state.customFilter);
-  const page = useHolidayStore((state) => state.customPagination.page);
   const setFilter = useHolidayStore((state) => state.setCustomFilter);
-  const { isFetching, refetch } = useCustomHolidaysQuery();
+  const queryClient = useQueryClient();
+  const isFetching = useIsFetching({ queryKey: holidayQueryKeys.customLists() }) > 0;
   const { data: provinceOptions, isFetching: isProvincesLoading } = useProvincesQuery();
 
   const initialValues: CustomFilterValues = {
@@ -34,8 +35,11 @@ const CustomFilter = () => {
       fromDate: toApiDate(values.fromDate),
       toDate: toApiDate(values.toDate),
     };
-    if (isSameFilter(next, filter) && page === 1) refetch();
-    else setFilter(next);
+    void queryClient.invalidateQueries({
+      queryKey: holidayQueryKeys.customList(next),
+      exact: true,
+    });
+    setFilter(next);
   };
 
   return (
