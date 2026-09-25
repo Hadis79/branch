@@ -1,7 +1,5 @@
-import { PaginatedData } from '@branch-services/types';
-
 import type RealApi from './api';
-import { toStringIds, toUploadedHolidayFile } from './mappers';
+import { toUploadedHolidayFile } from './mappers';
 import { OfficialStatus } from '../utils/constants';
 import type {
   CreateOfficialHolidaysDto,
@@ -63,8 +61,8 @@ const officialHolidays: OfficialHoliday[] = (
 ).map(([month, day, title]) => ({ month: JALALI_MONTHS[month - 1], day, title }));
 
 let officialYears: (OfficialYearResponse & { holidays: OfficialHoliday[] })[] = [
-  { id: 2, year: 1405, lastModified: '2026-09-12T10:24:00', holidays: officialHolidays },
-  { id: 1, year: 1404, lastModified: '2025-09-12T09:10:00', holidays: officialHolidays.slice(0, 24) },
+  { id: '2', year: 1405, modifiedOn: '2026-09-12T10:24:00', holidays: officialHolidays },
+  { id: '1', year: 1404, modifiedOn: '2025-09-12T09:10:00', holidays: officialHolidays.slice(0, 24) },
 ];
 
 const daysFromToday = (days: number) => toApiDate(new Date(Date.now() + days * 86400000)) as string;
@@ -81,7 +79,7 @@ let customHolidays: CustomHolidayResponse[] = (
   const date = daysFromToday(days);
 
   return {
-    id: index + 1,
+    id: String(index + 1),
     date,
     title,
     holidayDay: weekdayName(date),
@@ -100,25 +98,6 @@ const reject = (message: string): Promise<never> =>
     setTimeout(() => rejectPromise({ response: { status: 400, data: { localizedMessage: message } } }), MOCK_DELAY)
   );
 
-// Same shape as the service pages; `page` is one-based like the api params
-const paginate = <T>(items: T[], page: number, size: number): PaginatedData<T> => {
-  const content = items.slice((page - 1) * size, page * size);
-  const totalPages = Math.ceil(items.length / size);
-
-  return {
-    content,
-    totalElements: items.length,
-    totalPages,
-    size,
-    number: page - 1,
-    sort: { empty: true, sorted: false, unsorted: true },
-    first: page === 1,
-    last: page >= totalPages,
-    numberOfElements: content.length,
-    empty: content.length === 0,
-  };
-};
-
 // A CSV stands in for the excel files, so they can be built without a spreadsheet library
 const toCsvFile = (holidays: OfficialHoliday[], fileName: string): Promise<DownloadedFile> => {
   const rows = [['روز', 'ماه', 'عنوان'], ...holidays.map(({ day, month, title }) => [day, month, title])];
@@ -130,12 +109,12 @@ const toCsvFile = (holidays: OfficialHoliday[], fileName: string): Promise<Downl
 const MockApi: typeof RealApi = {
   getProvinces: () => delay(provinces),
 
-  getOfficialYears: ({ page, size, year }: OfficialListParams) => {
+  getOfficialYears: ({ year }: OfficialListParams) => {
     const rows = officialYears
       .filter((item) => !year || item.year === year)
-      .map(({ id, year: itemYear, lastModified }) => ({ id, year: itemYear, lastModified }));
+      .map(({ id, year: itemYear, modifiedOn }) => ({ id, year: itemYear, modifiedOn }));
 
-    return delay(paginate(rows, page, size)).then(toStringIds);
+    return delay(rows);
   },
   getOfficialHolidays: (year: number) => {
     const item = officialYears.find((official) => official.year === year);
@@ -157,7 +136,15 @@ const MockApi: typeof RealApi = {
   createOfficialHolidays: ({ year, holidays }: CreateOfficialHolidaysDto) => {
     if (officialYears.some((item) => item.year === year)) return reject('تعطیلات این سال قبلا ثبت شده است.');
 
-    officialYears = [{ id: ++lastId, year, lastModified: new Date().toISOString(), holidays }, ...officialYears];
+    officialYears = [{ id: String(++lastId), year, modifiedOn: new Date().toISOString(), holidays }, ...officialYears];
+    return delay(undefined);
+  },
+  updateOfficialHolidays: ({ year, holidays }: CreateOfficialHolidaysDto) => {
+    const item = officialYears.find((official) => official.year === year);
+    if (!item) return reject('تعطیلات این سال یافت نشد.');
+
+    item.holidays = holidays;
+    item.modifiedOn = new Date().toISOString();
     return delay(undefined);
   },
 
@@ -170,10 +157,10 @@ const MockApi: typeof RealApi = {
         (!toDate || holiday.date <= toDate)
     );
 
-    return delay(rows).then((items) => items.map((item) => ({ ...item, id: String(item.id) })));
+    return delay(rows);
   },
   createCustomHolidays: (holidays: NewCustomHoliday[]) => {
-    const added = holidays.map((holiday) => ({ ...holiday, id: ++lastId }));
+    const added = holidays.map((holiday) => ({ ...holiday, id: String(++lastId) }));
     customHolidays = [...added, ...customHolidays].sort((a, b) => a.date.localeCompare(b.date));
     return delay(undefined);
   },

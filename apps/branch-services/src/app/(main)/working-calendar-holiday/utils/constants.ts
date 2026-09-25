@@ -1,7 +1,7 @@
 import type { CustomListFilter, OfficialListParams } from './types';
 
 // Set to false to switch every request to the real service (services/api.ts)
-export const USE_MOCK_API = false;
+export const USE_MOCK_API = true;
 
 export const HOLIDAY_PATH = '/working-calendar-holiday';
 
@@ -12,6 +12,7 @@ export enum HolidayPage {
   UPLOAD_DETAILS = 'upload-details',
   MANUAL = 'manual',
   DETAILS = 'details',
+  EDIT = 'edit',
 }
 
 export enum HolidayTab {
@@ -39,6 +40,7 @@ export const holidayQueryKeys = {
 export const holidayMutationKeys = {
   upload: [HOLIDAY_QUERY_KEY, 'upload'] as const,
   createOfficial: [HOLIDAY_QUERY_KEY, 'create-official'] as const,
+  updateOfficial: [HOLIDAY_QUERY_KEY, 'update-official'] as const,
   createCustom: [HOLIDAY_QUERY_KEY, 'create-custom'] as const,
   deleteCustom: [HOLIDAY_QUERY_KEY, 'delete-custom'] as const,
   download: [HOLIDAY_QUERY_KEY, 'download'] as const,

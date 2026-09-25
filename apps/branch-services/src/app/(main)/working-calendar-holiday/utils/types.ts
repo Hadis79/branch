@@ -10,9 +10,9 @@ export type PageParams = {
 export type Province = { provinceName: string; unitCodes: string[] };
 
 // ---- Official (calendar) holidays: uploaded per year
-export type OfficialYear = { id: string; year: number; lastModified: string };
+export type OfficialYear = { id: string; year: number; modifiedOn: string };
 
-export type OfficialYearResponse = { id: string; year: number; lastModified: string };
+export type OfficialYearResponse = { id: string; year: number; modifiedOn: string };
 
 // `month` is a jalali month name, e.g. "فروردین"
 export type OfficialHoliday = { day: number; month: string; title: string };

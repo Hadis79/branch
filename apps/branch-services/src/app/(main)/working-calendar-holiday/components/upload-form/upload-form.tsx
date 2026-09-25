@@ -30,7 +30,7 @@ const UploadForm = () => {
   const holidays = fileUpload.result?.holidays ?? [];
 
   const handleViewDetails = () => {
-    setUploadedHolidays(holidays);
+    setUploadedHolidays(holidays, HolidayPage.UPLOAD);
     navigateTo(HolidayPage.UPLOAD_DETAILS);
   };
 

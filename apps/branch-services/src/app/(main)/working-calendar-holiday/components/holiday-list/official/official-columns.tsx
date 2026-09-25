@@ -9,9 +9,15 @@ type ColumnsParams = {
   t: TFunction;
   pagination: PageParams;
   onShowDetails: (year: number) => void;
+  onEdit: (year: number) => void;
 };
 
-export const getOfficialColumns = ({ t, pagination, onShowDetails }: ColumnsParams): ColumnsType<OfficialYear> => [
+export const getOfficialColumns = ({
+  t,
+  pagination,
+  onShowDetails,
+  onEdit,
+}: ColumnsParams): ColumnsType<OfficialYear> => [
   {
     title: '#',
     key: 'row',
@@ -33,11 +39,11 @@ export const getOfficialColumns = ({ t, pagination, onShowDetails }: ColumnsPara
     width: 180,
     render: (_value, { year }) => (
       <Box>
-        <Button type='link' disabled onClick={() => onShowDetails(year)}>
+        <Button type='link' onClick={() => onShowDetails(year)}>
           {t('show_details')}
           <i className='ri-file-list-3-line' />
         </Button>
-        <Button type='link' disabled onClick={() => onShowDetails(year)}>
+        <Button type='link' onClick={() => onEdit(year)}>
           {t('edit')}
           <i className='ri-pencil-line'></i>
         </Button>

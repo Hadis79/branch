@@ -79,4 +79,20 @@ export default {
   delete_title: 'Delete holiday',
   delete_question: 'Are you sure you want to delete “{{title}}” on {{date}}?',
   delete_success: 'The holiday was deleted.',
+
+  edit_official_title: 'Edit official and calendar holidays',
+  edit_official_warning:
+    'To edit this data, upload a new file. Uploading a new file completely replaces the current data with the new file’s data.',
+  back: 'Back',
+  save_changes: 'Save changes',
+  confirm: 'Confirm',
+  confirm_edit_official_title: 'Save changes',
+  confirm_edit_official_description:
+    'Once confirmed, the current holiday data will be replaced by the new file’s data. This cannot be undone.',
+  edited_day_count: 'Edited days',
+  official_edit_success: 'The holidays of {{year}} were updated.',
+  discard_edit_title: 'Discard changes',
+  discard_edit_description: 'Going back discards the changes you made; the previous file is kept.',
+  discard_and_exit: 'Discard and go back',
+  continue_editing: 'Continue editing',
 };

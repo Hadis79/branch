@@ -2,7 +2,7 @@ import { bbpUrl, client } from '@branch-services/client';
 import { PaginatedData } from '@branch-services/types';
 import { ApiUtil } from '@branch-services/utils';
 
-import { toStringIds, toUploadedHolidayFile } from './mappers';
+import { toUploadedHolidayFile } from './mappers';
 import type {
   CreateOfficialHolidaysDto,
   CustomHoliday,
@@ -61,6 +61,9 @@ const Api = {
     return toUploadedHolidayFile(response.data, file);
   },
   createOfficialHolidays: async (values: CreateOfficialHolidaysDto): Promise<void> => {
+    await client.post<void>(`${HOLIDAY_URL}/upload-file/confirm`, values);
+  },
+  updateOfficialHolidays: async (values: CreateOfficialHolidaysDto): Promise<void> => {
     await client.post<void>(`${HOLIDAY_URL}/upload-file/confirm`, values);
   },
 

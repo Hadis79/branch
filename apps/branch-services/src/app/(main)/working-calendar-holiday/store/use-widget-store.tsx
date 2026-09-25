@@ -1,7 +1,7 @@
 import { MessageModel } from '@branch-services/types';
 import { create } from 'zustand';
 
-import { HolidayTab } from '../utils/constants';
+import { HolidayPage, HolidayTab } from '../utils/constants';
 import type { CustomListFilter, OfficialHoliday, OfficialListFilter, PageParams } from '../utils/types';
 
 // Only state shared between pages lives here; single-component state stays local.
@@ -13,6 +13,8 @@ type State = {
   customPagination: PageParams;
   // Rows of the uploaded file, read by the upload details page
   uploadedHolidays: OfficialHoliday[];
+  // Which form (if any) the current upload-details / details page was opened from, so it stays mounted for the round trip
+  formOrigin: HolidayPage.UPLOAD | HolidayPage.EDIT | null;
   message: MessageModel | null;
 };
 
@@ -22,7 +24,8 @@ type Actions = {
   setOfficialPagination: (pagination: Partial<PageParams>) => void;
   setCustomFilter: (filter: CustomListFilter) => void;
   setCustomPagination: (pagination: Partial<PageParams>) => void;
-  setUploadedHolidays: (holidays: OfficialHoliday[]) => void;
+  setUploadedHolidays: (holidays: OfficialHoliday[], origin: HolidayPage.UPLOAD | HolidayPage.EDIT) => void;
+  setFormOrigin: (origin: HolidayPage.UPLOAD | HolidayPage.EDIT | null) => void;
   setMessage: (message: MessageModel | null) => void;
   resetAll: () => void;
 };
@@ -34,6 +37,7 @@ const initialState: State = {
   customFilter: {},
   customPagination: { page: 1, size: 10 },
   uploadedHolidays: [],
+  formOrigin: null,
   message: null,
 };
 
@@ -48,7 +52,8 @@ const useHolidayStore = create<State & Actions>()((set) => ({
     set((state) => ({ customFilter, customPagination: { ...state.customPagination, page: 1 } })),
   setCustomPagination: (pagination) =>
     set((state) => ({ customPagination: { ...state.customPagination, ...pagination } })),
-  setUploadedHolidays: (uploadedHolidays) => set({ uploadedHolidays }),
+  setUploadedHolidays: (uploadedHolidays, formOrigin) => set({ uploadedHolidays, formOrigin }),
+  setFormOrigin: (formOrigin) => set({ formOrigin }),
   setMessage: (message) => set({ message }),
   resetAll: () => set(initialState),
 }));

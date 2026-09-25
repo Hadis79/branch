@@ -1,6 +1,6 @@
 import type { TablePaginationConfig } from 'antd';
 
-import { Dayjs, dateLocale, datetimeLocale, toIsoStringWithoutTimezone } from '@branch-services/utils';
+import { Dayjs, dateLocale, datetimeLocale, dayjs, toIsoStringWithoutTimezone } from '@branch-services/utils';
 
 import type { PageParams } from './types';
 
@@ -21,13 +21,17 @@ export const JALALI_MONTHS = [
 
 export const formatCount = (value: number): string => value.toLocaleString('fa-IR');
 
+// A year isn't grouped, unlike a count (e.g. 1404, not 1,404)
+export const formatYear = (year: number): string => year.toLocaleString('fa-IR', { useGrouping: false });
+
 export const weekdayName = (date: string): string => new Date(date).toLocaleDateString('fa-IR', { weekday: 'long' });
 
 export const formatDate = (date: string): string => dateLocale(date) ?? '-';
 
 export const formatDateWithWeekday = (date: string): string => `${formatDate(date)} - ${weekdayName(date)}`;
 
-export const formatDateTime = (date: string): string => datetimeLocale(date, undefined, false, ' - ');
+export const formatDateTime = (date?: string | null): string =>
+  date ? datetimeLocale(date, undefined, false, ' - ') : '-';
 
 // Date picker value → api date (YYYY-MM-DD)
 export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
@@ -36,11 +40,16 @@ export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
 // A holiday that has already passed can no longer be deleted
 export const isPastDate = (date: string): boolean => date < (toApiDate(new Date()) as string);
 
-// Current and next Jalali years, offered for upload and as a filter
+// Last 10 Jalali years, offered for upload and as a filter; the value sent to the api is the matching Gregorian year
 export const getYearOptions = (): { label: string; value: number }[] => {
-  const currentYear = Number(new Date().toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric' }));
+  const currentJalaliYear = dayjs().year();
 
-  return [currentYear - 1, currentYear, currentYear + 1].map((year) => ({ label: String(year), value: year }));
+  return Array.from({ length: 10 }, (_, index) => currentJalaliYear - index).map((jalaliYear) => ({
+    label: String(jalaliYear),
+    // .calendar('gregory') is ambiguously typed (dayjs core's calendar plugin also declares .calendar()),
+    // so the Gregorian year is read off the real underlying Date instead
+    value: dayjs().year(jalaliYear).toDate().getFullYear(),
+  }));
 };
 
 export const calculateRow = (index: number, page = 1, size = 10): number => (page - 1) * size + index + 1;

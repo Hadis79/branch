@@ -14,12 +14,17 @@ const OfficialList = () => {
   const [t] = useTr();
   const { navigateTo } = useHolidayPage();
   const pagination = useHolidayStore((state) => state.officialPagination);
+  const setFormOrigin = useHolidayStore((state) => state.setFormOrigin);
   const { data, error, isFetching } = useOfficialYearsQuery();
 
   const columns = getOfficialColumns({
     t,
     pagination,
-    onShowDetails: (year) => navigateTo(HolidayPage.DETAILS, { year }),
+    onShowDetails: (year) => {
+      setFormOrigin(null);
+      navigateTo(HolidayPage.DETAILS, { year });
+    },
+    onEdit: (year) => navigateTo(HolidayPage.EDIT, { year }),
   });
 
   return (

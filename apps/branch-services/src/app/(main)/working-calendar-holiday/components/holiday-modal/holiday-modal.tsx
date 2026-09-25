@@ -10,6 +10,7 @@ type HolidayModalProps = {
   open: boolean;
   title: ReactNode;
   confirmText: ReactNode;
+  cancelText?: ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
   confirmLoading?: boolean;
@@ -22,6 +23,7 @@ const HolidayModal = ({
   open,
   title,
   confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   confirmLoading = false,
@@ -49,7 +51,7 @@ const HolidayModal = ({
       {children}
       <Box gap='1.6rem' marginTop='2.4rem'>
         <Button htmlType='button' type='primaryOutlined' disabled={confirmLoading} onClick={onCancel}>
-          {t('cancel')}
+          {cancelText ?? t('cancel')}
         </Button>
         <Button htmlType='button' type='primary' danger={danger} loading={confirmLoading} onClick={onConfirm}>
           {confirmText}

@@ -4,6 +4,7 @@ import OfficialDetails from '../official-details/official-details';
 import UploadForm from '../upload-form/upload-form';
 import UploadDetails from '../upload-details/upload-details';
 import ManualForm from '../manual-form/manual-form';
+import EditOfficialForm from '../edit-official-form/edit-official-form';
 import useHolidayPage from '../../hooks/use-holiday-page';
 import useHolidayStore from '../../store/use-widget-store';
 import { HolidayPage } from '../../utils/constants';
@@ -12,7 +13,10 @@ const App = () => {
   const { currentPage } = useHolidayPage();
   const message = useHolidayStore((state) => state.message);
   const setMessage = useHolidayStore((state) => state.setMessage);
+  const formOrigin = useHolidayStore((state) => state.formOrigin);
   const isUploadDetails = currentPage === HolidayPage.UPLOAD_DETAILS;
+  const isDetails = currentPage === HolidayPage.DETAILS;
+  const isFromEdit = (isUploadDetails || isDetails) && formOrigin === HolidayPage.EDIT;
 
   return (
     <>
@@ -26,12 +30,17 @@ const App = () => {
         />
       )}
       {currentPage === HolidayPage.LIST && <HolidayList />}
-      {currentPage === HolidayPage.DETAILS && <OfficialDetails />}
+      {isDetails && <OfficialDetails />}
       {currentPage === HolidayPage.MANUAL && <ManualForm />}
-      {/* The upload form stays mounted (hidden) on the details page so its state survives the round trip */}
-      {(currentPage === HolidayPage.UPLOAD || isUploadDetails) && (
+      {/* The upload/edit form stays mounted (hidden) on the details page so its state survives the round trip */}
+      {(currentPage === HolidayPage.UPLOAD || (isUploadDetails && !isFromEdit)) && (
         <div hidden={isUploadDetails}>
           <UploadForm />
+        </div>
+      )}
+      {(currentPage === HolidayPage.EDIT || isFromEdit) && (
+        <div hidden={isUploadDetails || isDetails}>
+          <EditOfficialForm />
         </div>
       )}
       {isUploadDetails && <UploadDetails />}

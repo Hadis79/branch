@@ -83,4 +83,19 @@ export default {
   delete_title: 'حذف تعطیلی',
   delete_question: 'آیا از حذف تعطیلی «{{title}}» در تاریخ {{date}} اطمینان دارید؟',
   delete_success: 'تعطیلی با موفقیت حذف شد.',
+
+  edit_official_title: 'ویرایش تعطیلات رسمی و تقویمی',
+  edit_official_warning: 'توجه: با بارگذاری فایل جدید، اطلاعات فعلی حذف و اطلاعات فایل جدید جایگزین خواهد شد.',
+  back: 'بازگشت',
+  save_changes: 'ذخیره تغییرات',
+  confirm: 'تایید',
+  confirm_edit_official_title: 'ذخیره تغییرات',
+  confirm_edit_official_description:
+    'پس از تأیید، اطلاعات تعطیلات ثبت‌شده حذف و اطلاعات فایل جدید جایگزین خواهد شد. این تغییر قابل بازگشت نیست.',
+  edited_day_count: 'تعداد روزهای ویرایش‌شده',
+  official_edit_success: 'تعطیلات سال {{year}} با موفقیت ویرایش شد.',
+  discard_edit_title: 'لغو تغییرات',
+  discard_edit_description: 'در صورت بازگشت، تغییرات اعمال‌نشده حذف خواهد شد و فایل قبلی حفظ خواهد شد.',
+  discard_and_exit: 'لغو و بازگشت',
+  continue_editing: 'ادامه ویرایش',
 };
