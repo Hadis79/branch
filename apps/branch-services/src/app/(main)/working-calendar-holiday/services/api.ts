@@ -42,8 +42,8 @@ const Api = {
     return response.data;
   },
   // The list is not paginated, the table pages through it
-  getOfficialHolidays: async (id: string): Promise<OfficialHoliday[]> => {
-    const response = await client.get<OfficialHoliday[]>(`${HOLIDAY_URL}/official/${id}`);
+  getOfficialHolidays: async (year: number): Promise<OfficialHoliday[]> => {
+    const response = await client.get<OfficialHoliday[]>(`${HOLIDAY_URL}/official/${year}`);
     return response.data;
   },
   downloadOfficialHolidays: (year: number): Promise<DownloadedFile> =>

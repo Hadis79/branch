@@ -3,13 +3,13 @@ import { TFunction } from 'i18next';
 import { Box, Button, ColumnsType } from '@branch-services/ui-kit';
 
 import type { OfficialYear, PageParams } from '../../../utils/types';
-import { calculateRow, formatDateTime } from '../../../utils/utils';
+import { calculateRow, formatDateTime, formatYear, toJalaliYear } from '../../../utils/utils';
 
 type ColumnsParams = {
   t: TFunction;
   pagination: PageParams;
-  onShowDetails: (row: OfficialYear) => void;
-  onEdit: (row: OfficialYear) => void;
+  onShowDetails: (year: number) => void;
+  onEdit: (year: number) => void;
 };
 
 export const getOfficialColumns = ({
@@ -31,19 +31,24 @@ export const getOfficialColumns = ({
     align: 'center',
     render: (value: string) => formatDateTime(value),
   },
-  { title: t('year'), dataIndex: 'year', align: 'center' },
+  {
+    title: t('year'),
+    dataIndex: 'year',
+    align: 'center',
+    render: (year: number) => formatYear(toJalaliYear(year)),
+  },
   {
     title: t('actions'),
     key: 'actions',
     align: 'center',
     width: 180,
-    render: (_value, row) => (
+    render: (_value, { year }) => (
       <Box>
-        <Button type='link' onClick={() => onShowDetails(row)}>
+        <Button type='link' onClick={() => onShowDetails(year)}>
           {t('show_details')}
           <i className='ri-file-list-3-line' />
         </Button>
-        <Button type='link' onClick={() => onEdit(row)}>
+        <Button type='link' onClick={() => onEdit(year)}>
           {t('edit')}
           <i className='ri-pencil-line'></i>
         </Button>

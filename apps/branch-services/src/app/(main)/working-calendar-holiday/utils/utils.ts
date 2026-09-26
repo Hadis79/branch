@@ -52,6 +52,13 @@ export const getYearOptions = (): { label: string; value: number }[] => {
   }));
 };
 
+// The service's year is Gregorian (see getYearOptions); shown to the user as its Jalali year instead
+export const toJalaliYear = (gregorianYear: number): number => {
+  const date = new Date();
+  date.setFullYear(gregorianYear);
+  return dayjs(date).year();
+};
+
 export const calculateRow = (index: number, page = 1, size = 10): number => (page - 1) * size + index + 1;
 
 // Table change → next pagination; a new page size starts again from the first page

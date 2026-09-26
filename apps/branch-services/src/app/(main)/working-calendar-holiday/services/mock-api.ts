@@ -117,8 +117,8 @@ const MockApi: typeof RealApi = {
 
     return delay(rows);
   },
-  getOfficialHolidays: (id: string) => {
-    const item = officialYears.find((official) => official.id === id);
+  getOfficialHolidays: (year: number) => {
+    const item = officialYears.find((official) => official.year === year);
     return item ? delay(item.holidays) : reject('تعطیلات این سال یافت نشد.');
   },
   downloadOfficialHolidays: (year: number) =>

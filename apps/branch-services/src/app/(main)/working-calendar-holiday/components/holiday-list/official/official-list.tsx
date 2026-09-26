@@ -20,11 +20,11 @@ const OfficialList = () => {
   const columns = getOfficialColumns({
     t,
     pagination,
-    onShowDetails: ({ id, year }) => {
+    onShowDetails: (year) => {
       setFormOrigin(null);
-      navigateTo(HolidayPage.DETAILS, { year, id });
+      navigateTo(HolidayPage.DETAILS, { year });
     },
-    onEdit: ({ id, year }) => navigateTo(HolidayPage.EDIT, { year, id }),
+    onEdit: (year) => navigateTo(HolidayPage.EDIT, { year }),
   });
 
   return (

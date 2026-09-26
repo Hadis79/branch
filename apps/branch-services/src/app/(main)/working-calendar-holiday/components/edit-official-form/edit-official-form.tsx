@@ -35,7 +35,7 @@ const EditOfficialForm = () => {
   const [t] = useTr();
   const theme = useAppTheme();
   const [form] = Form.useForm<{ year?: number }>();
-  const { year, id, navigateTo } = useHolidayPage();
+  const { year, navigateTo } = useHolidayPage();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const setUploadedHolidays = useHolidayStore((state) => state.setUploadedHolidays);
@@ -43,7 +43,7 @@ const EditOfficialForm = () => {
   const fileUpload = useHolidayFileUpload(form);
   const updateOfficial = useUpdateOfficialMutation();
   const finish = useFinishCreate(HolidayTab.OFFICIAL);
-  const previous = useOfficialHolidaysQuery(id);
+  const previous = useOfficialHolidaysQuery(year);
   // Until a new file is uploaded, saving keeps the year's existing holidays instead of wiping them
   const holidays = fileUpload.result?.holidays ?? previous.data ?? [];
 
@@ -68,7 +68,7 @@ const EditOfficialForm = () => {
 
   const handleViewPrevious = () => {
     setFormOrigin(HolidayPage.EDIT);
-    navigateTo(HolidayPage.DETAILS, { year: year as number, id: id as string });
+    navigateTo(HolidayPage.DETAILS, { year: year as number });
   };
 
   const handleConfirm = () =>
