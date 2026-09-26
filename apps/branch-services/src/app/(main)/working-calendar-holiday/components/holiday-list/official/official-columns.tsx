@@ -8,8 +8,8 @@ import { calculateRow, formatDateTime } from '../../../utils/utils';
 type ColumnsParams = {
   t: TFunction;
   pagination: PageParams;
-  onShowDetails: (year: number) => void;
-  onEdit: (year: number) => void;
+  onShowDetails: (row: OfficialYear) => void;
+  onEdit: (row: OfficialYear) => void;
 };
 
 export const getOfficialColumns = ({
@@ -37,13 +37,13 @@ export const getOfficialColumns = ({
     key: 'actions',
     align: 'center',
     width: 180,
-    render: (_value, { year }) => (
+    render: (_value, row) => (
       <Box>
-        <Button type='link' onClick={() => onShowDetails(year)}>
+        <Button type='link' onClick={() => onShowDetails(row)}>
           {t('show_details')}
           <i className='ri-file-list-3-line' />
         </Button>
-        <Button type='link' onClick={() => onEdit(year)}>
+        <Button type='link' onClick={() => onEdit(row)}>
           {t('edit')}
           <i className='ri-pencil-line'></i>
         </Button>

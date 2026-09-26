@@ -32,7 +32,8 @@ export const holidayQueryKeys = {
   provinces: () => [HOLIDAY_QUERY_KEY, 'provinces'] as const,
   officialLists: () => [HOLIDAY_QUERY_KEY, 'official-list'] as const,
   officialList: (params: OfficialListParams) => [HOLIDAY_QUERY_KEY, 'official-list', params] as const,
-  officialYear: (year: number) => [HOLIDAY_QUERY_KEY, 'official-year', year] as const,
+  officialHolidaysAll: () => [HOLIDAY_QUERY_KEY, 'official-holidays'] as const,
+  officialHolidays: (id: string) => [HOLIDAY_QUERY_KEY, 'official-holidays', id] as const,
   customLists: () => [HOLIDAY_QUERY_KEY, 'custom-list'] as const,
   customList: (filter: CustomListFilter) => [HOLIDAY_QUERY_KEY, 'custom-list', filter] as const,
 };

@@ -9,9 +9,10 @@ const useUpdateOfficialMutation = () => {
   return useMutation({
     mutationKey: holidayMutationKeys.updateOfficial,
     mutationFn: Api.updateOfficialHolidays,
-    onSuccess: (_data, { year }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: holidayQueryKeys.officialLists() });
-      queryClient.invalidateQueries({ queryKey: holidayQueryKeys.officialYear(year) });
+      // The update dto only carries the year, not the record id, so every cached detail is invalidated
+      queryClient.invalidateQueries({ queryKey: holidayQueryKeys.officialHolidaysAll() });
     },
   });
 };

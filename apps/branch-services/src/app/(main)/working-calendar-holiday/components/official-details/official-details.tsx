@@ -9,11 +9,11 @@ import useDownloadFileMutation from '../../queries/use-download-file-mutation';
 import useOfficialHolidaysQuery from '../../queries/use-official-holidays-query';
 import { Api } from '../../services';
 
-// Holidays of the year picked in the official list (`?year=` in the URL)
+// Holidays of the year picked in the official list (`?id=` / `?year=` in the URL)
 const OfficialDetails = () => {
   const [t] = useTr();
-  const { year } = useHolidayPage();
-  const { data = [], error, isFetching } = useOfficialHolidaysQuery(year);
+  const { year, id } = useHolidayPage();
+  const { data = [], error, isFetching } = useOfficialHolidaysQuery(id);
   const download = useDownloadFileMutation();
 
   const downloadButton = year && (
