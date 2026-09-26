@@ -1,6 +1,7 @@
 import type { FormInstance, UploadProps } from 'antd';
 
 import { useTr } from '@branch-services/translation';
+import { ApiUtil } from '@branch-services/utils';
 
 import useUploadFileMutation from '../queries/use-upload-file-mutation';
 import type { GroupFormValues } from '../utils/types';
@@ -20,7 +21,17 @@ const useGroupFileUpload = (form: FormInstance<GroupFormValues>) => {
           form.setFields([{ name: 'file', errors: [] }]);
           onSuccess?.(response);
         },
-        onError: () => onError?.(new Error(t('group_file_upload_failed'))),
+        onError: (error) => {
+          // Shown by antd under the field itself; the service's own message takes priority over a generic fallback
+          const message = ApiUtil.getErrorMessage(error);
+          const errorText = message
+            ? message.shouldTranslate
+              ? t(message.txt)
+              : message.txt
+            : t('group_file_upload_failed');
+          form.setFields([{ name: 'file', errors: [errorText] }]);
+          onError?.(new Error(errorText));
+        },
       }
     );
   };

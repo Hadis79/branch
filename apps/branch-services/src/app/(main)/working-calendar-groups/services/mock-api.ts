@@ -140,7 +140,15 @@ const MockApi: typeof RealApi = {
 
   // The real service parses the excel file; here a random subset of units stands in for its rows.
   // The raw response goes through the same mapper as the real service.
+  // A file name containing "dup" simulates the service rejecting duplicate rows, "invalid" a bad format
   uploadFile: ({ file }: UploadGroupFileParams): Promise<UploadedGroupFile> => {
+    if (file.name.includes('invalid')) return reject('فرمت فایل بارگذاری‌شده معتبر نیست.');
+    if (file.name.includes('dup')) {
+      return reject(
+        'فایل بارگذاری‌شده شامل سطرهای تکراری است. لطفا سطرهای تکراری را حذف کرده و فایل را با فرمت صحیح Excel (.xlsx) مجددا بارگذاری کنید.'
+      );
+    }
+
     const uploadedUnits = allUnits.filter(() => Math.random() > 0.5);
     const result = uploadedUnits.length ? uploadedUnits : allUnits.slice(0, 3);
 
