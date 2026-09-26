@@ -3,28 +3,25 @@ import { Form } from 'antd';
 import { Box, Button, Text } from '@branch-services/ui-kit';
 import { useTr } from '@branch-services/translation';
 
-import useGroupStore from '../../store/use-widget-store';
-import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
 import { GroupFormValues, UploadedGroupFile } from '../../utils/types';
 import { formatCount } from '../../utils/utils';
 import * as S from './file-entry.style';
 
 type UploadResultBoxProps = {
-  result: UploadedGroupFile;
+  result?: UploadedGroupFile;
+  // The group's current unit count, shown until a new file replaces it
+  previousUnitCount?: number;
   onRemove: () => void;
+  onViewDetails: () => void;
 };
 
-const UploadResultBox = ({ result, onRemove }: UploadResultBoxProps) => {
+// A newly uploaded file's summary, or the group's current members until one is uploaded
+const UploadResultBox = ({ result, previousUnitCount, onRemove, onViewDetails }: UploadResultBoxProps) => {
   const [t] = useTr();
-  const { navigateToDetails } = useWorkingCalendarGroupPage();
-  const setUploadedUnits = useGroupStore((state) => state.setUploadedUnits);
-  const handleViewDetails = () => {
-    setUploadedUnits(result.units);
-    navigateToDetails();
-  };
   const form = Form.useFormInstance<GroupFormValues>();
   const selectedFile = Form.useWatch('file', { form, preserve: true })?.[0];
   const fileName = selectedFile?.name;
+  const unitCount = result?.unitCount ?? previousUnitCount ?? 0;
 
   const handleRemove = () => {
     form.setFieldValue('file', undefined);
@@ -33,25 +30,27 @@ const UploadResultBox = ({ result, onRemove }: UploadResultBoxProps) => {
 
   return (
     <Box flexDirection='column'>
-      <S.UploadedItem>
-        <span className='uploaded-file'>
-          <i className='ri-file-excel-line ri-2x' />
-          <span>{fileName}</span>
-        </span>
-        <button type='button' onClick={handleRemove} aria-label={t('remove_uploaded_file')}>
-          <i className='ri-delete-bin-2-line ri-2x' />
-        </button>
-      </S.UploadedItem>
+      {result && (
+        <S.UploadedItem>
+          <span className='uploaded-file'>
+            <i className='ri-file-excel-line ri-2x' />
+            <span>{fileName}</span>
+          </span>
+          <button type='button' onClick={handleRemove} aria-label={t('remove_uploaded_file')}>
+            <i className='ri-delete-bin-2-line ri-2x' />
+          </button>
+        </S.UploadedItem>
+      )}
       <S.UploadResult>
         <S.UploadResultHeader>
           <span>
             <i className='ri-checkbox-circle-fill ' />
-            {t('file_information')}
+            {t(result ? 'file_information' : 'previous_members_information')}
           </span>
           <Button
             htmlType='button'
             type='link'
-            onClick={handleViewDetails}
+            onClick={onViewDetails}
             iconPosition='end'
             style={{ fontWeight: 500, fontSize: '1.4rem' }}
           >
@@ -61,7 +60,7 @@ const UploadResultBox = ({ result, onRemove }: UploadResultBoxProps) => {
         </S.UploadResultHeader>
         <S.UploadResultRow>
           <Text fontWeight={400}>{t('unit_count')}</Text>
-          <Text fontWeight={500}>{formatCount(result.unitCount)}</Text>
+          <Text fontWeight={500}>{formatCount(unitCount)}</Text>
         </S.UploadResultRow>
       </S.UploadResult>
     </Box>

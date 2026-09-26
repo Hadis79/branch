@@ -15,6 +15,7 @@ import useGroupMessage from '../../hooks/use-group-message';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
 import useCreateGroupsMutation from '../../queries/use-create-group-mutation';
 import useUpdateGroupMutation from '../../queries/use-update-group-mutation';
+import useGroupUnitsQuery from '../../queries/use-group-units-query';
 import useGroupStore from '../../store/use-widget-store';
 import { fetchAllGroupUnits } from '../../services/group-units';
 import { applyUnitChanges, formatCount, toGroupUnit } from '../../utils/utils';
@@ -35,7 +36,8 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const [t] = useTr();
   const [form] = Form.useForm<GroupFormValues>();
   const { showSuccess, showError, resetMessage } = useGroupMessage();
-  const { groupId, editMode, navigateTo } = useWorkingCalendarGroupPage();
+  const { groupId, editMode, navigateTo, navigateToDetails, navigateToGroupDetails } = useWorkingCalendarGroupPage();
+  const setUploadedUnits = useGroupStore((state) => state.setUploadedUnits);
 
   // In create mode the user picks the entry mode with tabs, in edit mode it comes from the URL
   const [activeTab, setActiveTab] = useState<EntryMode>(EntryMode.FILE);
@@ -56,6 +58,8 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   const [isCollectingUnits, setIsCollectingUnits] = useState(false);
   const isSaving = createGroup.isPending || updateGroup.isPending || isCollectingUnits;
   const previousUnitCount = editedGroup?.size;
+  // Backs the result box's unit count until a new file is uploaded (only fetched in the file-replace edit form)
+  const previousUnits = useGroupUnitsQuery(isEdit && isFileEntry ? groupId : null, { page: 1, size: 1 });
 
   // Drop messages left over from the list page
   useEffect(() => resetMessage(), [resetMessage]);
@@ -137,13 +141,24 @@ const GroupForm = ({ variant }: GroupFormProps) => {
     }
   };
 
+  const handleViewNewFileDetails = () => {
+    if (fileUpload.result) setUploadedUnits(fileUpload.result.units);
+    navigateToDetails();
+  };
+  const handleViewPreviousDetails = () => {
+    if (groupId) navigateToGroupDetails(groupId);
+  };
+
   const fileEntry = (
     <FileEntry
       loading={fileUpload.isPending}
       onUpload={fileUpload.upload}
       onRemove={fileUpload.reset}
       uploadResult={fileUpload.result}
+      previousUnitCount={isEdit && isFileEntry ? previousUnits.data?.totalElements : undefined}
       inlineName={isEdit}
+      onViewNewFileDetails={handleViewNewFileDetails}
+      onViewPreviousDetails={handleViewPreviousDetails}
     />
   );
 

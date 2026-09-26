@@ -14,17 +14,36 @@ type FileEntryProps = {
   onRemove: () => void;
   onUpload: UploadProps['customRequest'];
   uploadResult?: UploadedGroupFile;
+  // The group's current unit count, shown in the result box until a new file is uploaded (edit only)
+  previousUnitCount?: number;
   inlineName?: boolean;
+  onViewNewFileDetails: () => void;
+  onViewPreviousDetails: () => void;
 };
 
-const FileEntry = ({ loading, onRemove, onUpload, uploadResult, inlineName }: FileEntryProps) => {
+const FileEntry = ({
+  loading,
+  onRemove,
+  onUpload,
+  uploadResult,
+  previousUnitCount,
+  inlineName,
+  onViewNewFileDetails,
+  onViewPreviousDetails,
+}: FileEntryProps) => {
   const [t] = useTr();
   const downloadSample = useDownloadSampleFileMutation();
+  const showResultBox = Boolean(uploadResult) || previousUnitCount !== undefined;
 
   return (
     <EntryLayout inlineName={inlineName}>
-      {uploadResult ? (
-        <UploadResultBox result={uploadResult} onRemove={onRemove} />
+      {showResultBox ? (
+        <UploadResultBox
+          result={uploadResult}
+          previousUnitCount={previousUnitCount}
+          onRemove={onRemove}
+          onViewDetails={uploadResult ? onViewNewFileDetails : onViewPreviousDetails}
+        />
       ) : (
         <>
           <UploadFileContainer>

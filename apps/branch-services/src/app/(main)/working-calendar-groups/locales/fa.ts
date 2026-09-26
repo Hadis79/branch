@@ -19,6 +19,7 @@ export default {
   group_file_required: 'انتخاب فایل الزامی است',
   group_file_upload_failed: 'آپلود فایل با خطا مواجه شد؛ دوباره تلاش کنید',
   file_information: 'اطلاعات فایل',
+  previous_members_information: 'اطلاعات اعضای قبلی',
   view_file_details: 'مشاهده جزئیات فایل',
   hide_file_details: 'بستن جزئیات فایل',
   remove_uploaded_file: 'حذف فایل بارگذاری‌شده',

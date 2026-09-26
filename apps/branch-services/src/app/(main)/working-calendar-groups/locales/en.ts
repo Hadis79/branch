@@ -19,6 +19,7 @@ export default {
   group_file_required: 'A file is required',
   group_file_upload_failed: 'File upload failed; please try again',
   file_information: 'File information',
+  previous_members_information: 'Previous members information',
   view_file_details: 'View file details',
   hide_file_details: 'Hide file details',
   remove_uploaded_file: 'Remove uploaded file',
