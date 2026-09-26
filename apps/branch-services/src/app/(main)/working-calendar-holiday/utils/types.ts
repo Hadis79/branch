@@ -52,4 +52,6 @@ export type CustomHolidayResponse = CustomHoliday;
 
 export type CustomListFilter = { title?: string; provinceName?: string; fromDate?: string; toDate?: string };
 
+export type DeleteCustomHolidayParams = { provinceName: string; date: string };
+
 export type DownloadedFile = { data: Blob; type: string; fileName: string };

@@ -25,14 +25,17 @@ const DeleteHolidayModal = ({ holiday, isLastRow, onClose }: DeleteHolidayModalP
   const handleConfirm = () => {
     if (!holiday) return;
 
-    mutate(holiday.id, {
-      onSuccess: () => {
-        setMessage({ txt: 'delete_success', type: 'success', shouldTranslate: true });
-        if (isLastRow && page > 1) setPagination({ page: page - 1 });
-      },
-      onError: (error) => setMessage(ApiUtil.getErrorMessage(error)),
-      onSettled: onClose,
-    });
+    mutate(
+      { provinceName: holiday.province.provinceName, date: holiday.date },
+      {
+        onSuccess: () => {
+          setMessage({ txt: 'delete_success', type: 'success', shouldTranslate: true });
+          if (isLastRow && page > 1) setPagination({ page: page - 1 });
+        },
+        onError: (error) => setMessage(ApiUtil.getErrorMessage(error)),
+        onSettled: onClose,
+      }
+    );
   };
 
   return (

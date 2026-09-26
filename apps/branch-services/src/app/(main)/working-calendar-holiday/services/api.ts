@@ -8,13 +8,13 @@ import type {
   CustomHoliday,
   CustomHolidayResponse,
   CustomListFilter,
+  DeleteCustomHolidayParams,
   DownloadedFile,
   HolidayFileUploadResponse,
   NewCustomHoliday,
   OfficialHoliday,
   OfficialListParams,
   OfficialYear,
-  OfficialYearResponse,
   Province,
   UploadedHolidayFile,
 } from '../utils/types';
@@ -75,9 +75,8 @@ const Api = {
   createCustomHolidays: async (holidays: NewCustomHoliday[]): Promise<void> => {
     await client.post<void>(`${HOLIDAY_URL}/create`, holidays);
   },
-  // TODO: the delete service is not ready yet, this one is a guess
-  deleteCustomHoliday: async (id: string): Promise<void> => {
-    await client.delete<void>(`${HOLIDAY_URL}/remove/${id}`);
+  deleteCustomHoliday: async ({ provinceName, date }: DeleteCustomHolidayParams): Promise<void> => {
+    await client.delete<void>(`${HOLIDAY_URL}/unofficial/remove`, { params: { provinceName, date } });
   },
 };
 

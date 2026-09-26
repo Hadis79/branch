@@ -5,6 +5,7 @@ import type {
   CreateOfficialHolidaysDto,
   CustomHolidayResponse,
   CustomListFilter,
+  DeleteCustomHolidayParams,
   DownloadedFile,
   NewCustomHoliday,
   OfficialHoliday,
@@ -164,8 +165,10 @@ const MockApi: typeof RealApi = {
     customHolidays = [...added, ...customHolidays].sort((a, b) => a.date.localeCompare(b.date));
     return delay(undefined);
   },
-  deleteCustomHoliday: (id: string) => {
-    customHolidays = customHolidays.filter((holiday) => String(holiday.id) !== id);
+  deleteCustomHoliday: ({ provinceName, date }: DeleteCustomHolidayParams) => {
+    customHolidays = customHolidays.filter(
+      (holiday) => !(holiday.province.provinceName === provinceName && holiday.date === date)
+    );
     return delay(undefined);
   },
 };
