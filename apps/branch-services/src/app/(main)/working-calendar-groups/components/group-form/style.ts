@@ -151,7 +151,7 @@ export const UnitsTableWrapper = styled.div`
 export const NewUnitTag = styled.span`
   margin-inline-start: 0.8rem;
   padding: 0 0.8rem;
-  border-radius: 0.4rem;
+  border-radius: 1.2rem;
   font-size: 1.2rem;
   color: ${(props) => props.theme.textTerritory};
   background-color: ${(props) => props.theme.primary};

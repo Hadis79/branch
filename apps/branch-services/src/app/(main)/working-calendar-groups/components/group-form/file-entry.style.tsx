@@ -9,6 +9,10 @@ export const UploadFileContainer = styled.div`
   .dragger-style {
     margin-bottom: 0;
   }
+  // antd only auto-styles standard inputs on error; the dragger's own border needs it explicitly
+  .ant-form-item-has-error .ant-upload {
+    border-color: ${(p) => p.theme.error};
+  }
 `;
 
 export const SampleFileLink = styled.div`

@@ -73,4 +73,5 @@ export default {
   remove_unit_question: 'آیا از حذف واحد مذکور اطمینان دارید؟',
   remove_unit_description: 'با حذف این واحد، دسترسی آن به قوانین اعمال‌شده روی این گروه حذف خواهد شد.',
   show_details: 'نمایش جزئیات',
+  'group-details': 'جزئیات فایل',
 };

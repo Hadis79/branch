@@ -118,19 +118,6 @@ const ManualEditEntry = ({ group }: ManualEditEntryProps) => {
             optionRender={({ label, value }) => (
               <UnitOptionRow>
                 <span>{`${label} - ${value}`}</span>
-                <Button
-                  htmlType='button'
-                  type='primaryOutlined'
-                  size='small'
-                  icon={<i className='ri-add-line' />}
-                  onClick={(event) => {
-                    // Keep the click from also selecting the option, which would add the unit twice
-                    event.stopPropagation();
-                    addUnit(String(value));
-                  }}
-                >
-                  {t('add_unit')}
-                </Button>
               </UnitOptionRow>
             )}
             notFoundContent={

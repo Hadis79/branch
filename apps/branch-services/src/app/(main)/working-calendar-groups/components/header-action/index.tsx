@@ -6,25 +6,24 @@ import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-
 
 const WorkingCalendarGroupHeaderAction = () => {
   const [t] = useTr();
-  const { currentPage, navigateTo, navigateToForm } = useWorkingCalendarGroupPage();
+  const { currentPage, navigateTo, goBack } = useWorkingCalendarGroupPage();
   const isListPage = currentPage === WorkingCalendarGroupPage.LIST;
-  const isDetailsPage = currentPage === WorkingCalendarGroupPage.DETAILS;
 
   const action = isListPage
     ? {
         buttonType: 'primary' as const,
         icon: 'ri ri-add-line',
         label: t('add_group'),
-        targetPage: WorkingCalendarGroupPage.ADD,
       }
     : {
         buttonType: 'link' as const,
         icon: 'ri ri-arrow-left-line',
         label: t('button.return'),
-        targetPage: WorkingCalendarGroupPage.LIST,
       };
 
-  const handleClick = () => (isDetailsPage ? navigateToForm() : navigateTo(action.targetPage));
+  // Every non-list page was reached by pushing a new route, so plain browser back returns
+  // to wherever the user actually came from (list, form, or the other details page)
+  const handleClick = () => (isListPage ? navigateTo(WorkingCalendarGroupPage.ADD) : goBack());
 
   return (
     <Button type={action.buttonType} icon={<i className={action.icon} />} iconPosition='start' onClick={handleClick}>

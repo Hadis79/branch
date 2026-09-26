@@ -39,8 +39,9 @@ const useWorkingCalendarGroupPage = () => {
   const navigateToForm = () => navigateTo(formPage, { id: groupId, mode: groupId ? editMode : null });
   const navigateToDetails = () =>
     navigateTo(WorkingCalendarGroupPage.DETAILS, { id: groupId, mode: groupId ? editMode : null });
-  // Opened straight from the list, unlike the upload details page above
+  // Opened from the list or from the edit form; either way, plain browser back returns to it
   const navigateToGroupDetails = (id: string) => navigateTo(WorkingCalendarGroupPage.GROUP_DETAILS, { id });
+  const goBack = () => router.back();
 
   return {
     currentPage,
@@ -51,6 +52,7 @@ const useWorkingCalendarGroupPage = () => {
     navigateToForm,
     navigateToDetails,
     navigateToGroupDetails,
+    goBack,
   };
 };
 

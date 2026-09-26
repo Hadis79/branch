@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TablePaginationConfig } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Button, ColumnsType, Table } from '@branch-services/ui-kit';
+import { Box, Button, ColumnsType, Table, Text } from '@branch-services/ui-kit';
 
 import RemoveUnitModal from '../modals/remove-unit-modal';
 import type { GroupUnit, PageParams } from '../../utils/types';
@@ -67,10 +67,10 @@ const GroupUnitsTable = ({
       dataIndex: 'name',
       align: 'center',
       render: (name: string, { isNew }) => (
-        <>
-          {name}
+        <Box width={'fit-content'} justifyContent='center' margin={'auto auto'} alignItems='center'>
+          <span style={{ whiteSpace: 'nowrap' }}>{name}</span>
           {isNew && <NewUnitTag>{t('new')}</NewUnitTag>}
-        </>
+        </Box>
       ),
     },
     { title: t('unit_code'), dataIndex: 'code', align: 'center' },
