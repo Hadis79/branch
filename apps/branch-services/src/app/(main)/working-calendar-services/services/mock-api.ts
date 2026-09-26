@@ -21,7 +21,7 @@ let services: ServiceItemResponse[] = [
   ['صندوق امانات', 'Safe deposit box'],
   ['بیمه', 'Insurance'],
   ['خدمات بازنشستگی', 'Pension services'],
-].map(([name, englishName], index) => ({ id: index + 1, name, englishName, active: index % 4 !== 3 }));
+].map(([persianName, englishName], index) => ({ id: index + 1, persianName, englishName, active: index % 4 !== 3 }));
 
 let lastId = services.length;
 
@@ -33,11 +33,12 @@ const reject = (message: string): Promise<never> =>
     setTimeout(() => rejectPromise({ response: { status: 400, data: { localizedMessage: message } } }), MOCK_DELAY)
   );
 
-const isDuplicateName = ({ name, englishName }: CreateServiceDto, exceptId?: string) =>
+const isDuplicateName = ({ persianName, englishName }: CreateServiceDto, exceptId?: string) =>
   services.some(
     (service) =>
       String(service.id) !== exceptId &&
-      (service.name === name.trim() || service.englishName.toLowerCase() === englishName.trim().toLowerCase())
+      (service.persianName === persianName.trim() ||
+        service.englishName.toLowerCase() === englishName.trim().toLowerCase())
   );
 
 // Same shape as the service pages; `page` is one-based like the api params
@@ -63,7 +64,7 @@ const MockApi: typeof RealApi = {
   getServices: ({ page, size, name }: ServiceListParams) => {
     const search = name?.trim().toLowerCase();
     const rows = services.filter(
-      (service) => !search || service.name.includes(search) || service.englishName.toLowerCase().includes(search)
+      (service) => !search || service.persianName.includes(search) || service.englishName.toLowerCase().includes(search)
     );
 
     return delay(paginate(rows, page, size)).then(toServiceListPage);
@@ -73,7 +74,7 @@ const MockApi: typeof RealApi = {
     if (isDuplicateName(values)) return reject('سرویسی با این نام قبلا ثبت شده است.');
 
     services = [
-      { id: ++lastId, name: values.name.trim(), englishName: values.englishName.trim(), active: true },
+      { id: ++lastId, persianName: values.persianName.trim(), englishName: values.englishName.trim(), active: true },
       ...services,
     ];
     return delay(undefined);
@@ -85,7 +86,7 @@ const MockApi: typeof RealApi = {
 
     services = services.map((service) =>
       String(service.id) === id
-        ? { ...service, ...values, name: values.name.trim(), englishName: values.englishName.trim() }
+        ? { ...service, ...values, persianName: values.persianName.trim(), englishName: values.englishName.trim() }
         : service
     );
     return delay(undefined);
