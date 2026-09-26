@@ -102,25 +102,28 @@ const EditOfficialForm = () => {
                 onRemove={fileUpload.remove}
                 onViewDetails={handleViewNewFile}
               />
-              <FileInfo>
-                <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
-                  <Text as='span'>{t('file_information')}</Text>
-                  <Button
-                    type='link'
-                    icon={<i className='ri-arrow-left-s-line' />}
-                    iconPosition='end'
-                    onClick={handleViewPrevious}
-                  >
-                    {t('view_file_details')}
-                  </Button>
-                </Box>
-                <Box justifyContent='space-between' fillChildren={false}>
-                  <Text as='span' fontWeight={400} color={theme.textSecondary}>
-                    {t('day_count')}
-                  </Text>
-                  <Text as='span'>{formatCount(previous.data?.length ?? 0)}</Text>
-                </Box>
-              </FileInfo>
+              {/* The year's current file, until a new one is uploaded and its result takes this place */}
+              {!fileUpload.result && (
+                <FileInfo>
+                  <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
+                    <Text as='span'>{t('file_information')}</Text>
+                    <Button
+                      type='link'
+                      icon={<i className='ri-arrow-left-s-line' />}
+                      iconPosition='end'
+                      onClick={handleViewPrevious}
+                    >
+                      {t('view_file_details')}
+                    </Button>
+                  </Box>
+                  <Box justifyContent='space-between' fillChildren={false}>
+                    <Text as='span' fontWeight={400} color={theme.textSecondary}>
+                      {t('day_count')}
+                    </Text>
+                    <Text as='span'>{formatCount(previous.data?.length ?? 0)}</Text>
+                  </Box>
+                </FileInfo>
+              )}
             </Box>
           </Box>
         </Form>
