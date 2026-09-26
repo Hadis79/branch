@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
+import { useAppTheme } from '@branch-services/hooks';
 import { dayjs } from '@branch-services/utils';
-import { Box, Button, MessageBox, Select } from '@branch-services/ui-kit';
+import { Box, Button, MessageBox, Select, Text } from '@branch-services/ui-kit';
 
 import FileEntry from '../upload-form/file-entry';
 import SampleFileLink from '../upload-form/sample-file-link';
+import { FileInfo } from '../upload-form/upload-form.style';
 import ConfirmEditModal from '../holiday-modal/confirm-edit-modal';
 import DiscardEditModal from '../holiday-modal/discard-edit-modal';
 import useHolidayFileUpload from '../../hooks/use-holiday-file-upload';
@@ -16,7 +18,7 @@ import useOfficialHolidaysQuery from '../../queries/use-official-holidays-query'
 import useUpdateOfficialMutation from '../../queries/use-update-official-mutation';
 import useHolidayStore from '../../store/use-widget-store';
 import { HolidayPage, HolidayTab } from '../../utils/constants';
-import { formatYear } from '../../utils/utils';
+import { formatCount, formatYear } from '../../utils/utils';
 
 // Last 10 years, in the same Jalali units as the year this page was opened for (unlike getYearOptions,
 // whose value is Gregorian for the create form's api call)
@@ -31,6 +33,7 @@ const getEditYearOptions = (): { label: string; value: number }[] => {
 // Replaces one official year's holidays with an uploaded file
 const EditOfficialForm = () => {
   const [t] = useTr();
+  const theme = useAppTheme();
   const [form] = Form.useForm<{ year?: number }>();
   const { year, navigateTo } = useHolidayPage();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -94,12 +97,30 @@ const EditOfficialForm = () => {
             <Box flexDirection='column' gap='1.2rem'>
               <FileEntry
                 result={fileUpload.result}
-                previous={{ dayCount: previous.data?.length ?? 0 }}
                 loading={fileUpload.isPending}
                 onUpload={fileUpload.upload}
                 onRemove={fileUpload.remove}
-                onViewDetails={fileUpload.result ? handleViewNewFile : handleViewPrevious}
+                onViewDetails={handleViewNewFile}
               />
+              <FileInfo>
+                <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
+                  <Text as='span'>{t('file_information')}</Text>
+                  <Button
+                    type='link'
+                    icon={<i className='ri-arrow-left-s-line' />}
+                    iconPosition='end'
+                    onClick={handleViewPrevious}
+                  >
+                    {t('view_file_details')}
+                  </Button>
+                </Box>
+                <Box justifyContent='space-between' fillChildren={false}>
+                  <Text as='span' fontWeight={400} color={theme.textSecondary}>
+                    {t('day_count')}
+                  </Text>
+                  <Text as='span'>{formatCount(previous.data?.length ?? 0)}</Text>
+                </Box>
+              </FileInfo>
             </Box>
           </Box>
         </Form>
