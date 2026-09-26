@@ -62,6 +62,7 @@ export default {
   confirm_edit_manual_description:
     'Saving adds the new units to the group and removes the deleted ones; the group rules apply to the new list.',
   unit_list_title: 'Unit list ({{unitCount}} units)',
+  show_details: 'Show details',
   manual_edit_info: 'You can rename the group and add or remove units here.',
   add_unit: 'Add unit',
   new: 'New',

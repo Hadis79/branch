@@ -12,6 +12,7 @@ type ColumnsProps = {
   t: TFunction;
   pagination: PaginationState['pagination'];
   openModalHandler: (record: GroupListItem, type: GroupModalType) => void;
+  onShowDetails: (record: GroupListItem) => void;
 };
 
 export const mobileColumns = ({ t }: Pick<ColumnsProps, 't'>): ColumnsType<GroupListItem> => [
@@ -35,7 +36,12 @@ export const mobileColumns = ({ t }: Pick<ColumnsProps, 't'>): ColumnsType<Group
   },
 ];
 
-export const columns = ({ t, pagination, openModalHandler }: ColumnsProps): ColumnsType<GroupListItem> => [
+export const columns = ({
+  t,
+  pagination,
+  openModalHandler,
+  onShowDetails,
+}: ColumnsProps): ColumnsType<GroupListItem> => [
   {
     title: '#',
     align: 'center',
@@ -59,9 +65,13 @@ export const columns = ({ t, pagination, openModalHandler }: ColumnsProps): Colu
     title: t('actions'),
     key: 'actions',
     align: 'center',
-    width: 190,
+    width: 280,
     render: (_value, record) => (
       <S.ButtonWrapper>
+        <Button type='link' onClick={() => onShowDetails(record)}>
+          {t('show_details')}
+          <i className='ri-file-list-3-line' />
+        </Button>
         <Button type='link' onClick={() => openModalHandler(record, 'edit')}>
           {t('edit')}
           <i className='ri-edit-line' />

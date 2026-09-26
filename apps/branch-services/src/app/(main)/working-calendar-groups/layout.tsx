@@ -16,6 +16,7 @@ const HEADER_TITLES: Record<WorkingCalendarGroupPage, string> = {
   [WorkingCalendarGroupPage.ADD]: 'add_group',
   [WorkingCalendarGroupPage.EDIT]: 'edit_group',
   [WorkingCalendarGroupPage.DETAILS]: 'add_group',
+  [WorkingCalendarGroupPage.GROUP_DETAILS]: 'show_details',
 };
 
 function WorkingCalendarGroupsLayout({ children }: { children: ReactNode }) {

@@ -2,6 +2,7 @@ import GroupForm from '../group-form';
 import GroupMessage from '../group-message';
 import GroupList from '../../pages/group-list';
 import UploadDetails from '../../pages/upload-details';
+import GroupDetails from '../../pages/group-details';
 import { WorkingCalendarGroupPage } from '../../utils/constants';
 import useGroupListQuery from '../../queries/use-group-list-query';
 import GroupEmptyState from '../group-list/empty-state/group-empty-state';
@@ -21,6 +22,10 @@ const App = () => {
         <GroupList />
       </>
     );
+  }
+
+  if (currentPage === WorkingCalendarGroupPage.GROUP_DETAILS) {
+    return <GroupDetails />;
   }
 
   // Add, edit and the upload details page opened from them.

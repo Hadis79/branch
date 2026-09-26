@@ -8,6 +8,7 @@ import { columns, mobileColumns } from './columns';
 import RemoveModal from '../../modals/remove-modal';
 import useGroupStore from '../../../store/use-widget-store';
 import useGroupMessage from '../../../hooks/use-group-message';
+import useWorkingCalendarGroupPage from '../../../hooks/use-working-calendar-group-page';
 import { GroupListItem, GroupModalType } from '../../../utils/types';
 import useGroupListQuery from '../../../queries/use-group-list-query';
 import useDeleteGroupMutation from '../../../queries/use-remove-group-mutation';
@@ -25,6 +26,7 @@ const DataTable = () => {
   const { showSuccess, showError } = useGroupMessage();
   const { data, isFetching } = useGroupListQuery();
   const { mutate, isPending: isRemoving } = useDeleteGroupMutation();
+  const { navigateToGroupDetails } = useWorkingCalendarGroupPage();
 
   const handleTableChange = ({ current = 1, pageSize = pagination.size }: TablePaginationConfig) => {
     const pageSizeChanged = pageSize !== pagination.size;
@@ -41,8 +43,15 @@ const DataTable = () => {
   }, []);
 
   const closeModalHandler = () => setActiveModal(null);
+  const onShowDetails = useCallback(
+    (record: GroupListItem) => navigateToGroupDetails(record.id),
+    [navigateToGroupDetails]
+  );
 
-  const tableColumns = useMemo(() => columns({ t, pagination, openModalHandler }), [t, pagination, openModalHandler]);
+  const tableColumns = useMemo(
+    () => columns({ t, pagination, openModalHandler, onShowDetails }),
+    [t, pagination, openModalHandler, onShowDetails]
+  );
   const tableMobileColumns = useMemo(() => mobileColumns({ t }), [t]);
 
   const onRemoveHandler = () => {

@@ -39,8 +39,19 @@ const useWorkingCalendarGroupPage = () => {
   const navigateToForm = () => navigateTo(formPage, { id: groupId, mode: groupId ? editMode : null });
   const navigateToDetails = () =>
     navigateTo(WorkingCalendarGroupPage.DETAILS, { id: groupId, mode: groupId ? editMode : null });
+  // Opened straight from the list, unlike the upload details page above
+  const navigateToGroupDetails = (id: string) => navigateTo(WorkingCalendarGroupPage.GROUP_DETAILS, { id });
 
-  return { currentPage, groupId, editMode, formPage, navigateTo, navigateToForm, navigateToDetails };
+  return {
+    currentPage,
+    groupId,
+    editMode,
+    formPage,
+    navigateTo,
+    navigateToForm,
+    navigateToDetails,
+    navigateToGroupDetails,
+  };
 };
 
 export default useWorkingCalendarGroupPage;

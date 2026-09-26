@@ -6,6 +6,8 @@ export enum WorkingCalendarGroupPage {
   ADD = 'add',
   EDIT = 'edit',
   DETAILS = 'upload-details',
+  // Read-only list of a group's units, opened from the list's "show details" action
+  GROUP_DETAILS = 'group-details',
 }
 
 // Set to false to switch every request to the real service (services/api.ts)
