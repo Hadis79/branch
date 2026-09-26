@@ -53,7 +53,7 @@ const UploadForm = () => {
       submitDisabled={Boolean(fileUpload.result?.duplicateCount)}
       onSubmit={() =>
         form.validateFields().then(
-          () => setIsConfirmOpen(true),
+          () => fileUpload.validate() && setIsConfirmOpen(true),
           () => undefined
         )
       }
