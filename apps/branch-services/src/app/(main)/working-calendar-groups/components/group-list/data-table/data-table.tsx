@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
 import { TablePaginationConfig } from 'antd';
+import { useCallback, useMemo, useState } from 'react';
+
 import { Table } from '@branch-services/ui-kit';
 import { useTr } from '@branch-services/translation';
 
@@ -8,10 +9,10 @@ import { columns, mobileColumns } from './columns';
 import RemoveModal from '../../modals/remove-modal';
 import useGroupStore from '../../../store/use-widget-store';
 import useGroupMessage from '../../../hooks/use-group-message';
-import useWorkingCalendarGroupPage from '../../../hooks/use-working-calendar-group-page';
 import { GroupListItem, GroupModalType } from '../../../utils/types';
 import useGroupListQuery from '../../../queries/use-group-list-query';
 import useDeleteGroupMutation from '../../../queries/use-remove-group-mutation';
+import useWorkingCalendarGroupPage from '../../../hooks/use-working-calendar-group-page';
 
 import * as S from './data-table.style';
 
@@ -22,6 +23,7 @@ const DataTable = () => {
   const [selectedGroup, setSelectedGroup] = useState<GroupListItem | null>(null);
   const pagination = useGroupStore((state) => state.pagination);
   const setPagination = useGroupStore((state) => state.setPagination);
+  const setSelectedGroupForEdit = useGroupStore((state) => state.setSelectedGroup);
 
   const { showSuccess, showError } = useGroupMessage();
   const { data, isFetching } = useGroupListQuery();
@@ -44,8 +46,11 @@ const DataTable = () => {
 
   const closeModalHandler = () => setActiveModal(null);
   const onShowDetails = useCallback(
-    (record: GroupListItem) => navigateToGroupDetails(record.id),
-    [navigateToGroupDetails]
+    (record: GroupListItem) => {
+      setSelectedGroupForEdit(record);
+      navigateToGroupDetails(record.id);
+    },
+    [navigateToGroupDetails, setSelectedGroupForEdit]
   );
 
   const tableColumns = useMemo(

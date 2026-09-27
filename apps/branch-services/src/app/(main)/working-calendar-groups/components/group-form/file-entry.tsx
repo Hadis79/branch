@@ -11,6 +11,7 @@ import useDownloadSampleFileMutation from '../../queries/use-download-sample-fil
 
 type FileEntryProps = {
   loading: boolean;
+  uploadError?: string;
   onRemove: () => void;
   onUpload: UploadProps['customRequest'];
   uploadResult?: UploadedGroupFile;
@@ -23,6 +24,7 @@ type FileEntryProps = {
 
 const FileEntry = ({
   loading,
+  uploadError,
   onRemove,
   onUpload,
   uploadResult,
@@ -59,7 +61,16 @@ const FileEntry = ({
               // Otherwise a fileList change (e.g. a failed upload) re-runs the required-file rule,
               // which passes and wipes out the upload error set on this field via form.setFields
               validateTrigger={[]}
-              rules={[{ required: true, message: t('group_file_required') }]}
+              rules={[
+                { required: !inlineName, message: t('group_file_required') },
+                {
+                  validator: async (_, files: GroupFormValues['file']) => {
+                    if (!files?.length) return;
+                    if (uploadError) throw new Error(uploadError);
+                    if (loading || !uploadResult) throw new Error(t('group_file_upload_failed'));
+                  },
+                },
+              ]}
             >
               <Dragger
                 displayDefaultChildren={true}

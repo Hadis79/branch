@@ -4,9 +4,7 @@ import { useTr } from '@branch-services/translation';
 import { Box, Button } from '@branch-services/ui-kit';
 
 import { GuideMessageBox } from './form-page.style';
-import useHolidayPage from '../../hooks/use-holiday-page';
 import useHolidayStore from '../../store/use-widget-store';
-import { HolidayPage } from '../../utils/constants';
 
 type FormPageProps = {
   // Translation key of the guide banner
@@ -17,17 +15,31 @@ type FormPageProps = {
   children: ReactNode;
   submitText: string;
   submitDisabled?: boolean;
+  onReset: () => void;
   onSubmit: () => void;
 };
 
 // Shared layout of the create pages: guide banner, content, and a cancel / submit footer
-const FormPage = ({ info, infoDescription, error, children, submitText, submitDisabled, onSubmit }: FormPageProps) => {
+const FormPage = ({
+  info,
+  infoDescription,
+  error,
+  children,
+  submitText,
+  submitDisabled,
+  onReset,
+  onSubmit,
+}: FormPageProps) => {
   const [t] = useTr();
-  const { navigateTo } = useHolidayPage();
   const setMessage = useHolidayStore((state) => state.setMessage);
 
   // Drop messages left over from the list page
   useEffect(() => setMessage(null), [setMessage]);
+
+  const handleReset = () => {
+    setMessage(null);
+    onReset();
+  };
 
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
@@ -37,7 +49,7 @@ const FormPage = ({ info, infoDescription, error, children, submitText, submitDi
         {children}
       </Box>
       <Box justifyContent='flex-end' gap='1.2rem' fillChildren={false}>
-        <Button htmlType='button' type='primaryOutlined' onClick={() => navigateTo(HolidayPage.LIST)}>
+        <Button htmlType='button' type='primaryOutlined' onClick={handleReset}>
           {t('cancel')}
         </Button>
         <Button htmlType='button' type='primary' disabled={submitDisabled} onClick={onSubmit}>

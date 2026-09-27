@@ -45,12 +45,19 @@ const UploadForm = () => {
       }
     );
 
+  const handleReset = () => {
+    setIsConfirmOpen(false);
+    createOfficial.reset();
+    fileUpload.reset();
+  };
+
   return (
     <FormPage
       info='upload_info'
       infoDescription={<SampleFileLink />}
       submitText='create_holidays'
       submitDisabled={Boolean(fileUpload.result?.duplicateCount)}
+      onReset={handleReset}
       onSubmit={() =>
         form.validateFields().then(
           () => fileUpload.validate() && setIsConfirmOpen(true),
@@ -76,7 +83,7 @@ const UploadForm = () => {
         open={isConfirmOpen}
         textKey='confirm_official'
         params={{ year: year ?? '' }}
-        confirmText='create'
+        confirmText='confirm'
         loading={createOfficial.isPending}
         onConfirm={handleConfirm}
         onCancel={() => setIsConfirmOpen(false)}

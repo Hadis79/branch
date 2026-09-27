@@ -13,6 +13,12 @@ const useGroupFileUpload = (form: FormInstance<GroupFormValues>) => {
   const result = mutation.data;
   const units = result?.units ?? [];
 
+  const getErrorText = (error: unknown) => {
+    const message = ApiUtil.getErrorMessage(error);
+    return message ? (message.shouldTranslate ? t(message.txt) : message.txt) : t('group_file_upload_failed');
+  };
+  const errorText = mutation.error ? getErrorText(mutation.error) : undefined;
+
   const upload: NonNullable<UploadProps['customRequest']> = ({ file, onError, onSuccess }) => {
     mutation.mutate(
       { file: file as File },
@@ -23,12 +29,7 @@ const useGroupFileUpload = (form: FormInstance<GroupFormValues>) => {
         },
         onError: (error) => {
           // Shown by antd under the field itself; the service's own message takes priority over a generic fallback
-          const message = ApiUtil.getErrorMessage(error);
-          const errorText = message
-            ? message.shouldTranslate
-              ? t(message.txt)
-              : message.txt
-            : t('group_file_upload_failed');
+          const errorText = getErrorText(error);
           form.setFields([{ name: 'file', errors: [errorText] }]);
           onError?.(new Error(errorText));
         },
@@ -37,14 +38,15 @@ const useGroupFileUpload = (form: FormInstance<GroupFormValues>) => {
   };
 
   const validate = () => {
-    if (units.length) return true;
+    if (!mutation.isPending && !mutation.isError && units.length) return true;
 
-    form.setFields([{ name: 'file', errors: [t('group_file_upload_failed')] }]);
+    form.setFields([{ name: 'file', errors: [errorText ?? t('group_file_upload_failed')] }]);
     return false;
   };
 
   return {
     upload,
+    errorText,
     validate,
     reset: mutation.reset,
     result,

@@ -1,4 +1,5 @@
 export default {
+  calendar_and_base_information: 'Calendar and Basic Information',
   unit_code: 'Unit code',
   unit_name: 'Unit name',
   'upload-details': 'File details',

@@ -26,7 +26,11 @@ function WorkingCalendarGroupsLayout({ children }: { children: ReactNode }) {
   const titlePage = currentPage === WorkingCalendarGroupPage.DETAILS ? formPage : currentPage;
 
   return (
-    <WidgetWrapper headerTitle={HEADER_TITLES[titlePage]} headerAction={<WorkingCalendarGroupHeaderAction />}>
+    <WidgetWrapper
+      headerTitle={HEADER_TITLES[titlePage]}
+      headerAction={<WorkingCalendarGroupHeaderAction />}
+      breadcrumbPrefixTitle='calendar_and_base_information'
+    >
       {children}
     </WidgetWrapper>
   );

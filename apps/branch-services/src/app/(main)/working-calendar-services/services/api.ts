@@ -10,7 +10,6 @@ import type {
   UpdateServiceParams,
 } from '../utils/types';
 
-// TODO: endpoints are not final yet, confirm them with backend before disabling the mock
 const SERVICES_URL = `${bbpUrl}/calendar/service`;
 
 const Api = {

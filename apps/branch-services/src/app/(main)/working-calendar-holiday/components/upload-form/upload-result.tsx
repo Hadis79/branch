@@ -31,16 +31,18 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
   return (
     <Box flexDirection='column' gap='1.2rem'>
       <S.UploadedFile $error={hasDuplicates}>
-        <span className='uploaded-file'>
-          <span>{fileName[0]?.name}</span>
+        <Box className='uploaded-file'>
           <i className='ri-file-excel-line ri-2x' />
-        </span>
+          <span>{fileName?.[0]?.name}</span>
+        </Box>
         <Button
           type='link'
-          icon={<i className='ri-delete-bin-2-line' />}
           onClick={onRemove}
           aria-label={t('remove_uploaded_file')}
-        />
+          style={{ color: theme.secondary, padding: 'unset' }}
+        >
+          <i className='ri-delete-bin-2-line' />
+        </Button>
       </S.UploadedFile>
       {hasDuplicates && (
         <Text as='span' fontSize='1.2rem' fontWeight={400} color={theme.error}>
@@ -50,7 +52,7 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
       <S.FileInfo>
         <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
           <Text as='span' color={hasDuplicates ? theme.error : theme.success}>
-            <i className={hasDuplicates ? 'ri-close-circle-fill' : 'ri-checkbox-circle-fill'} />{' '}
+            <i className={hasDuplicates ? 'ri-close-circle-fill ri-xl' : 'ri-checkbox-circle-fill ri-xl'} />{' '}
             <Text as='span'>{t('file_information')}</Text>
           </Text>
           {!hasDuplicates && (
@@ -59,6 +61,7 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
               icon={<i className='ri-arrow-left-s-line' />}
               iconPosition='end'
               onClick={onViewDetails}
+              size='small'
             >
               {t('view_file_details')}
             </Button>

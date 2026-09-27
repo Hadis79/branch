@@ -26,7 +26,7 @@ const DeleteHolidayModal = ({ holiday, isLastRow, onClose }: DeleteHolidayModalP
     if (!holiday) return;
 
     mutate(
-      { provinceName: holiday.province.provinceName, date: holiday.date },
+      { provinceName: holiday.provinceName, date: holiday.date },
       {
         onSuccess: () => {
           setMessage({ txt: 'delete_success', type: 'success', shouldTranslate: true });

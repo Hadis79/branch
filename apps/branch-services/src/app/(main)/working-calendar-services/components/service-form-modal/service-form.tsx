@@ -42,7 +42,7 @@ const ServiceForm = ({ isEdit, initialValues, isPending, onSubmit, onCancel }: S
           <Box className='rounded-box-container'>
             <Box className='rounded-box-container__layout__inline'>
               <Form.Item label={t('status')} name='active' valuePropName='checked'>
-                <Switch checkedChildren={t('active')} unCheckedChildren={t('inactive')} />
+                <Switch />
               </Form.Item>
             </Box>
           </Box>

@@ -25,4 +25,5 @@ export default {
     'توجه داشته باشید، درصورت غیرفعال‌سازی سرویس، امکان استفاده از آن تا زمان فعال‌سازی مجدد وجود نخواهد داشت.',
   create_service_success: 'سرویس «{{serviceName}}» با موفقیت ثبت شد.',
   update_service_success: 'تغییرات سرویس «{{serviceName}}» با موفقیت ذخیره شد.',
+  calendar_and_base_information: 'تقویم و اطلاعات پایه',
 };

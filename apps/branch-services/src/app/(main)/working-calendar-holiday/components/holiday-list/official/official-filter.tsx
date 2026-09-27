@@ -26,7 +26,12 @@ const OfficialFilter = () => {
       <Form layout='vertical' initialValues={filter} onFinish={handleSearch}>
         <SearchItemsContainer>
           <Form.Item name='year' label={t('year')}>
-            <Select allowClear options={getYearOptions()} placeholder={t('select_placeholder')} />
+            <Select
+              defaultValue={''}
+              allowClear
+              options={[{ label: 'همه', value: '' }, ...getYearOptions()]}
+              placeholder={t('select_placeholder')}
+            />
           </Form.Item>
           <Box alignItems='center'>
             <Button htmlType='submit' style={{ width: 'fit-content' }} type='primaryOutlined' loading={isFetching}>

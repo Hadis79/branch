@@ -3,11 +3,15 @@ import { useTr } from '@branch-services/translation';
 
 import { WorkingCalendarGroupPage } from '../../utils/constants';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
+import useEmptyGroupList from '../../hooks/use-empty-group-list';
 
 const WorkingCalendarGroupHeaderAction = () => {
   const [t] = useTr();
   const { currentPage, navigateTo, goBack } = useWorkingCalendarGroupPage();
   const isListPage = currentPage === WorkingCalendarGroupPage.LIST;
+  const isEmptyList = useEmptyGroupList(isListPage);
+
+  if (isEmptyList) return null;
 
   const action = isListPage
     ? {
@@ -26,8 +30,15 @@ const WorkingCalendarGroupHeaderAction = () => {
   const handleClick = () => (isListPage ? navigateTo(WorkingCalendarGroupPage.ADD) : goBack());
 
   return (
-    <Button type={action.buttonType} icon={<i className={action.icon} />} iconPosition='start' onClick={handleClick}>
-      {action.label}
+    <Button
+      type={action.buttonType}
+      icon={isListPage ? undefined : <i className={action.icon} />}
+      iconPosition='start'
+      style={isListPage ? { flexDirection: 'row', direction: 'rtl' } : undefined}
+      onClick={handleClick}
+    >
+      {isListPage && <i className={action.icon} aria-hidden='true' />}
+      <span>{action.label}</span>
     </Button>
   );
 };

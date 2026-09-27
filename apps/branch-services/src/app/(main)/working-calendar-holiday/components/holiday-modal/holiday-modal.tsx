@@ -43,7 +43,7 @@ const HolidayModal = ({
       onCancel={onCancel}
       title={
         <S.ModalTitle $danger={danger}>
-          <i className='ri-information-fill' />
+          <i className='ri-error-warning-fill'></i>
           {title}
         </S.ModalTitle>
       }

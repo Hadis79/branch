@@ -74,7 +74,12 @@ const MockApi: typeof RealApi = {
     if (isDuplicateName(values)) return reject('سرویسی با این نام قبلا ثبت شده است.');
 
     services = [
-      { id: ++lastId, persianName: values.persianName.trim(), englishName: values.englishName.trim(), active: true },
+      {
+        id: ++lastId,
+        persianName: values.persianName.trim(),
+        englishName: values.englishName.trim(),
+        active: values.active,
+      },
       ...services,
     ];
     return delay(undefined);

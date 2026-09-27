@@ -20,9 +20,8 @@ const EnteredHolidaysTable = ({ holidays, onRemove }: EnteredHolidaysTableProps)
     { title: t('title'), dataIndex: 'title', align: 'center' },
     {
       title: t('region'),
-      key: 'province',
+      dataIndex: 'provinceName',
       align: 'center',
-      render: (_value, { province }) => province.provinceName,
     },
     { title: t('date'), dataIndex: 'date', align: 'center', render: (date: string) => formatDateWithWeekday(date) },
     {
@@ -51,7 +50,7 @@ const EnteredHolidaysTable = ({ holidays, onRemove }: EnteredHolidaysTableProps)
         mobileColumns={columns}
         pagination={false}
         hasContainer={false}
-        rowKey={({ date, province }: NewCustomHoliday) => `${date}-${province.provinceName}`}
+        rowKey={({ date, provinceName }: NewCustomHoliday) => `${date}-${provinceName}`}
       />
     </>
   );

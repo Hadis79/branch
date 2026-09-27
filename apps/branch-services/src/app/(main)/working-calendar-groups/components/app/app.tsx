@@ -1,44 +1,29 @@
-import GroupForm from '../group-form';
+import type { ReactNode } from 'react';
+
 import GroupMessage from '../group-message';
 import GroupList from '../../pages/group-list';
-import UploadDetails from '../../pages/upload-details';
+import GroupFormPage from '../../pages/group-form-page';
 import GroupDetails from '../../pages/group-details';
 import { WorkingCalendarGroupPage } from '../../utils/constants';
-import useGroupListQuery from '../../queries/use-group-list-query';
-import GroupEmptyState from '../group-list/empty-state/group-empty-state';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
 
 const App = () => {
-  const { currentPage, formPage, groupId } = useWorkingCalendarGroupPage();
-  const isDetailsPage = currentPage === WorkingCalendarGroupPage.DETAILS;
-  const { data, error, isPending } = useGroupListQuery();
+  const { currentPage } = useWorkingCalendarGroupPage();
 
-  if (!isPending && !error && !data?.totalElements) return <GroupEmptyState />;
-
-  if (currentPage === WorkingCalendarGroupPage.LIST) {
-    return (
+  const pages: Record<WorkingCalendarGroupPage, ReactNode> = {
+    [WorkingCalendarGroupPage.LIST]: (
       <>
         <GroupMessage />
         <GroupList />
       </>
-    );
-  }
+    ),
+    [WorkingCalendarGroupPage.GROUP_DETAILS]: <GroupDetails />,
+    [WorkingCalendarGroupPage.ADD]: <GroupFormPage />,
+    [WorkingCalendarGroupPage.EDIT]: <GroupFormPage />,
+    [WorkingCalendarGroupPage.DETAILS]: <GroupFormPage />,
+  };
 
-  if (currentPage === WorkingCalendarGroupPage.GROUP_DETAILS) {
-    return <GroupDetails />;
-  }
-
-  // Add, edit and the upload details page opened from them.
-  // The form stays mounted (hidden) on the details page so its state survives the round trip.
-  return (
-    <>
-      {!isDetailsPage && <GroupMessage />}
-      <div hidden={isDetailsPage}>
-        <GroupForm key={groupId ?? 'new'} variant={formPage === WorkingCalendarGroupPage.EDIT ? 'edit' : 'create'} />
-      </div>
-      {isDetailsPage && <UploadDetails />}
-    </>
-  );
+  return pages[currentPage];
 };
 
 export default App;

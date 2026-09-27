@@ -1,7 +1,7 @@
 import type { CustomListFilter, OfficialListParams } from './types';
 
 // Set to false to switch every request to the real service (services/api.ts)
-export const USE_MOCK_API = true;
+export const USE_MOCK_API = false;
 
 export const HOLIDAY_PATH = '/working-calendar-holiday';
 

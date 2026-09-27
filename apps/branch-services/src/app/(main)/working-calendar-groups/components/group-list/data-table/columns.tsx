@@ -1,16 +1,15 @@
 import { Box, Button, ColumnsType } from '@branch-services/ui-kit';
 import { getValueOrDash } from '@branch-services/utils';
-import { PaginationState } from '@branch-services/types';
 import { TFunction } from 'i18next';
 
 import { calculateRow } from '../../../utils/utils';
-import { GroupListItem, GroupModalType } from '../../../utils/types';
+import { GroupListItem, GroupModalType, PageParams } from '../../../utils/types';
 
 import * as S from './data-table.style';
 
 type ColumnsProps = {
   t: TFunction;
-  pagination: PaginationState['pagination'];
+  pagination: PageParams;
   openModalHandler: (record: GroupListItem, type: GroupModalType) => void;
   onShowDetails: (record: GroupListItem) => void;
 };

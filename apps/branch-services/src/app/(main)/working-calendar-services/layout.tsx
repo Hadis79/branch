@@ -12,7 +12,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   loadTr({ en, fa });
 
   return (
-    <WidgetWrapper headerTitle='working_calendar_services' headerAction={<ServiceHeaderAction />}>
+    <WidgetWrapper
+      breadcrumbPrefixTitle='calendar_and_base_information'
+      headerTitle='working_calendar_services'
+      headerAction={<ServiceHeaderAction />}
+    >
       {children}
     </WidgetWrapper>
   );

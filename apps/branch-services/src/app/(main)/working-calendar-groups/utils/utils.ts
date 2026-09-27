@@ -1,4 +1,4 @@
-import type { GroupUnit, UnitOption } from './types';
+import type { GroupUnit, PageParams, UnitOption } from './types';
 
 export const formatCount = (value: number): string => value.toLocaleString('fa-IR');
 
@@ -20,10 +20,7 @@ export const applyUnitChanges = (units: GroupUnit[], added: GroupUnit[], removed
 
 type CalculateRowParams = {
   index: number;
-  pagination?: {
-    page?: number;
-    size?: number;
-  };
+  pagination?: Partial<PageParams>;
 };
 
 export function calculateRow({ index, pagination }: CalculateRowParams): number {

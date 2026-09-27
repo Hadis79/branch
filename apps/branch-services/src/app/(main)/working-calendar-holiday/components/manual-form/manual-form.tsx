@@ -14,12 +14,13 @@ import type { NewCustomHoliday } from '../../utils/types';
 import { formatCount } from '../../utils/utils';
 
 const isSameHoliday = (a: NewCustomHoliday, b: NewCustomHoliday) =>
-  a.date === b.date && a.province.provinceName === b.province.provinceName;
+  a.date === b.date && a.provinceName === b.provinceName;
 
 // Non-calendar holidays, entered one by one and saved together
 const ManualForm = () => {
   const [t] = useTr();
   const [holidays, setHolidays] = useState<NewCustomHoliday[]>([]);
+  const [formResetKey, setFormResetKey] = useState(0);
   const [isEmptyErrorVisible, setIsEmptyErrorVisible] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const createCustom = useCreateCustomMutation();
@@ -35,6 +36,14 @@ const ManualForm = () => {
     else setIsEmptyErrorVisible(true);
   };
 
+  const handleReset = () => {
+    setHolidays([]);
+    setIsEmptyErrorVisible(false);
+    setIsConfirmOpen(false);
+    setFormResetKey((current) => current + 1);
+    createCustom.reset();
+  };
+
   const handleConfirm = () =>
     createCustom.mutate(holidays, {
       onSuccess: () => finish.onSuccess({ txt: 'custom_success', type: 'success', shouldTranslate: true }),
@@ -47,9 +56,11 @@ const ManualForm = () => {
       info='manual_info'
       error={isEmptyErrorVisible && <MessageBox type='error' message={t('at_least_one_row')} closable />}
       submitText='submit_holidays'
+      onReset={handleReset}
       onSubmit={handleSubmit}
     >
       <HolidayEntryForm
+        key={formResetKey}
         isDuplicate={(holiday) => holidays.some((item) => isSameHoliday(item, holiday))}
         onAdd={handleAdd}
       />
@@ -61,7 +72,7 @@ const ManualForm = () => {
         open={isConfirmOpen}
         textKey='confirm_custom'
         params={{ holidayCount: formatCount(holidays.length) }}
-        confirmText='submit'
+        confirmText='confirm'
         loading={createCustom.isPending}
         onConfirm={handleConfirm}
         onCancel={() => setIsConfirmOpen(false)}

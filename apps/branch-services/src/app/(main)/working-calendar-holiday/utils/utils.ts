@@ -48,7 +48,7 @@ export const getYearOptions = (): { label: string; value: number }[] => {
     label: String(jalaliYear),
     // .calendar('gregory') is ambiguously typed (dayjs core's calendar plugin also declares .calendar()),
     // so the Gregorian year is read off the real underlying Date instead
-    value: dayjs().year(jalaliYear).toDate().getFullYear(),
+    value: Number(jalaliYear),
   }));
 };
 

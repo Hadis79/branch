@@ -1,12 +1,13 @@
 import { Form, UploadProps } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Button, Dragger } from '@branch-services/ui-kit';
+import { Box, Button, Dragger } from '@branch-services/ui-kit';
 
 import SampleFileLink from './sample-file-link';
 import UploadResult from './upload-result';
 import * as S from './upload-form.style';
 import type { UploadedHolidayFile } from '../../utils/types';
+import { useAppTheme } from '@branch-services/hooks';
 
 type FileEntryProps = {
   result?: UploadedHolidayFile;
@@ -19,6 +20,7 @@ type FileEntryProps = {
 // Dragger until a file is parsed, then the upload result
 const FileEntry = ({ result, loading, onUpload, onRemove, onViewDetails }: FileEntryProps) => {
   const [t] = useTr();
+  const theme = useAppTheme();
   const form = Form.useFormInstance();
   // Set even when the upload later fails, so the attempted file stays visible under the error
   const selectedFile = Form.useWatch('file', { form, preserve: true })?.[0];
@@ -59,16 +61,18 @@ const FileEntry = ({ result, loading, onUpload, onRemove, onViewDetails }: FileE
       {/* The error (if any) is antd's own Form.Item help text, rendered just above this row */}
       {selectedFile && (
         <S.UploadedFile $error={false}>
-          <span className='uploaded-file'>
-            <span>{selectedFile.name}</span>
+          <Box className='uploaded-file'>
             <i className='ri-file-excel-line ri-2x' />
-          </span>
+            <span>{selectedFile.name}</span>
+          </Box>
           <Button
             type='link'
-            icon={<i className='ri-delete-bin-2-line' />}
             onClick={handleRemoveFailed}
             aria-label={t('remove_uploaded_file')}
-          />
+            style={{ color: theme.secondary, padding: 'unset' }}
+          >
+            <i className='ri-delete-bin-2-line' />
+          </Button>
         </S.UploadedFile>
       )}
       <SampleFileLink />

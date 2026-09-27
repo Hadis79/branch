@@ -1,14 +1,15 @@
-import { MessageModel, PaginationState } from '@branch-services/types';
+import { MessageModel } from '@branch-services/types';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { GroupListItem, GroupUnit } from '../utils/types';
+import type { GroupListItem, GroupUnit, PageParams } from '../utils/types';
 
 export type GroupListFilter = {
   name?: string;
 };
 
 // Only state shared between pages lives here; single-component state stays local.
-type State = PaginationState & {
+type State = {
+  pagination: PageParams;
   filter: GroupListFilter;
   message: MessageModel | null;
   // Units of the last uploaded file, read by the upload details page
@@ -21,7 +22,7 @@ type Actions = {
   setUploadedUnits: (units: GroupUnit[]) => void;
   setSelectedGroup: (group: GroupListItem | null) => void;
   setFilter: (filter: GroupListFilter) => void;
-  setPagination: (pagination: Partial<PaginationState['pagination']>) => void;
+  setPagination: (pagination: Partial<PageParams>) => void;
   setMessage: (message: MessageModel) => void;
   resetMessage: () => void;
 };

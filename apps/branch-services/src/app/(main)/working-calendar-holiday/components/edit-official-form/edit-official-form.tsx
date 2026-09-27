@@ -35,7 +35,8 @@ const EditOfficialForm = () => {
   const [t] = useTr();
   const theme = useAppTheme();
   const [form] = Form.useForm<{ year?: number }>();
-  const { year, navigateTo } = useHolidayPage();
+  const selectedYear = Form.useWatch('year', form);
+  const { year: initialYear, navigateTo } = useHolidayPage();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const setUploadedHolidays = useHolidayStore((state) => state.setUploadedHolidays);
@@ -43,13 +44,13 @@ const EditOfficialForm = () => {
   const fileUpload = useHolidayFileUpload(form);
   const updateOfficial = useUpdateOfficialMutation();
   const finish = useFinishCreate(HolidayTab.OFFICIAL);
-  const previous = useOfficialHolidaysQuery(year);
+  const previous = useOfficialHolidaysQuery(initialYear);
   // Until a new file is uploaded, saving keeps the year's existing holidays instead of wiping them
   const holidays = fileUpload.result?.holidays ?? previous.data ?? [];
 
   useEffect(() => {
-    if (year) form.setFieldValue('year', year);
-  }, [year, form]);
+    if (initialYear) form.setFieldValue('year', initialYear);
+  }, [initialYear, form]);
 
   const handleBack = () => {
     if (fileUpload.result) setIsDiscardOpen(true);
@@ -63,27 +64,31 @@ const EditOfficialForm = () => {
 
   const handleViewNewFile = () => {
     setUploadedHolidays(holidays, HolidayPage.EDIT);
-    navigateTo(HolidayPage.UPLOAD_DETAILS);
+    navigateTo(HolidayPage.UPLOAD_DETAILS, { year: initialYear as number });
   };
 
   const handleViewPrevious = () => {
     setFormOrigin(HolidayPage.EDIT);
-    navigateTo(HolidayPage.DETAILS, { year: year as number });
+    navigateTo(HolidayPage.DETAILS, { year: initialYear as number });
   };
 
   const handleConfirm = () =>
     updateOfficial.mutate(
-      { year: year as number, holidays },
+      { year: selectedYear as number, holidays },
       {
         onSuccess: () =>
-          finish.onSuccess({ txt: t('official_edit_success', { year }), type: 'success', shouldTranslate: false }),
+          finish.onSuccess({
+            txt: t('official_edit_success', { year: selectedYear }),
+            type: 'success',
+            shouldTranslate: false,
+          }),
         onError: finish.onError,
         onSettled: () => setIsConfirmOpen(false),
       }
     );
 
   // Opened without a year, e.g. a stale link: nothing to edit
-  if (!year) return null;
+  if (!initialYear) return null;
 
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
@@ -106,12 +111,13 @@ const EditOfficialForm = () => {
               {!fileUpload.result && (
                 <FileInfo>
                   <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
-                    <Text as='span'>{t('file_information')}</Text>
+                    <Text as='span'>{t('prev_file_information')}</Text>
                     <Button
                       type='link'
                       icon={<i className='ri-arrow-left-s-line' />}
                       iconPosition='end'
                       onClick={handleViewPrevious}
+                      size='small'
                     >
                       {t('view_file_details')}
                     </Button>
@@ -129,9 +135,6 @@ const EditOfficialForm = () => {
         </Form>
       </Box>
       <Box justifyContent='flex-end' gap='1.2rem' fillChildren={false}>
-        <Button htmlType='button' type='primaryOutlined' onClick={handleBack}>
-          {t('back')}
-        </Button>
         <Button
           htmlType='button'
           type='primary'

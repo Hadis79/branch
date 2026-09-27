@@ -27,12 +27,12 @@ const HolidayEntryForm = ({ isDuplicate, onAdd }: HolidayEntryFormProps) => {
     if (!province) return;
 
     const apiDate = toApiDate(date) as string;
-    const holiday = {
+    const holiday: NewCustomHoliday = {
       title: title.trim(),
       date: apiDate,
       holidayDay: weekdayName(apiDate),
       officialStatus: OfficialStatus.UNOFFICIAL,
-      province,
+      provinceName: province.provinceName,
     };
 
     if (isDuplicate(holiday)) {

@@ -78,9 +78,4 @@ export type GroupUnitsParams = PageParams & {
 
 export type GroupFormVariant = 'create' | 'edit';
 
-export const toGroupRequestDto = ({ name, units = [] }: GroupFormValues): GroupRequestDto => ({
-  name,
-  units: units.map(({ label, value }) => ({ name: label, code: value })),
-});
-
 export type GroupModalType = 'edit' | 'remove';

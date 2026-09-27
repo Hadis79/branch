@@ -85,7 +85,7 @@ let customHolidays: CustomHolidayResponse[] = (
     title,
     holidayDay: weekdayName(date),
     officialStatus: OfficialStatus.UNOFFICIAL,
-    province: provinces[provinceIndex],
+    provinceName: provinces[provinceIndex].provinceName,
   };
 });
 
@@ -153,7 +153,7 @@ const MockApi: typeof RealApi = {
     const rows = customHolidays.filter(
       (holiday) =>
         (!title || holiday.title.includes(title)) &&
-        (!provinceName || holiday.province.provinceName === provinceName) &&
+        (!provinceName || holiday.provinceName === provinceName) &&
         (!fromDate || holiday.date >= fromDate) &&
         (!toDate || holiday.date <= toDate)
     );
@@ -167,7 +167,7 @@ const MockApi: typeof RealApi = {
   },
   deleteCustomHoliday: ({ provinceName, date }: DeleteCustomHolidayParams) => {
     customHolidays = customHolidays.filter(
-      (holiday) => !(holiday.province.provinceName === provinceName && holiday.date === date)
+      (holiday) => !(holiday.provinceName === provinceName && holiday.date === date)
     );
     return delay(undefined);
   },

@@ -1,4 +1,5 @@
 export default {
+  calendar_and_base_information: 'تقویم و اطلاعات پایه',
   unit_code: 'کد واحد',
   unit_name: 'نام واحد',
   'upload-details': 'جزئیات فایل',

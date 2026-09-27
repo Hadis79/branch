@@ -35,7 +35,6 @@ export const getOfficialColumns = ({
     title: t('year'),
     dataIndex: 'year',
     align: 'center',
-    render: (year: number) => formatYear(toJalaliYear(year)),
   },
   {
     title: t('actions'),

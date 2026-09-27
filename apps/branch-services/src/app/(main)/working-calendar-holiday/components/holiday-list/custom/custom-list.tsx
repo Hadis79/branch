@@ -37,8 +37,6 @@ const CustomList = () => {
         onChange={(config) => setPagination(nextPagination(config, pagination.size))}
         hasContainer={false}
         pagination={false}
-        // current={pagination.page}
-        // pagination={{ current: pagination.page, pageSize: pagination.size }}
         rowKey='id'
       />
       <DeleteHolidayModal

@@ -28,6 +28,11 @@ const useHolidayFileUpload = (form: FormInstance) => {
     form.setFieldValue('file', undefined);
   };
 
+  const reset = () => {
+    mutation.reset();
+    form.resetFields();
+  };
+
   // A file must be selected and parsed successfully before the form can be submitted
   const validate = () => {
     if (mutation.data) return true;
@@ -36,7 +41,7 @@ const useHolidayFileUpload = (form: FormInstance) => {
     return false;
   };
 
-  return { upload, remove, validate, result: mutation.data, isPending: mutation.isPending };
+  return { upload, remove, reset, validate, result: mutation.data, isPending: mutation.isPending };
 };
 
 export default useHolidayFileUpload;

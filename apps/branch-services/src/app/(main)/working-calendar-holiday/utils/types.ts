@@ -43,7 +43,7 @@ export type NewCustomHoliday = {
   date: string;
   holidayDay: string;
   officialStatus: OfficialStatus;
-  province: Province;
+  provinceName: string;
 };
 
 export type CustomHoliday = NewCustomHoliday & { id: string };

@@ -30,7 +30,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   const headerTitle = getHeaderTitle(currentPage, formOrigin);
 
   return (
-    <WidgetWrapper headerTitle={headerTitle} headerAction={<HolidayHeaderAction />}>
+    <WidgetWrapper
+      breadcrumbPrefixTitle='calendar_and_base_information'
+      headerTitle={headerTitle}
+      headerAction={<HolidayHeaderAction />}
+    >
       {children}
     </WidgetWrapper>
   );

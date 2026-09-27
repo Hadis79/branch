@@ -29,9 +29,9 @@ const ConfirmEditModal = ({ open, dayCount, loading, onConfirm, onCancel }: Conf
         <Text as='span' fontWeight={400}>
           {t('confirm_edit_official_description')}
         </Text>
-        <Box justifyContent='space-between' fillChildren={false}>
+        <Box fillChildren={false}>
           <Text as='span' fontWeight={400}>
-            {t('edited_day_count')}
+            {t('edited_day_count')}:
           </Text>
           <Text as='span'>{formatCount(dayCount)}</Text>
         </Box>
