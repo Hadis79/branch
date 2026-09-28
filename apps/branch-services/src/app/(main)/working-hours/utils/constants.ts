@@ -1,5 +1,7 @@
-// Set to false to switch every request to the real service (services/api.ts)
-export const USE_MOCK_API = true;
+// Set to true to switch every request back to the mock service (services/mock-api.ts).
+// GET (getWorkingHours) hits the real, confirmed work-time/default/info endpoint; the other
+// operations are still guessed endpoints and will likely fail against the real backend.
+export const USE_MOCK_API = false;
 
 export const WORKING_HOURS_PATH = '/working-hours';
 

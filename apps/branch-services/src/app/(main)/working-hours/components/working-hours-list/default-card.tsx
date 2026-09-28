@@ -19,7 +19,7 @@ const DefaultCard = ({ workingHours, onEdit }: DefaultCardProps) => {
     <Box border={`0.1rem solid ${theme.border}`} padding={'1.6rem 2.4rem'} borderRadius={'0.8rem'}>
       <Box flexDirection='column' width={'100%'} gap='0.8rem'>
         <Text color={theme.textPrimary} as='span' fontWeight={500}>
-          {t('default_title_value')}
+          {workingHours.title}
         </Text>
         <Box alignItems='center' gap='0.8rem' fillChildren={false}>
           <i className='ri-time-line' />
