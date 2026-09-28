@@ -24,6 +24,7 @@ const WorkingHoursForm = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { navigateTo } = useWorkingHoursPage();
   const setMessage = useWorkingHoursStore((state) => state.setMessage);
+  const reset = useWorkingHoursStore((state) => state.resetAll);
   const createMutation = useCreateWorkingHoursMutation();
 
   const handleConfirm = () =>
@@ -42,15 +43,6 @@ const WorkingHoursForm = () => {
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
       <Box flexDirection='column' gap='2.4rem'>
-        <Button
-          htmlType='button'
-          type='link'
-          icon={<i className='ri-arrow-left-line' />}
-          iconPosition='end'
-          onClick={() => navigateTo(WorkingHoursPage.LIST)}
-        >
-          {t('button.return')}
-        </Button>
         <Box flexDirection='row-reverse'>
           <FormSVG />
           <Box flexDirection='column' width='100%'>
@@ -66,7 +58,14 @@ const WorkingHoursForm = () => {
         </Box>
       </Box>
       <Box justifyContent='flex-end' gap='1.2rem' fillChildren={false}>
-        <Button htmlType='button' type='primaryOutlined' onClick={() => form.resetFields()}>
+        <Button
+          htmlType='button'
+          type='primaryOutlined'
+          onClick={() => {
+            form.resetFields();
+            reset();
+          }}
+        >
           {t('cancel')}
         </Button>
         <Button htmlType='button' type='primary' disabled={!from || !to} onClick={() => setIsConfirmOpen(true)}>
