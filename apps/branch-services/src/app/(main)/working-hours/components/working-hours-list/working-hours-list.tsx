@@ -15,7 +15,7 @@ const WorkingHoursList = () => {
   if (isLoading) return null;
 
   return (
-    <Box flexDirection='column' gap='2.4rem' padding='3.2rem'>
+    <Box flexDirection='column' flexGrow={1} gap='2.4rem' padding='3.2rem'>
       {!data ? (
         <EmptyState />
       ) : (

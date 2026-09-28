@@ -1,5 +1,5 @@
 import { useTr } from '@branch-services/translation';
-import { Box, Text } from '@branch-services/ui-kit';
+import { Box, EmptyData, Text } from '@branch-services/ui-kit';
 
 import ExceptionCard from './exception-card';
 import useDeleteExceptionMutation from '../../queries/use-delete-exception-mutation';
@@ -10,7 +10,12 @@ const ExceptionsSection = () => {
   const { data: exceptions } = useExceptionsQuery();
   const deleteMutation = useDeleteExceptionMutation();
 
-  if (!exceptions?.length) return null;
+  if (!exceptions?.length)
+    return (
+      <Box flexGrow={1} alignItems='center' justifyContent='center' fillChildren={false}>
+        <EmptyData />
+      </Box>
+    );
 
   return (
     <Box flexDirection='column' gap='1.2rem'>

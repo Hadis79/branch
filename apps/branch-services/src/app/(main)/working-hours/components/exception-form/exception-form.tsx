@@ -3,8 +3,9 @@ import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
 import { ApiUtil, Dayjs, shouldDisableEndDate, shouldDisableStartDate } from '@branch-services/utils';
-import { Box, Button, DatePicker, Input, MessageBox } from '@branch-services/ui-kit';
+import { Box, Button, DatePicker, Input } from '@branch-services/ui-kit';
 
+import * as S from './exception-form.style';
 import ExceptionPreview from './exception-preview';
 import ScopeFields from './scope-fields';
 import FormSVG from '../../assets/form';
@@ -84,7 +85,7 @@ const ExceptionForm = () => {
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
       <Box flexDirection='column' gap='2.4rem'>
-        <MessageBox type='info' message={t('exception_info_description')} closable />
+        <S.InfoMessage type='info' message={t('exception_info_description')} closable />
         <Box flexDirection='row-reverse'>
           <FormSVG />
           <Box flexDirection='column' width='100%'>
