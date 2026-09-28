@@ -9,7 +9,7 @@ const useDeleteExceptionMutation = () => {
   return useMutation({
     mutationKey: workingHoursMutationKeys.deleteException,
     mutationFn: Api.deleteException,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: workingHoursQueryKeys.default() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: workingHoursQueryKeys.exceptions() }),
   });
 };
 

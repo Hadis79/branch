@@ -64,8 +64,7 @@ const Breadcrumb = ({ onBack, activeOnPathname, headerTitle, breadcrumbPrefixTit
       {generateCrumbs()}
       {(activeOnPathname?.pathnames?.includes(currentPathname) ||
         hasMatchingParams ||
-        step === activeOnPathname?.searchParamValues[0] ||
-        step === activeBackBtnOnPathname?.searchParamValues[1]) &&
+        (step !== null && activeOnPathname?.searchParamValues?.includes(step))) &&
         onBack && (
           <div className='go-back-button-container' onClick={onBack}>
             <div className='go-back-button'>

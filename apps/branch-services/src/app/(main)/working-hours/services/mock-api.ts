@@ -1,5 +1,11 @@
 import type RealApi from './api';
-import type { WorkingHoursInfoResponse, WorkingHoursRequest } from '../utils/types';
+import { NATIONAL_PROVINCE_NAME, PROVINCE_NAMES } from '../utils/constants';
+import type {
+  WorkingHoursExceptionRequest,
+  WorkingHoursExceptionResponse,
+  WorkingHoursInfoResponse,
+  WorkingHoursRequest,
+} from '../utils/types';
 
 // In-memory backend used while the real service is not ready.
 
@@ -7,6 +13,28 @@ const MOCK_DELAY = 600;
 
 let workingHours: WorkingHoursInfoResponse | null = null;
 let lastId = 0;
+
+// Dates are Jalali here, matching the real GET work-time/exception/list response
+let exceptions: WorkingHoursExceptionResponse[] = [
+  {
+    id: 1,
+    title: 'تغییر ساعت کاری فصل تابستان - قم',
+    provinceName: 'قم',
+    startDate: '1405/03/31',
+    endDate: '1405/06/31',
+    startWorkingHour: '06:00',
+    endWorkingHour: '11:00',
+  },
+  {
+    id: 2,
+    title: 'تغییر ساعت کاری زمستان',
+    provinceName: NATIONAL_PROVINCE_NAME,
+    startDate: '1405/09/30',
+    endDate: '1405/12/29',
+    startWorkingHour: '07:00',
+    endWorkingHour: '14:00',
+  },
+];
 
 const delay = <T>(value: T): Promise<T> =>
   new Promise((resolve) => setTimeout(() => resolve(structuredClone(value)), MOCK_DELAY));
@@ -16,7 +44,6 @@ const reject = (message: string, status = 400): Promise<never> =>
     setTimeout(() => rejectPromise({ response: { status, data: { localizedMessage: message } } }), MOCK_DELAY)
   );
 
-// Not-yet-defined is a 404, same as the real service, so the query hook's handling covers both
 const notFound = () => reject('ساعت کاری پیش‌فرض یافت نشد.', 404);
 
 const MockApi: typeof RealApi = {
@@ -34,8 +61,20 @@ const MockApi: typeof RealApi = {
     return delay(workingHours);
   },
 
-  // No exceptions data model yet; nothing to remove
-  deleteException: (): Promise<void> => delay(undefined),
+  getProvinces: (): Promise<string[]> => delay(PROVINCE_NAMES),
+
+  getExceptions: (): Promise<WorkingHoursExceptionResponse[]> => delay(exceptions),
+
+  createException: (payload: WorkingHoursExceptionRequest): Promise<WorkingHoursExceptionResponse> => {
+    const exception: WorkingHoursExceptionResponse = { id: ++lastId, ...payload };
+    exceptions = [exception, ...exceptions];
+    return delay(exception);
+  },
+
+  deleteException: (id: string): Promise<void> => {
+    exceptions = exceptions.filter((exception) => String(exception.id) !== id);
+    return delay(undefined);
+  },
 };
 
 export default MockApi;

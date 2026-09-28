@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
@@ -26,6 +26,9 @@ const WorkingHoursForm = () => {
   const setMessage = useWorkingHoursStore((state) => state.setMessage);
   const reset = useWorkingHoursStore((state) => state.resetAll);
   const createMutation = useCreateWorkingHoursMutation();
+
+  // Drop a message left over from a previous visit to this page
+  useEffect(() => setMessage(null), [setMessage]);
 
   const handleConfirm = () =>
     createMutation.mutate(

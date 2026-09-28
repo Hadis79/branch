@@ -4,6 +4,7 @@ import { Box } from '@branch-services/ui-kit';
 
 import DefaultCard from './default-card';
 import EmptyState from './empty-state';
+import ExceptionsSection from './exceptions-section';
 import EditModal from '../working-hours-modal/edit-modal';
 import useWorkingHoursQuery from '../../queries/use-working-hours-query';
 
@@ -15,7 +16,14 @@ const WorkingHoursList = () => {
 
   return (
     <Box flexDirection='column' gap='2.4rem' padding='3.2rem'>
-      {!data ? <EmptyState /> : <DefaultCard workingHours={data} onEdit={() => setIsEditOpen(true)} />}
+      {!data ? (
+        <EmptyState />
+      ) : (
+        <>
+          <DefaultCard workingHours={data} onEdit={() => setIsEditOpen(true)} />
+          <ExceptionsSection />
+        </>
+      )}
       <EditModal open={isEditOpen} workingHours={data ?? null} onClose={() => setIsEditOpen(false)} />
     </Box>
   );
