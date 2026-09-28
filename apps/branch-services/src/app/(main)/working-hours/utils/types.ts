@@ -16,3 +16,10 @@ export type WorkingHoursInfoResponse = {
   startWorkingHour: string;
   endWorkingHour: string;
 };
+
+// Raw shape sent to POST work-time/default
+export type WorkingHoursRequest = {
+  title: string;
+  startWorkingHour: string;
+  endWorkingHour: string;
+};

@@ -1,14 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Api } from '../services';
+import { toWorkingHours, toWorkingHoursRequest } from '../services/mappers';
 import { workingHoursMutationKeys, workingHoursQueryKeys } from '../utils/constants';
+import type { WorkingHoursDto } from '../utils/types';
 
 const useCreateWorkingHoursMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: workingHoursMutationKeys.create,
-    mutationFn: Api.createWorkingHours,
+    mutationFn: async (dto: WorkingHoursDto) =>
+      toWorkingHours(await Api.createWorkingHours(toWorkingHoursRequest(dto))),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: workingHoursQueryKeys.default() }),
   });
 };

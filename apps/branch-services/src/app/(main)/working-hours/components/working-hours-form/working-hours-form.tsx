@@ -41,21 +41,32 @@ const WorkingHoursForm = () => {
 
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
-      <Box flexDirection='row-reverse'>
-        <FormSVG />
-        <Box flexDirection='column' width='100%'>
-          <Form form={form} layout='vertical'>
-            <Box flexDirection='column' gap='2.4rem'>
-              <Form.Item label={t('title_label')}>
-                <Input disabled value={t('default_title_value')} />
-              </Form.Item>
-              <TimeRangeFields />
-            </Box>
-          </Form>
+      <Box flexDirection='column' gap='2.4rem'>
+        <Button
+          htmlType='button'
+          type='link'
+          icon={<i className='ri-arrow-left-line' />}
+          iconPosition='end'
+          onClick={() => navigateTo(WorkingHoursPage.LIST)}
+        >
+          {t('button.return')}
+        </Button>
+        <Box flexDirection='row-reverse'>
+          <FormSVG />
+          <Box flexDirection='column' width='100%'>
+            <Form form={form} layout='vertical'>
+              <Box flexDirection='column' gap='2.4rem'>
+                <Form.Item label={t('title_label')}>
+                  <Input disabled value={t('default_title_value')} />
+                </Form.Item>
+                <TimeRangeFields />
+              </Box>
+            </Form>
+          </Box>
         </Box>
       </Box>
       <Box justifyContent='flex-end' gap='1.2rem' fillChildren={false}>
-        <Button htmlType='button' type='primaryOutlined' onClick={() => navigateTo(WorkingHoursPage.LIST)}>
+        <Button htmlType='button' type='primaryOutlined' onClick={() => form.resetFields()}>
           {t('cancel')}
         </Button>
         <Button htmlType='button' type='primary' disabled={!from || !to} onClick={() => setIsConfirmOpen(true)}>

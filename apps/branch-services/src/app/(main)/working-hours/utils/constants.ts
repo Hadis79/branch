@@ -5,6 +5,9 @@ export const USE_MOCK_API = false;
 
 export const WORKING_HOURS_PATH = '/working-hours';
 
+// Fixed, not user-editable; sent as-is on every create/update request
+export const DEFAULT_WORKING_HOURS_TITLE = 'ساعت کاری پیش‌فرض بانک ملی ایران';
+
 // Values are part of the URL (`?step=`) and are shown by the breadcrumb (translation keys)
 export enum WorkingHoursPage {
   LIST = 'list',
