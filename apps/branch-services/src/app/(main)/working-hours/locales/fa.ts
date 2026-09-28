@@ -11,7 +11,7 @@ export default {
 
   default_title_value: 'ساعت کاری پیش‌فرض بانک ملی ایران',
   title_label: 'عنوان',
-  working_hours_label: 'ساعت‌های کاری',
+  working_hours_label: 'ساعت روزهای کاری',
   from_hour: 'از ساعت',
   to_hour: 'تا ساعت',
   hour_select_placeholder: 'انتخاب',

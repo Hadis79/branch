@@ -6,12 +6,12 @@ import { ApiUtil } from '@branch-services/utils';
 import { Box, Button, Input } from '@branch-services/ui-kit';
 
 import TimeRangeFields from './time-range-fields';
-import WorkingHoursIllustration from './working-hours-illustration';
 import ConfirmCreateModal from '../working-hours-modal/confirm-create-modal';
 import useCreateWorkingHoursMutation from '../../queries/use-create-working-hours-mutation';
 import useWorkingHoursPage from '../../hooks/use-working-hours-page';
 import useWorkingHoursStore from '../../store/use-widget-store';
 import { WorkingHoursPage } from '../../utils/constants';
+import FormSVG from '../../assets/form';
 
 type FormValues = { from?: string; to?: string };
 
@@ -41,11 +41,11 @@ const WorkingHoursForm = () => {
 
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
-      <Box gap='3.2rem'>
-        <WorkingHoursIllustration />
+      <Box flexDirection='row-reverse'>
+        <FormSVG />
         <Box flexDirection='column' width='100%'>
           <Form form={form} layout='vertical'>
-            <Box flexDirection='column' width='50%' gap='2.4rem'>
+            <Box flexDirection='column' gap='2.4rem'>
               <Form.Item label={t('title_label')}>
                 <Input disabled value={t('default_title_value')} />
               </Form.Item>

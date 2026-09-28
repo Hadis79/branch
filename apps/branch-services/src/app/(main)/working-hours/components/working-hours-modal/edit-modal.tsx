@@ -5,9 +5,7 @@ import { useTr } from '@branch-services/translation';
 import { ApiUtil } from '@branch-services/utils';
 import { Box, Button, MessageBox } from '@branch-services/ui-kit';
 
-import ExceptionItem from './exception-item';
 import TimeRangeFields from '../working-hours-form/time-range-fields';
-import useDeleteExceptionMutation from '../../queries/use-delete-exception-mutation';
 import useUpdateWorkingHoursMutation from '../../queries/use-update-working-hours-mutation';
 import useWorkingHoursStore from '../../store/use-widget-store';
 import type { WorkingHours } from '../../utils/types';
@@ -26,7 +24,6 @@ const EditModal = ({ open, workingHours, onClose }: EditModalProps) => {
   const [form] = Form.useForm<FormValues>();
   const setMessage = useWorkingHoursStore((state) => state.setMessage);
   const updateMutation = useUpdateWorkingHoursMutation();
-  const deleteExceptionMutation = useDeleteExceptionMutation();
 
   // Re-seeded every time the modal opens, so a cancelled edit doesn't leave stale values behind
   useEffect(() => {
@@ -62,17 +59,6 @@ const EditModal = ({ open, workingHours, onClose }: EditModalProps) => {
         <Form form={form} layout='vertical'>
           <TimeRangeFields />
         </Form>
-        {Boolean(workingHours?.exceptions.length) && (
-          <Box flexDirection='column' gap='0.8rem'>
-            {workingHours?.exceptions.map((exception) => (
-              <ExceptionItem
-                key={exception.id}
-                exception={exception}
-                onDelete={() => deleteExceptionMutation.mutate(exception.id)}
-              />
-            ))}
-          </Box>
-        )}
         <Box justifyContent='flex-end' gap='1.2rem' fillChildren={false}>
           <Button htmlType='button' type='primaryOutlined' onClick={onClose}>
             {t('cancel')}

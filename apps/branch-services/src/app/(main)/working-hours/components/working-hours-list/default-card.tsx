@@ -17,9 +17,9 @@ const DefaultCard = ({ workingHours, onEdit }: DefaultCardProps) => {
   const theme = useAppTheme();
 
   return (
-    <S.Card>
-      <Box flexDirection='column' gap='0.8rem'>
-        <Text as='span' fontWeight={500}>
+    <Box border={`0.1rem solid ${theme.border}`} padding={'1.6rem 2.4rem'} borderRadius={'0.8rem'}>
+      <Box flexDirection='column' width={'100%'} gap='0.8rem'>
+        <Text color={theme.textPrimary} as='span' fontWeight={500}>
           {t('default_title_value')}
         </Text>
         <Box alignItems='center' gap='0.8rem' fillChildren={false}>
@@ -29,10 +29,13 @@ const DefaultCard = ({ workingHours, onEdit }: DefaultCardProps) => {
           </Text>
         </Box>
       </Box>
-      <Button type='link' icon={<i className='ri-pencil-line' />} onClick={onEdit}>
-        {t('edit')}
-      </Button>
-    </S.Card>
+      <Box justifyContent='end' width={'100%'} alignItems='center'>
+        <Button style={{ width: 'fit-content' }} type='link' onClick={onEdit}>
+          {t('edit')}
+          <i className='ri-edit-line'></i>
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
