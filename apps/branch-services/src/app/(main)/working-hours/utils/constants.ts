@@ -1,3 +1,6 @@
+// Set to false to switch every request to the real service (services/api.ts)
+export const USE_MOCK_API = true;
+
 export const WORKING_HOURS_PATH = '/working-hours';
 
 // Values are part of the URL (`?step=`) and are shown by the breadcrumb (translation keys)

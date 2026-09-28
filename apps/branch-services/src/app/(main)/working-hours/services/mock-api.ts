@@ -1,3 +1,4 @@
+import type RealApi from './api';
 import type { WorkingHours, WorkingHoursDto } from '../utils/types';
 
 // In-memory backend used while the real service is not ready.
@@ -20,7 +21,7 @@ const reject = (message: string): Promise<never> =>
     setTimeout(() => rejectPromise({ response: { status: 400, data: { localizedMessage: message } } }), MOCK_DELAY)
   );
 
-const MockApi = {
+const MockApi: typeof RealApi = {
   getWorkingHours: (): Promise<WorkingHours | null> => delay(workingHours),
 
   createWorkingHours: ({ from, to }: WorkingHoursDto): Promise<WorkingHours> => {

@@ -1,5 +1,5 @@
+import RealApi from './api';
 import MockApi from './mock-api';
+import { USE_MOCK_API } from '../utils/constants';
 
-// TODO: add a real services/api.ts and switch to it (mirroring the other working-calendar-* modules)
-// once the working-hours service exists.
-export const Api = MockApi;
+export const Api = USE_MOCK_API ? MockApi : RealApi;

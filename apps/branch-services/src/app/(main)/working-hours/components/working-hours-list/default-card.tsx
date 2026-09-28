@@ -2,7 +2,6 @@ import { useAppTheme } from '@branch-services/hooks';
 import { useTr } from '@branch-services/translation';
 import { Box, Button, Text } from '@branch-services/ui-kit';
 
-import * as S from './default-card.style';
 import type { WorkingHours } from '../../utils/types';
 import { formatHour } from '../../utils/utils';
 

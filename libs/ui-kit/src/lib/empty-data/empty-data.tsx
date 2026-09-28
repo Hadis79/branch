@@ -10,7 +10,7 @@ import * as S from './empty-data.style';
 
 type EmptyDataPropTypes = {
   description?: string;
-  image?: string;
+  image?: React.ReactNode;
   hasBackButton?: boolean;
   backCallBack?: () => void;
 };
