@@ -8,9 +8,11 @@ interface BreadcrumbProps {
   onBack?: () => void;
   activeOnPathname?: ActiveBackBtnOnPathname;
   headerTitle?: string;
+  // Translation key of the menu grouping the module sits under (e.g. a parent with no page of its own)
+  breadcrumbPrefixTitle?: string;
 }
 
-const Breadcrumb = ({ onBack, activeOnPathname, headerTitle }: BreadcrumbProps) => {
+const Breadcrumb = ({ onBack, activeOnPathname, headerTitle, breadcrumbPrefixTitle }: BreadcrumbProps) => {
   const [t] = useTr();
   const currentPathname = usePathname();
   const searchParams = useSearchParams();
@@ -58,6 +60,7 @@ const Breadcrumb = ({ onBack, activeOnPathname, headerTitle }: BreadcrumbProps) 
 
   return (
     <BreadcrumbStyled>
+      {breadcrumbPrefixTitle && <BreadcrumbStyled.Item>{t(breadcrumbPrefixTitle)}</BreadcrumbStyled.Item>}
       {generateCrumbs()}
       {(activeOnPathname?.pathnames?.includes(currentPathname) ||
         hasMatchingParams ||

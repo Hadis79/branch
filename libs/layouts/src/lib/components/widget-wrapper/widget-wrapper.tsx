@@ -22,6 +22,9 @@ export type WidgetWrapperProps = {
   isDetailsPageTitleVisible?: boolean;
   showHeaderSection?: boolean;
   activeWithdrawalType?: string | null;
+  // Translation key of the menu grouping the module sits under (e.g. a parent with no page of its own),
+  // shown as a leading, non-clickable breadcrumb crumb
+  breadcrumbPrefixTitle?: string;
 };
 
 export const WidgetWrapper = (props: WidgetWrapperProps) => {
@@ -35,6 +38,7 @@ export const WidgetWrapper = (props: WidgetWrapperProps) => {
     headerTitle,
     headerIcon,
     headerAction,
+    breadcrumbPrefixTitle,
     isDetailsPageTitleVisible = false,
     showHeaderSection = true,
     activeWithdrawalType,
@@ -69,6 +73,7 @@ export const WidgetWrapper = (props: WidgetWrapperProps) => {
                 onBack={() => router.back()}
                 activeOnPathname={activeBackBtnOnPathname}
                 headerTitle={headerTitle as string}
+                breadcrumbPrefixTitle={breadcrumbPrefixTitle}
               />
             </S.HeaderTitleContainer>
           </S.Header>
