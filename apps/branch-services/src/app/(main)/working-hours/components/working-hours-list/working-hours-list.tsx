@@ -8,6 +8,7 @@ import WorkingHoursMessage from '../working-hours-message/working-hours-message'
 import EditModal from '../working-hours-modal/edit-modal';
 import useWorkingHoursQuery from '../../queries/use-working-hours-query';
 import useWorkingHoursStore from '../../store/use-widget-store';
+import { isEmptyObjectValues } from '@branch-services/utils';
 
 const WorkingHoursList = () => {
   const { data, isLoading } = useWorkingHoursQuery();
@@ -20,7 +21,11 @@ const WorkingHoursList = () => {
   return (
     <Box flexDirection='column' gap='2.4rem' padding='3.2rem'>
       {message && <WorkingHoursMessage message={message} closable onClose={() => setMessage(null)} />}
-      {!data ? <EmptyState /> : <DefaultCard workingHours={data} onEdit={() => setIsEditOpen(true)} />}
+      {data && isEmptyObjectValues(data!) ? (
+        <EmptyState />
+      ) : (
+        <DefaultCard workingHours={data!} onEdit={() => setIsEditOpen(true)} />
+      )}
       <EditModal open={isEditOpen} workingHours={data ?? null} onClose={() => setIsEditOpen(false)} />
     </Box>
   );

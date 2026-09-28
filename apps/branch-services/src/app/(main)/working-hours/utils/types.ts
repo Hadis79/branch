@@ -1,13 +1,7 @@
-export type WorkingHoursException = {
-  id: string;
-  title: string;
-};
-
 export type WorkingHours = {
   title: string;
   from: string; // "HH:mm"
   to: string; // "HH:mm"
-  exceptions: WorkingHoursException[];
 };
 
 export type WorkingHoursDto = {

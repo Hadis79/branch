@@ -11,6 +11,7 @@ import AddExceptionModal from './components/working-hours-modal/add-exception-mo
 import useWorkingHoursPage from './hooks/use-working-hours-page';
 import useWorkingHoursQuery from './queries/use-working-hours-query';
 import { WorkingHoursPage } from './utils/constants';
+import { isEmptyObjectValues } from '@branch-services/utils';
 
 const getHeaderTitle = (currentPage: WorkingHoursPage) =>
   currentPage === WorkingHoursPage.CREATE ? 'define_default_hours' : 'working_hours';
@@ -22,9 +23,9 @@ export default function Layout({ children }: { children: ReactNode }) {
   const { data } = useWorkingHoursQuery();
   const [isExceptionOpen, setIsExceptionOpen] = useState(false);
   const headerTitle = getHeaderTitle(currentPage);
-
+  console.log(data, isEmptyObjectValues(data!));
   const headerAction =
-    currentPage === WorkingHoursPage.LIST && data ? (
+    currentPage === WorkingHoursPage.LIST && !isEmptyObjectValues(data!) ? (
       <Button type='primary' onClick={() => setIsExceptionOpen(true)}>
         {t('add_exception')}
         <i className='ri-add-line' />

@@ -2,7 +2,7 @@ const PERSIAN_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '�
 
 // These are plain "HH:mm" values with no calendar date attached, so digits are mapped directly
 // instead of going through a timezone-aware date formatter.
-export const toPersianDigits = (value: string): string => value.replace(/[0-9]/g, (digit) => PERSIAN_DIGITS[+digit]);
+export const toPersianDigits = (value: string): string => value?.replace(/[0-9]/g, (digit) => PERSIAN_DIGITS[+digit]);
 
 // "06:00" -> "۰۶:۰۰", used to show a saved hour as text
 export const formatHour = toPersianDigits;
