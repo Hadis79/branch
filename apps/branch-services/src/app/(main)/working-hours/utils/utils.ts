@@ -42,3 +42,6 @@ export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
 // with; parsed explicitly as Jalali so this doesn't depend on the app's current calendar mode.
 export const fromJalaliDate = (value: string): string =>
   toApiDate(dayjs(value.replace(/\//g, '-'), { jalali: true })) as string;
+
+// An exception whose date range has already ended, shown in its own "expired" section
+export const isExpiredException = (endDate: string): boolean => dayjs(endDate).isBefore(dayjs(), 'day');

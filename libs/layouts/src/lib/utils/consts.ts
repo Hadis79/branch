@@ -13,5 +13,5 @@ export const activeBackBtnOnPathname: ActiveBackBtnOnPathname = {
     '/list-request',
   ],
   searchParams: ['id', 'ssn'],
-  searchParamValues: ['file-details', 'query-status', 'define-default', 'add-exception'],
+  searchParamValues: ['file-details', 'query-status'],
 };

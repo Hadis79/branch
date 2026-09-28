@@ -55,3 +55,8 @@ export type WorkingHoursExceptionResponse = {
 // Raw shape sent to POST work-time/exception/create. Same fields as the response, but startDate /
 // endDate are ISO (YYYY-MM-DD) here and there is no id.
 export type WorkingHoursExceptionRequest = Omit<WorkingHoursExceptionResponse, 'id'>;
+
+// Raw shape of GET calendar/holiday/province/list (shared with working-calendar-holiday). A
+// nationwide entry has no unit codes of its own; the exception form filters it out since scope
+// already has its own "national" option.
+export type ProvinceResponse = { provinceName: string; unitCodes: string[] };

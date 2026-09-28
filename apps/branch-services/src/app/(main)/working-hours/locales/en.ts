@@ -66,4 +66,5 @@ export default {
   new_hours_preview: 'New working hours preview',
   exception_create_success: 'The exception working hours were saved.',
   exceptions_section_title: 'Exception working hours',
+  expired_exceptions_section_title: 'Expired',
 };

@@ -1,6 +1,7 @@
 import { bbpUrl, client } from '@branch-services/client';
 
 import type {
+  ProvinceResponse,
   WorkingHoursExceptionRequest,
   WorkingHoursExceptionResponse,
   WorkingHoursInfoResponse,
@@ -8,8 +9,10 @@ import type {
 } from '../utils/types';
 
 const WORK_TIME_URL = `${bbpUrl}/calendar/work-time`;
+// Shared with working-calendar-holiday's own province list
+const PROVINCE_LIST_URL = `${bbpUrl}/calendar/holiday/province/list`;
 
-// Confirmed: GET .../default/info, and the exception/* endpoints below. getProvinces and the
+// Confirmed: GET .../default/info, the exception/* endpoints below, and the province list. The
 // default-hours create/update endpoints are still guesses. This stays a plain pass-through:
 // request shaping and response mapping happen in the query/mutation hooks (services/mappers.ts),
 // not here, like the other working-calendar-* modules.
@@ -26,8 +29,8 @@ const Api = {
     const response = await client.post<WorkingHoursInfoResponse>(`${WORK_TIME_URL}/default`, payload);
     return response.data;
   },
-  getProvinces: async (): Promise<string[]> => {
-    const response = await client.get<string[]>(`${WORK_TIME_URL}/provinces`);
+  getProvinces: async (): Promise<ProvinceResponse[]> => {
+    const response = await client.get<ProvinceResponse[]>(PROVINCE_LIST_URL);
     return response.data;
   },
   getExceptions: async (): Promise<WorkingHoursExceptionResponse[]> => {

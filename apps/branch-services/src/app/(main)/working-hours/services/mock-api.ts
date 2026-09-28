@@ -1,6 +1,7 @@
 import type RealApi from './api';
 import { NATIONAL_PROVINCE_NAME, PROVINCE_NAMES } from '../utils/constants';
 import type {
+  ProvinceResponse,
   WorkingHoursExceptionRequest,
   WorkingHoursExceptionResponse,
   WorkingHoursInfoResponse,
@@ -13,6 +14,13 @@ const MOCK_DELAY = 600;
 
 let workingHours: WorkingHoursInfoResponse | null = null;
 let lastId = 0;
+
+// Matches calendar/holiday/province/list's shape: a nationwide entry with no unit codes, plus
+// every real province
+const provinces: ProvinceResponse[] = [
+  { provinceName: NATIONAL_PROVINCE_NAME, unitCodes: [] },
+  ...PROVINCE_NAMES.map((provinceName, index) => ({ provinceName, unitCodes: [String(index + 1)] })),
+];
 
 // Dates are Jalali here, matching the real GET work-time/exception/list response
 let exceptions: WorkingHoursExceptionResponse[] = [
@@ -61,7 +69,7 @@ const MockApi: typeof RealApi = {
     return delay(workingHours);
   },
 
-  getProvinces: (): Promise<string[]> => delay(PROVINCE_NAMES),
+  getProvinces: (): Promise<ProvinceResponse[]> => delay(provinces),
 
   getExceptions: (): Promise<WorkingHoursExceptionResponse[]> => delay(exceptions),
 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import { WidgetWrapper } from '@branch-services/layouts';
 import { loadTr, useTr } from '@branch-services/translation';
 import { Button } from '@branch-services/ui-kit';
@@ -17,23 +18,48 @@ const getHeaderTitle = (currentPage: WorkingHoursPage) => {
   return 'working_hours';
 };
 
-export default function Layout({ children }: { children: ReactNode }) {
-  loadTr({ en, fa });
-  const [t] = useTr();
-  const { currentPage, navigateTo } = useWorkingHoursPage();
-  const { data } = useWorkingHoursQuery();
-  const headerTitle = getHeaderTitle(currentPage);
-
-  const headerAction =
-    currentPage === WorkingHoursPage.LIST && data ? (
-      <Button type='primary' onClick={() => navigateTo(WorkingHoursPage.ADD_EXCEPTION)}>
+const getHeaderAction = (
+  currentPage: WorkingHoursPage,
+  hasDefault: boolean,
+  onAddException: () => void,
+  onBack: () => void,
+  t: (key: string) => string
+) => {
+  if (currentPage === WorkingHoursPage.LIST) {
+    if (!hasDefault) return undefined;
+    return (
+      <Button type='primary' onClick={onAddException}>
         {t('add_exception')}
         <i className='ri-add-line' />
       </Button>
-    ) : undefined;
+    );
+  }
+
+  // Every other page here is a form; all of them get a back button
+  return (
+    <Button type='link' icon={<i className='ri-arrow-left-line' />} iconPosition='end' onClick={onBack}>
+      {t('button.return')}
+    </Button>
+  );
+};
+
+export default function Layout({ children }: { children: ReactNode }) {
+  loadTr({ en, fa });
+  const [t] = useTr();
+  const router = useRouter();
+  const { currentPage, navigateTo } = useWorkingHoursPage();
+  const { data } = useWorkingHoursQuery();
+  const headerTitle = getHeaderTitle(currentPage);
+  const headerAction = getHeaderAction(
+    currentPage,
+    Boolean(data),
+    () => navigateTo(WorkingHoursPage.ADD_EXCEPTION),
+    () => router.back(),
+    t
+  );
 
   return (
-    <WidgetWrapper headerTitle={headerTitle} headerAction={headerAction}>
+    <WidgetWrapper breadcrumbPrefixTitle='branch_management' headerTitle={headerTitle} headerAction={headerAction}>
       {children}
     </WidgetWrapper>
   );

@@ -11,7 +11,8 @@ import type { WorkingHoursException } from '../../utils/types';
 
 type ExceptionCardProps = {
   exception: WorkingHoursException;
-  onDelete: () => void;
+  // Omitted for an expired exception, which can no longer be removed
+  onDelete?: () => void;
 };
 
 type DetailItemProps = { label: string; value: string };
@@ -52,9 +53,11 @@ const ExceptionCard = ({ exception, onDelete }: ExceptionCardProps) => {
           <i className={isExpanded ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'} />
           <Text as='span'>{exception.title}</Text>
         </Box>
-        <Button type='link' danger icon={<i className='ri-delete-bin-2-line' />} onClick={onDelete}>
-          {t('delete')}
-        </Button>
+        {onDelete && (
+          <Button type='link' danger icon={<i className='ri-delete-bin-2-line' />} onClick={onDelete}>
+            {t('delete')}
+          </Button>
+        )}
       </Box>
       {isExpanded && (
         <Box flexDirection='column' gap='1.2rem'>

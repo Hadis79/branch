@@ -66,4 +66,5 @@ export default {
   new_hours_preview: 'نمای ساعت کاری جدید',
   exception_create_success: 'ساعات کاری استثنا با موفقیت ثبت شد.',
   exceptions_section_title: 'ساعات کاری استثنا',
+  expired_exceptions_section_title: 'منقضی‌شده',
 };

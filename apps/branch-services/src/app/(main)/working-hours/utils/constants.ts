@@ -18,7 +18,7 @@ export enum WorkingHoursPage {
   ADD_EXCEPTION = 'add-exception',
 }
 
-// The provinces an exception can be scoped to; a real endpoint may replace this list later
+// Mock seed only; the real provinces come from getProvinces (calendar/holiday/province/list)
 export const PROVINCE_NAMES = ['اصفهان', 'تهران', 'خوزستان', 'قم', 'قزوین', 'فارس', 'خراسان رضوی', 'آذربایجان شرقی'];
 
 const WORKING_HOURS_QUERY_KEY = 'working-hours';
