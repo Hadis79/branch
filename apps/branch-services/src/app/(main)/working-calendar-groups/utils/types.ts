@@ -5,10 +5,16 @@ export type GroupListItemResponse = Omit<GroupListItem, 'id'> & {
   id: string | number;
 };
 
+export enum GroupType {
+  WORK_TIME = 'WORK_TIME',
+  DUTY = 'DUTY',
+}
+
 export interface GroupListItem {
   id: string;
   name: string;
   size: number;
+  groupType: GroupType;
 }
 export type GroupUnit = { name: string; code: string };
 
@@ -17,6 +23,8 @@ export type UnitOption = { label: string; value: string };
 
 export interface GroupFormValues {
   name: string;
+  // Create form only: fixed once the group is created, so the edit form never shows or sends it
+  groupType?: GroupType;
   // Create form: the selected units
   units?: UnitOption[];
   file?: UploadFile[];
@@ -59,6 +67,7 @@ export type DownloadedFile = {
 
 export interface GroupRequestDto {
   name: string;
+  groupType: GroupType;
   units: GroupUnit[];
 }
 

@@ -58,7 +58,7 @@ const GroupForm = ({ variant }: GroupFormProps) => {
   }, [resetMessage]);
 
   useEffect(() => {
-    if (editedGroup) form.setFieldsValue({ name: editedGroup.name });
+    if (editedGroup) form.setFieldsValue({ name: editedGroup.name, groupType: editedGroup.groupType });
   }, [editedGroup, form]);
 
   // Opened without picking a group (e.g. a link in another tab): there is nothing to edit
@@ -96,10 +96,14 @@ const GroupForm = ({ variant }: GroupFormProps) => {
     }
 
     const values: GroupFormValues = form.getFieldsValue(true);
+    // Edit only shows the type (locked); the group's existing one travels through unchanged
+    const groupType = isEdit ? editedGroup?.groupType : values.groupType;
+    if (!groupType) return;
 
     try {
       const saved = await save({
         values,
+        groupType,
         target: isEdit && groupId ? { variant: 'edit', id: groupId } : { variant: 'create' },
         isFileEntry,
         uploadedUnits: fileUpload.result?.units,

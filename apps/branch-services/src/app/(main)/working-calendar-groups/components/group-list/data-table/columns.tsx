@@ -3,7 +3,8 @@ import { getValueOrDash } from '@branch-services/utils';
 import { TFunction } from 'i18next';
 
 import { calculateRow } from '../../../utils/utils';
-import { GroupListItem, GroupModalType, PageParams } from '../../../utils/types';
+import { GROUP_TYPE_LABELS } from '../../../utils/constants';
+import { GroupListItem, GroupModalType, GroupType, PageParams } from '../../../utils/types';
 
 import * as S from './data-table.style';
 
@@ -24,6 +25,10 @@ export const mobileColumns = ({ t }: Pick<ColumnsProps, 't'>): ColumnsType<Group
           <S.MobileTableItem>
             <span className='item__title'>{t('group_name')}</span>
             <span className='item__value'>{getValueOrDash(record?.name)}</span>
+          </S.MobileTableItem>
+          <S.MobileTableItem>
+            <span className='item__title'>{t('group_type')}</span>
+            <span className='item__value'>{record?.groupType ? t(GROUP_TYPE_LABELS[record.groupType]) : '-'}</span>
           </S.MobileTableItem>
           <S.MobileTableItem>
             <span className='item__title'>{t('unit_count')}</span>
@@ -53,6 +58,12 @@ export const columns = ({
     render: (value) => {
       return getValueOrDash(value);
     },
+  },
+  {
+    title: t('group_type'),
+    dataIndex: 'groupType',
+    align: 'center',
+    render: (value?: GroupType) => (value ? t(GROUP_TYPE_LABELS[value]) : '-'),
   },
   {
     title: t('unit_count'),

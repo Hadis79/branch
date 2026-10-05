@@ -1,10 +1,11 @@
 import { MessageModel } from '@branch-services/types';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { GroupListItem, GroupUnit, PageParams } from '../utils/types';
+import type { GroupListItem, GroupType, GroupUnit, PageParams } from '../utils/types';
 
 export type GroupListFilter = {
   name?: string;
+  groupType?: GroupType | '';
 };
 
 // Only state shared between pages lives here; single-component state stays local.

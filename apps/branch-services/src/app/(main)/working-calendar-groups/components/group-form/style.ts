@@ -29,7 +29,7 @@ export const FormActions = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
-
+  margin-top: 5.2rem;
   .ant-btn {
     min-width: 12rem;
   }
@@ -115,13 +115,20 @@ export const WarningBanner = styled.div`
 
 export const ManualEditHeader = styled.div`
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  /* align-items: flex-start; */
+  /* justify-content: space-between; */
   gap: 2.4rem;
-  margin-bottom: 1.6rem;
+  margin: 2.4rem 0 1.6rem;
+
+  .group-type-field {
+    flex: 1;
+    /* max-width: 48rem; */
+    margin-bottom: 0;
+  }
 
   .add-unit-field {
-    width: 32rem;
+    flex: 1;
+    /* width: 32rem; */
     margin-bottom: 0;
   }
 `;

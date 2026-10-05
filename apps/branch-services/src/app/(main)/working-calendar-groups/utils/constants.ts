@@ -1,5 +1,24 @@
 import type { GroupListQueryParams } from './param-util';
-import type { PageParams } from './types';
+import { GroupType, type PageParams } from './types';
+
+// Translation key per group type, shared by the list filter and the list column
+export const GROUP_TYPE_LABELS: Record<GroupType, string> = {
+  [GroupType.WORK_TIME]: 'group_type_working_time',
+  [GroupType.DUTY]: 'group_type_duty',
+};
+
+// `''` stands for "every type" in the filter; it's dropped before being sent as a query param
+export const GROUP_TYPE_FILTER_OPTIONS: { value: GroupType | ''; label: string }[] = [
+  { value: '', label: 'group_type_all' },
+  { value: GroupType.WORK_TIME, label: GROUP_TYPE_LABELS[GroupType.WORK_TIME] },
+  { value: GroupType.DUTY, label: GROUP_TYPE_LABELS[GroupType.DUTY] },
+];
+
+// No "all" entry: the create form picks exactly one type
+export const GROUP_TYPE_OPTIONS: { value: GroupType; label: string }[] = [
+  { value: GroupType.WORK_TIME, label: GROUP_TYPE_LABELS[GroupType.WORK_TIME] },
+  { value: GroupType.DUTY, label: GROUP_TYPE_LABELS[GroupType.DUTY] },
+];
 
 export enum WorkingCalendarGroupPage {
   LIST = 'list',
@@ -11,7 +30,7 @@ export enum WorkingCalendarGroupPage {
 }
 
 // Set to false to switch every request to the real service (services/api.ts)
-export const USE_MOCK_API = false;
+export const USE_MOCK_API = true;
 
 // Values are part of the URL (`?mode=`), keep them stable
 export enum EntryMode {

@@ -1,11 +1,12 @@
 import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Box, Button, Input, SearchItemsContainer } from '@branch-services/ui-kit';
+import { Box, Button, Input, SearchItemsContainer, Select } from '@branch-services/ui-kit';
 
 import { FilterWrapper } from './filter.style';
 import useGroupStore, { GroupListFilter } from '../../../store/use-widget-store';
 import useGroupListQuery from '../../../queries/use-group-list-query';
+import { GROUP_TYPE_FILTER_OPTIONS } from '../../../utils/constants';
 
 const Filter = () => {
   const [t] = useTr();
@@ -19,7 +20,10 @@ const Filter = () => {
 
   const onFinish = (values: GroupListFilter) => {
     // Same search again keeps the query key, so the (still fresh) result has to be refetched explicitly
-    const isSameQuery = page === 1 && (values.name?.trim() || '') === (filter.name?.trim() || '');
+    const isSameQuery =
+      page === 1 &&
+      (values.name?.trim() || '') === (filter.name?.trim() || '') &&
+      (values.groupType || '') === (filter.groupType || '');
     if (isSameQuery) {
       refetch();
       return;
@@ -34,6 +38,12 @@ const Filter = () => {
         <SearchItemsContainer>
           <Form.Item layout='vertical' label={t('group_name')} name='name'>
             <Input allowClear placeholder={t('group_name_placeholder')} />
+          </Form.Item>
+          <Form.Item layout='vertical' label={t('group_type')} name='groupType'>
+            <Select
+              options={GROUP_TYPE_FILTER_OPTIONS.map(({ value, label }) => ({ value, label: t(label) }))}
+              placeholder={t('group_type_placeholder')}
+            />
           </Form.Item>
           <Box alignItems='center' justifyContent='space-between'>
             <Box>

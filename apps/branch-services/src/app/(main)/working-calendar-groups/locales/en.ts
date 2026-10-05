@@ -13,6 +13,16 @@ export default {
   group_name: 'Group name',
   group_name_placeholder: 'Enter group name',
   group_name_required: 'Group name is required',
+  group_type: 'Group type',
+  group_type_placeholder: 'Select a group type.',
+  group_type_all: 'All',
+  group_type_working_time: 'Working-hour groups',
+  group_type_duty: 'Duty groups',
+  group_type_required: 'Select a group type.',
+  group_type_warning:
+    'Groups created here will be usable from the “Unit Management” menu to apply the relevant settings. Please choose the group type carefully: it cannot be changed after creation. To change it, delete this group and recreate it with the desired type.',
+  group_type_locked_hint:
+    'The group type cannot be edited. Each group type has its own use and settings, and changing it could conflict with the rules and settings created for it.',
   unit: 'Unit',
   unit_required: 'Select at least one unit',
   select_or_search: 'Select / Search',

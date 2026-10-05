@@ -3,16 +3,17 @@ import { PaginatedData } from '@branch-services/types';
 import type RealApi from './api';
 import { toGroupListPage, toUploadedGroupFile } from './mappers';
 import type { GroupListQueryParams } from '../utils/param-util';
-import type {
-  DownloadedFile,
-  GroupFileUploadResponse,
-  UploadedGroupFile,
-  GroupListItem,
-  GroupRequestDto,
-  GroupUnit,
-  GroupUnitsParams,
-  UpdateGroupParams,
-  UploadGroupFileParams,
+import {
+  GroupType,
+  type DownloadedFile,
+  type GroupFileUploadResponse,
+  type UploadedGroupFile,
+  type GroupListItem,
+  type GroupRequestDto,
+  type GroupUnit,
+  type GroupUnitsParams,
+  type UpdateGroupParams,
+  type UploadGroupFileParams,
 } from '../utils/types';
 
 // In-memory backend with the same signatures as ./api, used while the real service is not ready.
@@ -46,9 +47,9 @@ let lastId = 0;
 const nextId = () => String(++lastId);
 
 let groups: UpdateGroupParams[] = [
-  { id: nextId(), name: 'شعب کشیک قم', units: allUnits.slice(4, 6) },
-  { id: nextId(), name: 'شعب استان تهران', units: allUnits.slice(0, 4) },
-  { id: nextId(), name: 'شعب مراکز استان', units: allUnits.slice(5) },
+  { id: nextId(), name: 'شعب کشیک قم', units: allUnits.slice(4, 6), groupType: GroupType.DUTY },
+  { id: nextId(), name: 'شعب استان تهران', units: allUnits.slice(0, 4), groupType: GroupType.WORK_TIME },
+  { id: nextId(), name: 'شعب مراکز استان', units: allUnits.slice(5), groupType: GroupType.WORK_TIME },
 ];
 
 const delay = <T>(value: T): Promise<T> =>
@@ -86,19 +87,24 @@ const isDuplicateName = (name: string, exceptId?: string) =>
 const MockApi: typeof RealApi = {
   getUnitList: () => delay(allUnits),
 
-  getGroupsHistory: ({ page, size, name }: GroupListQueryParams): Promise<PaginatedData<GroupListItem>> => {
+  getGroupsHistory: ({ page, size, name, groupType }: GroupListQueryParams): Promise<PaginatedData<GroupListItem>> => {
     const rows = groups
-      .filter((group) => !name || group.name.includes(name))
+      .filter((group) => (!name || group.name.includes(name)) && (!groupType || group.groupType === groupType))
       // Numeric ids like the service; the shared mapper turns them into strings
-      .map((group) => ({ id: Number(group.id), name: group.name, size: group.units.length }));
+      .map((group) => ({
+        id: Number(group.id),
+        name: group.name,
+        size: group.units.length,
+        groupType: group.groupType,
+      }));
 
     return delay(paginate(rows, page, size)).then(toGroupListPage);
   },
 
-  createGroups: ({ name, units }: GroupRequestDto) => {
+  createGroups: ({ name, units, groupType }: GroupRequestDto) => {
     if (isDuplicateName(name)) return reject('گروهی با این نام قبلا ثبت شده است.');
 
-    groups = [{ id: nextId(), name: name.trim(), units }, ...groups];
+    groups = [{ id: nextId(), name: name.trim(), units, groupType }, ...groups];
     return delay(undefined);
   },
 
@@ -111,7 +117,7 @@ const MockApi: typeof RealApi = {
     if (!findGroup(id)) return reject('گروه موردنظر یافت نشد.');
     if (isDuplicateName(name, id)) return reject('گروهی با این نام قبلا ثبت شده است.');
 
-    groups = groups.map((group) => (group.id === id ? { id, name: name.trim(), units } : group));
+    groups = groups.map((group) => (group.id === id ? { ...group, name: name.trim(), units } : group));
     return delay(undefined);
   },
 

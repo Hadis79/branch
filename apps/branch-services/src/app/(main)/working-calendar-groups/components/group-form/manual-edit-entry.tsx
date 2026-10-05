@@ -5,6 +5,7 @@ import { useTr } from '@branch-services/translation';
 import { Button, EmptyData, Select } from '@branch-services/ui-kit';
 
 import GroupNameField from './group-name-field';
+import GroupTypeField from './group-type-field';
 import GroupUnitsTable, { GroupUnitRow } from './group-units-table';
 import useGetUnitList from '../../queries/use-get-unit-list';
 import useGroupUnitsPagesQuery from '../../queries/use-group-units-pages-query';
@@ -102,8 +103,9 @@ const ManualEditEntry = ({ group }: ManualEditEntryProps) => {
 
   return (
     <>
+      <GroupNameField inline />
       <ManualEditHeader>
-        <GroupNameField inline />
+        <GroupTypeField locked className='group-type-field' />
         <Form.Item label={t('add_unit')} className='add-unit-field'>
           <Select
             showSearch
