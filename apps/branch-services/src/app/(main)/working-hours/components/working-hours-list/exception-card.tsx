@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
-import { useAppTheme } from '@branch-services/hooks';
 import { useTr } from '@branch-services/translation';
 import { dateLocale } from '@branch-services/utils';
-import { Box, Button, Text } from '@branch-services/ui-kit';
+import { Box, Button } from '@branch-services/ui-kit';
 
 import * as S from './exception-card.style';
 import { formatHour } from '../../utils/utils';
@@ -11,6 +10,7 @@ import type { WorkingHoursException } from '../../utils/types';
 
 type ExceptionCardProps = {
   exception: WorkingHoursException;
+  isExpired?: boolean;
   // Omitted for an expired exception, which can no longer be removed
   onDelete?: () => void;
 };
@@ -18,21 +18,16 @@ type ExceptionCardProps = {
 type DetailItemProps = { label: string; value: string };
 
 const DetailItem = ({ label, value }: DetailItemProps) => {
-  const theme = useAppTheme();
   return (
-    <Box flexDirection='column' gap='0.4rem'>
-      <Text as='span' fontSize='1.2rem' color={theme.textSecondary}>
-        {label}
-      </Text>
-      <Text as='span' fontWeight={500}>
-        {value}
-      </Text>
-    </Box>
+    <S.DetailItem>
+      <span className='detail-label'>{label}</span>
+      <span className='detail-value'>{value}</span>
+    </S.DetailItem>
   );
 };
 
 // A working-hours exception; expands to its scope, dates and hours
-const ExceptionCard = ({ exception, onDelete }: ExceptionCardProps) => {
+const ExceptionCard = ({ exception, isExpired = false, onDelete }: ExceptionCardProps) => {
   const [t] = useTr();
   const [isExpanded, setIsExpanded] = useState(false);
   const scopeText =
@@ -41,8 +36,8 @@ const ExceptionCard = ({ exception, onDelete }: ExceptionCardProps) => {
       : t('scope_national');
 
   return (
-    <S.Card flexDirection='column' gap='1.2rem'>
-      <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
+    <S.Card $expired={isExpired} flexDirection='column'>
+      <S.Header $expanded={isExpanded} justifyContent='space-between' alignItems='center' fillChildren={false}>
         <Box
           className='exception-title'
           alignItems='center'
@@ -51,28 +46,25 @@ const ExceptionCard = ({ exception, onDelete }: ExceptionCardProps) => {
           onClick={() => setIsExpanded((value) => !value)}
         >
           <i className={isExpanded ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'} />
-          <Text as='span'>{exception.title}</Text>
+          <S.Title>{exception.title}</S.Title>
         </Box>
         {onDelete && (
-          <Button type='link' danger icon={<i className='ri-delete-bin-2-line' />} onClick={onDelete}>
+          <Button className='delete-button' type='link' danger onClick={onDelete}>
             {t('delete')}
+            <i className='ri-delete-bin-line'></i>
           </Button>
         )}
-      </Box>
+      </S.Header>
       {isExpanded && (
-        <Box flexDirection='column' gap='1.2rem'>
-          <Box justifyContent='space-between' fillChildren={false}>
-            <DetailItem
-              label={t('new_working_hours')}
-              value={t('hours_range', { from: formatHour(exception.from), to: formatHour(exception.to) })}
-            />
-            <DetailItem label={t('affected_scope')} value={scopeText} />
-          </Box>
-          <Box justifyContent='space-between' fillChildren={false}>
-            <DetailItem label={t('end_date')} value={dateLocale(exception.endDate) ?? '-'} />
-            <DetailItem label={t('start_date')} value={dateLocale(exception.startDate) ?? '-'} />
-          </Box>
-        </Box>
+        <S.DetailsGrid>
+          <DetailItem label={t('scope')} value={scopeText} />
+          <DetailItem
+            label={t('new_working_hours')}
+            value={t('hours_range', { from: formatHour(exception.from), to: formatHour(exception.to) })}
+          />
+          <DetailItem label={t('start_date')} value={dateLocale(exception.startDate) ?? '-'} />
+          <DetailItem label={t('end_date')} value={dateLocale(exception.endDate) ?? '-'} />
+        </S.DetailsGrid>
       )}
     </S.Card>
   );

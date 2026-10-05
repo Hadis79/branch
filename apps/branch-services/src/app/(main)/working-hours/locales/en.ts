@@ -34,6 +34,9 @@ export default {
   edit_warning: 'Note: changing these hours will apply to every branch of Bank Melli Iran.',
   save_changes: 'Save changes',
   delete: 'Delete',
+  delete_exception_title: 'Delete exception working hours',
+  delete_exception_confirmation: 'Are you sure you want to delete the “{{title}}” exception working hours?',
+  delete_exception_success: 'The exception working hours were deleted successfully.',
   update_success: "Bank Melli Iran's default working hours were updated.",
 
   exception_info_description:

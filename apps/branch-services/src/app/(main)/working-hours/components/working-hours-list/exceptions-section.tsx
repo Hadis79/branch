@@ -1,9 +1,13 @@
 import { useTr } from '@branch-services/translation';
+import { ApiUtil } from '@branch-services/utils';
 import { Box, EmptyData, Text } from '@branch-services/ui-kit';
+import { useState } from 'react';
 
 import ExceptionCard from './exception-card';
+import DeleteExceptionModal from '../working-hours-modal/delete-exception-modal';
 import useDeleteExceptionMutation from '../../queries/use-delete-exception-mutation';
 import useExceptionsQuery from '../../queries/use-exceptions-query';
+import useWorkingHoursStore from '../../store/use-widget-store';
 import { isExpiredException } from '../../utils/utils';
 import type { WorkingHoursException } from '../../utils/types';
 
@@ -11,6 +15,29 @@ const ExceptionsSection = () => {
   const [t] = useTr();
   const { data: exceptions } = useExceptionsQuery();
   const deleteMutation = useDeleteExceptionMutation();
+  const setMessage = useWorkingHoursStore((state) => state.setMessage);
+  const [selectedException, setSelectedException] = useState<WorkingHoursException | null>(null);
+
+  const handleCloseDelete = () => {
+    if (deleteMutation.isPending) return;
+    deleteMutation.reset();
+    setSelectedException(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!selectedException || deleteMutation.isPending) return;
+
+    deleteMutation.mutate(selectedException.id, {
+      onSuccess: () => {
+        setMessage({ txt: 'delete_exception_success', type: 'success', shouldTranslate: true });
+        setSelectedException(null);
+      },
+      onError: (error) => {
+        setMessage(ApiUtil.getErrorMessage(error));
+        setSelectedException(null);
+      },
+    });
+  };
 
   if (!exceptions?.length)
     return (
@@ -21,7 +48,9 @@ const ExceptionsSection = () => {
 
   const active: WorkingHoursException[] = [];
   const expired: WorkingHoursException[] = [];
-  exceptions.forEach((exception) => (isExpiredException(exception.endDate) ? expired : active).push(exception));
+  exceptions.forEach((exception) =>
+    (isExpiredException(exception.endDate, exception.to) ? expired : active).push(exception)
+  );
 
   return (
     <Box flexDirection='column' gap='2.4rem'>
@@ -31,11 +60,7 @@ const ExceptionsSection = () => {
             {t('exceptions_section_title')}
           </Text>
           {active.map((exception) => (
-            <ExceptionCard
-              key={exception.id}
-              exception={exception}
-              onDelete={() => deleteMutation.mutate(exception.id)}
-            />
+            <ExceptionCard key={exception.id} exception={exception} onDelete={() => setSelectedException(exception)} />
           ))}
         </Box>
       )}
@@ -45,10 +70,16 @@ const ExceptionsSection = () => {
             {t('expired_exceptions_section_title')}
           </Text>
           {expired.map((exception) => (
-            <ExceptionCard key={exception.id} exception={exception} />
+            <ExceptionCard key={exception.id} exception={exception} isExpired />
           ))}
         </Box>
       )}
+      <DeleteExceptionModal
+        exception={selectedException}
+        loading={deleteMutation.isPending}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCloseDelete}
+      />
     </Box>
   );
 };

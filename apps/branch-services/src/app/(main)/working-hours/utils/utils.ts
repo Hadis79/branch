@@ -43,5 +43,10 @@ export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
 export const fromJalaliDate = (value: string): string =>
   toApiDate(dayjs(value.replace(/\//g, '-'), { jalali: true })) as string;
 
-// An exception whose date range has already ended, shown in its own "expired" section
-export const isExpiredException = (endDate: string): boolean => dayjs(endDate).isBefore(dayjs(), 'day');
+// An exception expires at its exact end date and time, not merely at the end of its end date.
+export const isExpiredException = (endDate: string, endTime: string): boolean => {
+  const [hour, minute, second = 0] = endTime.split(':').map(Number);
+  const expiresAt = dayjs(endDate).hour(hour).minute(minute).second(second).millisecond(0);
+
+  return expiresAt.isValid() && expiresAt.isBefore(dayjs());
+};

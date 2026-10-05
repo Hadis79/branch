@@ -14,6 +14,7 @@ type WorkingHoursModalProps = {
   onConfirm: () => void;
   onCancel: () => void;
   confirmLoading?: boolean;
+  danger?: boolean;
   children: ReactNode;
 };
 
@@ -26,6 +27,7 @@ const WorkingHoursModal = ({
   onConfirm,
   onCancel,
   confirmLoading = false,
+  danger = false,
   children,
 }: WorkingHoursModalProps) => {
   const [t] = useTr();
@@ -39,8 +41,8 @@ const WorkingHoursModal = ({
       maskClosable={!confirmLoading}
       onCancel={onCancel}
       title={
-        <S.ModalTitle>
-          <i className='ri-information-fill'></i>
+        <S.ModalTitle $danger={danger}>
+          <i className={danger ? 'ri-error-warning-fill' : 'ri-information-fill'} />
           {title}
         </S.ModalTitle>
       }
@@ -50,7 +52,7 @@ const WorkingHoursModal = ({
         <Button htmlType='button' type='primaryOutlined' disabled={confirmLoading} onClick={onCancel}>
           {cancelText ?? t('cancel')}
         </Button>
-        <Button htmlType='button' type='primary' loading={confirmLoading} onClick={onConfirm}>
+        <Button htmlType='button' type='primary' danger={danger} loading={confirmLoading} onClick={onConfirm}>
           {confirmText}
         </Button>
       </Box>

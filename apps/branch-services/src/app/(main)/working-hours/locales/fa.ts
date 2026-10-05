@@ -13,6 +13,7 @@ export default {
   default_title_value: 'ساعت کاری پیش‌فرض بانک ملی ایران',
   title_label: 'عنوان',
   working_hours_label: 'ساعت روزهای کاری',
+  working_days: 'روزهای کاری',
   from_hour: 'از ساعت',
   to_hour: 'تا ساعت',
   hour_select_placeholder: 'انتخاب',
@@ -28,13 +29,16 @@ export default {
     'ساعت کاری پیش‌فرض بانک ملی ایران با موفقیت ثبت شد و به‌عنوان تنظیمات مبنای فعالیت واحدها اعمال خواهد شد.',
 
   add_exception: 'افزودن ساعت کاری استثنا',
-  hours_range: 'از {{from}} تا {{to}}',
+  hours_range: 'روزهای کاری {{from}} تا {{to}}',
   edit: 'ویرایش',
 
   edit_title: 'ویرایش ساعت کاری پیش‌فرض',
   edit_warning: 'توجه داشته باشید، تغییر در ساعت کاری بر همه واحدهای بانک ملی ایران اعمال خواهد شد.',
   save_changes: 'ذخیره تغییرات',
   delete: 'حذف',
+  delete_exception_title: 'حذف ساعت کاری استثنا',
+  delete_exception_confirmation: 'آیا از حذف ساعت کاری استثنا «{{title}}» اطمینان دارید؟',
+  delete_exception_success: 'ساعت کاری استثنا با موفقیت حذف شد.',
   update_success: 'ساعت کاری پیش‌فرض بانک ملی ایران با موفقیت ویرایش شد.',
   exception_info_description:
     'در این بخش می‌توانید ساعات کاری استثنایی را برای محدوده انتخابی تعریف کنید. این ساعات در بازه زمانی مشخص جایگزین ساعت کاری پیش‌فرض شده و پس از پایان بازه ساعت کاری پیش‌فرض مجدداً اعمال خواهد شد. این تنظیمات شامل روزهای تعطیل نمی‌شود.',
@@ -58,6 +62,7 @@ export default {
   continue: 'ادامه',
   preview_title: 'پیش‌نمایش',
   affected_scope: 'محدوده متاثر',
+  scope: 'محدوده',
   rule_start: 'شروع قانون',
   rule_end: 'پایان قانون',
   range_length: 'طول بازه',
@@ -67,4 +72,5 @@ export default {
   exception_create_success: 'ساعات کاری استثنا با موفقیت ثبت شد.',
   exceptions_section_title: 'ساعات کاری استثنا',
   expired_exceptions_section_title: 'منقضی‌شده',
+  unit_managemnet: 'مدیریت شعب',
 };

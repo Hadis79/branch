@@ -8,6 +8,7 @@ import UploadResultBox from './upload-result-box';
 import { SampleFileLink, UploadedItem, UploadFileContainer } from './file-entry.style';
 import { GroupFormValues, UploadedGroupFile } from '../../utils/types';
 import useDownloadSampleFileMutation from '../../queries/use-download-sample-file-mutation';
+import Utils from '../../utils/utils';
 
 type FileEntryProps = {
   loading: boolean;
@@ -42,6 +43,10 @@ const FileEntry = ({
   const handleRemoveFailed = () => {
     form.setFieldValue('file', undefined);
     onRemove();
+  };
+
+  const handleDownloadMenuClick = async () => {
+    Utils.getLocalFile();
   };
 
   // Once a file is uploaded its result box replaces the dragger; until then, the dragger stays
@@ -98,12 +103,7 @@ const FileEntry = ({
             </UploadedItem>
           )}
           <SampleFileLink>
-            <Button
-              htmlType='button'
-              type='link'
-              loading={downloadSample.isPending}
-              onClick={() => downloadSample.mutate()}
-            >
+            <Button htmlType='button' type='link' onClick={handleDownloadMenuClick}>
               {t('download_sample_file')}
               <i className='ri-download-line ri-2x'></i>
             </Button>

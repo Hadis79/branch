@@ -28,3 +28,19 @@ export function calculateRow({ index, pagination }: CalculateRowParams): number 
 
   return (page - 1) * size + index + 1;
 }
+
+const Utils = {
+  getLocalFile: (fileName = '') => {
+    const url = `/embedded/CALENDAR_GROUP_CREATION.xlsx`;
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    link.setAttribute('rel', 'noopener noreferrer');
+    link.setAttribute('target', '_blank');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  },
+};
+export default Utils;

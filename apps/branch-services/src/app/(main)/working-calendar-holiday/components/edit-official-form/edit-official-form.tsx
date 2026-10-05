@@ -3,7 +3,6 @@ import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
 import { useAppTheme } from '@branch-services/hooks';
-import { dayjs } from '@branch-services/utils';
 import { Box, Button, MessageBox, Select, Text } from '@branch-services/ui-kit';
 
 import FileEntry from '../upload-form/file-entry';
@@ -18,17 +17,7 @@ import useOfficialHolidaysQuery from '../../queries/use-official-holidays-query'
 import useUpdateOfficialMutation from '../../queries/use-update-official-mutation';
 import useHolidayStore from '../../store/use-widget-store';
 import { HolidayPage, HolidayTab } from '../../utils/constants';
-import { formatCount, formatYear } from '../../utils/utils';
-
-// Last 10 years, in the same Jalali units as the year this page was opened for (unlike getYearOptions,
-// whose value is Gregorian for the create form's api call)
-const getEditYearOptions = (): { label: string; value: number }[] => {
-  const currentJalaliYear = dayjs().year();
-  return Array.from({ length: 10 }, (_, index) => currentJalaliYear - index).map((jalaliYear) => ({
-    label: formatYear(jalaliYear),
-    value: jalaliYear,
-  }));
-};
+import { formatCount, getFutureYearOptions } from '../../utils/utils';
 
 // Replaces one official year's holidays with an uploaded file
 const EditOfficialForm = () => {
@@ -97,7 +86,7 @@ const EditOfficialForm = () => {
         <Form form={form} layout='vertical'>
           <Box flexDirection='column' width='50%' gap='2.4rem'>
             <Form.Item name='year' label={t('year')} style={{ marginBottom: 0 }}>
-              <Select options={getEditYearOptions()} />
+              <Select disabled options={getFutureYearOptions()} />
             </Form.Item>
             <Box flexDirection='column' gap='1.2rem'>
               <FileEntry

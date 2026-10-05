@@ -14,7 +14,7 @@ import useHolidayPage from '../../hooks/use-holiday-page';
 import useCreateOfficialMutation from '../../queries/use-create-official-mutation';
 import useHolidayStore from '../../store/use-widget-store';
 import { HolidayPage, HolidayTab } from '../../utils/constants';
-import { getYearOptions } from '../../utils/utils';
+import { getFutureYearOptions } from '../../utils/utils';
 
 // Official holidays of a year, added by uploading an excel file
 const UploadForm = () => {
@@ -68,7 +68,7 @@ const UploadForm = () => {
       <Form form={form} layout='vertical'>
         <Box flexDirection='column' width='50%'>
           <Form.Item name='year' label={t('year')} rules={[{ required: true, message: t('year_required') }]}>
-            <Select options={getYearOptions()} placeholder={t('select_placeholder')} />
+            <Select options={getFutureYearOptions()} placeholder={t('select_placeholder')} />
           </Form.Item>
           <FileEntry
             result={fileUpload.result}

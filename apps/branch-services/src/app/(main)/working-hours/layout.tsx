@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <WidgetWrapper breadcrumbPrefixTitle='branch_management' headerTitle={headerTitle} headerAction={headerAction}>
+    <WidgetWrapper breadcrumbPrefixTitle='unit_managemnet' headerTitle={headerTitle} headerAction={headerAction}>
       {children}
     </WidgetWrapper>
   );
