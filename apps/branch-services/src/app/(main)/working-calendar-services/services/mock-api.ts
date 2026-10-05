@@ -21,7 +21,13 @@ let services: ServiceItemResponse[] = [
   ['صندوق امانات', 'Safe deposit box'],
   ['بیمه', 'Insurance'],
   ['خدمات بازنشستگی', 'Pension services'],
-].map(([persianName, englishName], index) => ({ id: index + 1, persianName, englishName, active: index % 4 !== 3 }));
+].map(([persianName, englishName], index) => ({
+  id: index + 1,
+  persianName,
+  englishName,
+  active: index % 4 !== 3,
+  overridable: index % 5 !== 2,
+}));
 
 let lastId = services.length;
 
@@ -71,7 +77,7 @@ const MockApi: typeof RealApi = {
   },
 
   createService: (values: CreateServiceDto) => {
-    if (isDuplicateName(values)) return reject('سرویسی با این نام قبلا ثبت شده است.');
+    if (isDuplicateName(values)) return reject('خدمتی با این نام قبلا ثبت شده است.');
 
     services = [
       {
@@ -79,6 +85,7 @@ const MockApi: typeof RealApi = {
         persianName: values.persianName.trim(),
         englishName: values.englishName.trim(),
         active: values.active,
+        overridable: values.overridable,
       },
       ...services,
     ];
@@ -86,8 +93,8 @@ const MockApi: typeof RealApi = {
   },
 
   updateService: ({ id, ...values }: UpdateServiceParams) => {
-    if (!services.some((service) => String(service.id) === id)) return reject('سرویس موردنظر یافت نشد.');
-    if (isDuplicateName(values, id)) return reject('سرویسی با این نام قبلا ثبت شده است.');
+    if (!services.some((service) => String(service.id) === id)) return reject('خدمت موردنظر یافت نشد.');
+    if (isDuplicateName(values, id)) return reject('خدمتی با این نام قبلا ثبت شده است.');
 
     services = services.map((service) =>
       String(service.id) === id

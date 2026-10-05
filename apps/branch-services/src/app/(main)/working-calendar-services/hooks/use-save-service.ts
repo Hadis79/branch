@@ -24,7 +24,7 @@ const useSaveService = () => {
     closeModal();
   };
 
-  const save = ({ persianName, englishName, active }: ServiceFormValues) => {
+  const save = ({ persianName, englishName, active, overridable }: ServiceFormValues) => {
     const onSuccess = () => {
       setMessage({
         txt: t(isEdit ? 'update_service_success' : 'create_service_success', { serviceName: persianName }),
@@ -35,9 +35,9 @@ const useSaveService = () => {
     };
 
     if (isEdit && selectedService) {
-      updateService.mutate({ id: selectedService.id, persianName, englishName, active }, { onSuccess });
+      updateService.mutate({ id: selectedService.id, persianName, englishName, active, overridable }, { onSuccess });
     } else {
-      createService.mutate({ persianName, englishName, active: true }, { onSuccess });
+      createService.mutate({ persianName, englishName, active: true, overridable }, { onSuccess });
     }
   };
 

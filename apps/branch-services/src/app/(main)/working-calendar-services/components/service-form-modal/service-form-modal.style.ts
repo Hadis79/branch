@@ -19,7 +19,13 @@ export const RoundedBox = styled.div`
     padding: 0.5rem 1.6rem;
     margin-top: 2.4rem;
 
+    & + .rounded-box-container {
+      margin-top: 1.6rem;
+    }
+
     .rounded-box-container__layout__inline {
+      width: 100%;
+
       .ant-form-item-label {
         padding: 0;
 
@@ -58,6 +64,19 @@ export const RoundedBox = styled.div`
 
     .ant-form-item {
       margin: 0 !important;
+    }
+
+    .switch-state {
+      font-size: 1.4rem;
+      color: ${(p) => p.theme.textPrimary};
+    }
+
+    .rounded-box-container__description {
+      width: 100%;
+      margin: 0 0 1.2rem;
+      font-size: 1.2rem;
+      line-height: 2rem;
+      color: ${(p) => p.theme.textSecondary};
     }
   }
 `;

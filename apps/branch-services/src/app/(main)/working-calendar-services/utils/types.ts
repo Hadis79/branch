@@ -3,6 +3,8 @@ export interface ServiceItem {
   persianName: string;
   englishName: string;
   active: boolean;
+  // Whether rules may override this service's settings
+  overridable: boolean;
 }
 
 // Raw list row of the service, normalized by services/mappers.ts
