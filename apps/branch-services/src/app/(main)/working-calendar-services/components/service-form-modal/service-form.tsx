@@ -1,7 +1,8 @@
 import { Form, Switch } from 'antd';
 
+import { useAppTheme } from '@branch-services/hooks';
 import { useTr } from '@branch-services/translation';
-import { Box, Button, Input } from '@branch-services/ui-kit';
+import { Box, Button, Input, Text } from '@branch-services/ui-kit';
 
 import { RoundedBox } from './service-form-modal.style';
 import { ENGLISH_NAME_PATTERN } from '../../utils/constants';
@@ -18,7 +19,9 @@ const LabeledSwitch = ({ checked = false, onChange }: LabeledSwitchProps) => {
 
   return (
     <Box alignItems='center' gap='0.8rem'>
-      <span className='switch-state'>{t(checked ? 'active' : 'inactive')}</span>
+      <Text as='span' fontWeight={400}>
+        {t(checked ? 'active' : 'inactive')}
+      </Text>
       <Switch checked={checked} onChange={onChange} />
     </Box>
   );
@@ -30,16 +33,24 @@ type SwitchBoxProps = {
   description?: string;
 };
 
-const SwitchBox = ({ name, label, description }: SwitchBoxProps) => (
-  <Box className='rounded-box-container'>
-    <Box className='rounded-box-container__layout__inline'>
-      <Form.Item label={label} name={name} valuePropName='checked'>
-        <LabeledSwitch />
-      </Form.Item>
+const SwitchBox = ({ name, label, description }: SwitchBoxProps) => {
+  const theme = useAppTheme();
+
+  return (
+    <Box className='rounded-box-container'>
+      <Box className='rounded-box-container__layout__inline'>
+        <Form.Item label={label} name={name} valuePropName='checked'>
+          <LabeledSwitch />
+        </Form.Item>
+      </Box>
+      {description && (
+        <Text fontSize='1.2rem' fontWeight={400} color={theme.textSecondary} margin='0 0 1.2rem'>
+          {description}
+        </Text>
+      )}
     </Box>
-    {description && <p className='rounded-box-container__description'>{description}</p>}
-  </Box>
-);
+  );
+};
 
 type ServiceFormProps = {
   isEdit: boolean;

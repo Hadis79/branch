@@ -65,18 +65,5 @@ export const RoundedBox = styled.div`
     .ant-form-item {
       margin: 0 !important;
     }
-
-    .switch-state {
-      font-size: 1.4rem;
-      color: ${(p) => p.theme.textPrimary};
-    }
-
-    .rounded-box-container__description {
-      width: 100%;
-      margin: 0 0 1.2rem;
-      font-size: 1.2rem;
-      line-height: 2rem;
-      color: ${(p) => p.theme.textSecondary};
-    }
   }
 `;
