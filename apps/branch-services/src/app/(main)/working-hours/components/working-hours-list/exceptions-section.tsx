@@ -49,7 +49,7 @@ const ExceptionsSection = () => {
   const active: WorkingHoursException[] = [];
   const expired: WorkingHoursException[] = [];
   exceptions.forEach((exception) =>
-    (isExpiredException(exception.endDate, exception.to) ? expired : active).push(exception)
+    (isExpiredException(exception.endDate, exception.days) ? expired : active).push(exception)
   );
 
   return (

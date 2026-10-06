@@ -3,8 +3,8 @@ import { useTr } from '@branch-services/translation';
 import { fullDateLocale } from '@branch-services/utils';
 import { Box, Text } from '@branch-services/ui-kit';
 
-import HourRangeBar from './hour-range-bar';
-import { formatHour, getDayCount } from '../../utils/utils';
+import DayHoursRows from '../day-hours/day-hours-rows';
+import { getDayCount, getScopeText } from '../../utils/utils';
 import type { WorkingHoursExceptionDto } from '../../utils/types';
 
 type ExceptionPreviewProps = {
@@ -14,17 +14,17 @@ type ExceptionPreviewProps = {
 const ExceptionPreview = ({ exception }: ExceptionPreviewProps) => {
   const [t] = useTr();
   const theme = useAppTheme();
-  const scopeText =
-    exception.scope.type === 'PROVINCIAL'
-      ? `${t('scope_provincial')} - ${t('province_prefix')} ${exception.scope.provinceName}`
-      : t('scope_national');
+  const scopeText = getScopeText(exception.scope, t);
 
+  // With no end date the exception has no end, and so no length either
   const rows: [string, string][] = [
     [t('affected_scope'), scopeText],
-    [t('rule_start'), fullDateLocale(exception.startDate)],
-    [t('rule_end'), fullDateLocale(exception.endDate)],
-    [t('range_length'), t('day_count', { count: getDayCount(exception.startDate, exception.endDate) })],
-    [t('new_working_hours'), t('hours_range', { from: formatHour(exception.from), to: formatHour(exception.to) })],
+    [t('start_date'), fullDateLocale(exception.startDate)],
+    [t('end_date'), exception.endDate ? fullDateLocale(exception.endDate) : '-'],
+    [
+      t('range_length'),
+      exception.endDate ? t('day_count', { count: getDayCount(exception.startDate, exception.endDate) }) : '-',
+    ],
   ];
 
   return (
@@ -51,10 +51,10 @@ const ExceptionPreview = ({ exception }: ExceptionPreviewProps) => {
       >
         <i className='ri-time-line' />
         <Text as='span' fontWeight={500}>
-          {t('new_hours_preview')}
+          {t('new_working_hours')}
         </Text>
       </Box>
-      <HourRangeBar from={exception.from} to={exception.to} />
+      <DayHoursRows days={exception.days} />
     </Box>
   );
 };

@@ -1,6 +1,7 @@
 import { bbpUrl, client } from '@branch-services/client';
 
 import type {
+  GroupResponse,
   ProvinceResponse,
   WorkingHoursExceptionRequest,
   WorkingHoursExceptionResponse,
@@ -11,6 +12,8 @@ import type {
 const WORK_TIME_URL = `${bbpUrl}/calendar/work-time`;
 // Shared with working-calendar-holiday's own province list
 const PROVINCE_LIST_URL = `${bbpUrl}/calendar/holiday/province/list`;
+// Every group an exception can be scoped to, unpaginated
+const GROUP_LIST_URL = `${bbpUrl}/calendar/group/work-time-list`;
 
 // Confirmed: GET .../default/info, the exception/* endpoints below, and the province list. The
 // default-hours create/update endpoints are still guesses. This stays a plain pass-through:
@@ -31,6 +34,10 @@ const Api = {
   },
   getProvinces: async (): Promise<ProvinceResponse[]> => {
     const response = await client.get<ProvinceResponse[]>(PROVINCE_LIST_URL);
+    return response.data;
+  },
+  getGroups: async (): Promise<GroupResponse[]> => {
+    const response = await client.get<GroupResponse[]>(GROUP_LIST_URL);
     return response.data;
   },
   getExceptions: async (): Promise<WorkingHoursExceptionResponse[]> => {

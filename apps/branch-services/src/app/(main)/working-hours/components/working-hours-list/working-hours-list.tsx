@@ -1,16 +1,15 @@
-import { useState } from 'react';
-
 import { Box } from '@branch-services/ui-kit';
 
 import DefaultCard from './default-card';
 import EmptyState from './empty-state';
 import ExceptionsSection from './exceptions-section';
-import EditModal from '../working-hours-modal/edit-modal';
+import useWorkingHoursPage from '../../hooks/use-working-hours-page';
 import useWorkingHoursQuery from '../../queries/use-working-hours-query';
+import { WorkingHoursPage } from '../../utils/constants';
 
 const WorkingHoursList = () => {
   const { data, isLoading } = useWorkingHoursQuery();
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const { navigateTo } = useWorkingHoursPage();
 
   if (isLoading) return null;
 
@@ -20,11 +19,10 @@ const WorkingHoursList = () => {
         <EmptyState />
       ) : (
         <>
-          <DefaultCard workingHours={data} onEdit={() => setIsEditOpen(true)} />
+          <DefaultCard workingHours={data} onEdit={() => navigateTo(WorkingHoursPage.EDIT)} />
           <ExceptionsSection />
         </>
       )}
-      <EditModal open={isEditOpen} workingHours={data ?? null} onClose={() => setIsEditOpen(false)} />
     </Box>
   );
 };

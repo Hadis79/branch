@@ -1,89 +1,110 @@
-import { useEffect, useState } from 'react';
 import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { ApiUtil } from '@branch-services/utils';
-import { Box, Button, Input } from '@branch-services/ui-kit';
+import { Box, Button, Input, MessageBox } from '@branch-services/ui-kit';
 
+import FormPage from './form-page';
 import TimeRangeFields from './time-range-fields';
-import ConfirmCreateModal from '../working-hours-modal/confirm-create-modal';
-import useCreateWorkingHoursMutation from '../../queries/use-create-working-hours-mutation';
-import useWorkingHoursPage from '../../hooks/use-working-hours-page';
-import useWorkingHoursStore from '../../store/use-widget-store';
-import { WorkingHoursPage } from '../../utils/constants';
-import FormSVG from '../../assets/form';
+import * as S from './working-hours-form.style';
+import { WEEK_DAYS } from '../../utils/constants';
+import type { WorkingDay } from '../../utils/types';
+import { getDayNameKey } from '../../utils/utils';
 
-type FormValues = { from?: string; to?: string };
+// One row per weekday, in WEEK_DAYS order
+type FormValues = { days: { from?: string | null; to?: string | null }[] };
 
-// Defines the bank's default working hours; only shown once, before it exists
-const WorkingHoursForm = () => {
+const toFormValues = (days?: WorkingDay[]): FormValues => ({
+  days: WEEK_DAYS.map(({ dayOfWeek }) => {
+    const day = days?.find((item) => item.dayOfWeek === dayOfWeek);
+    return { from: day?.from ?? undefined, to: day?.to ?? undefined };
+  }),
+});
+
+const toWorkingDays = ({ days }: FormValues): WorkingDay[] =>
+  WEEK_DAYS.map(({ dayOfWeek }, index) => ({
+    dayOfWeek,
+    from: days[index]?.from || null,
+    to: days[index]?.to || null,
+  }));
+
+type WorkingHoursFormProps = {
+  initialDays?: WorkingDay[];
+  noteType: 'info' | 'warning';
+  submitText: string;
+  submitLoading?: boolean;
+  onSubmit: (days: WorkingDay[]) => void;
+  // Called after the form is reset to its initial values
+  onCancel?: () => void;
+};
+
+// The bank's default hours for each weekday; a day left empty is a holiday
+const WorkingHoursForm = ({
+  initialDays,
+  noteType,
+  submitText,
+  submitLoading = false,
+  onSubmit,
+  onCancel,
+}: WorkingHoursFormProps) => {
   const [t] = useTr();
   const [form] = Form.useForm<FormValues>();
-  const from = Form.useWatch('from', form);
-  const to = Form.useWatch('to', form);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const { navigateTo } = useWorkingHoursPage();
-  const setMessage = useWorkingHoursStore((state) => state.setMessage);
-  const reset = useWorkingHoursStore((state) => state.resetAll);
-  const createMutation = useCreateWorkingHoursMutation();
+  const days = Form.useWatch('days', form);
+  const hasWorkingDay = Boolean(days?.some((day) => day?.from && day?.to));
 
-  // Drop a message left over from a previous visit to this page
-  useEffect(() => setMessage(null), [setMessage]);
+  const handleCancel = () => {
+    form.resetFields();
+    onCancel?.();
+  };
 
-  const handleConfirm = () =>
-    createMutation.mutate(
-      { from: from as string, to: to as string },
-      {
-        onSuccess: () => {
-          setMessage({ txt: t('create_success'), type: 'success', shouldTranslate: false });
-          navigateTo(WorkingHoursPage.LIST);
-        },
-        onError: (error) => setMessage(ApiUtil.getErrorMessage(error)),
-        onSettled: () => setIsConfirmOpen(false),
-      }
-    );
+  const handleSubmit = () => form.validateFields().then((values) => onSubmit(toWorkingDays(values)));
 
   return (
-    <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
-      <Box flexDirection='column' gap='2.4rem'>
-        <Box flexDirection='row-reverse'>
-          <FormSVG />
-          <Box flexDirection='column' width='100%'>
-            <Form form={form} layout='vertical'>
-              <Box flexDirection='column' gap='2.4rem'>
-                <Form.Item label={t('title_label')}>
-                  <Input disabled value={t('default_title_value')} />
-                </Form.Item>
-                <TimeRangeFields />
-              </Box>
-            </Form>
-          </Box>
+    <FormPage
+      header={
+        noteType === 'warning' ? (
+          <MessageBox type='warning' message={t('holiday_days_note')} closable />
+        ) : (
+          <S.GuideMessageBox type='info' message={t('holiday_days_note')} closable />
+        )
+      }
+      footer={
+        <>
+          <Button htmlType='button' type='primaryOutlined' disabled={submitLoading} onClick={handleCancel}>
+            {t('cancel')}
+          </Button>
+          <Button
+            htmlType='button'
+            type='primary'
+            disabled={!hasWorkingDay}
+            loading={submitLoading}
+            onClick={handleSubmit}
+          >
+            {submitText}
+          </Button>
+        </>
+      }
+    >
+      <Form form={form} layout='vertical' initialValues={toFormValues(initialDays)}>
+        <Box flexDirection='column' gap='2.4rem'>
+          <Form.Item label={t('title_label')} style={{ marginBottom: 0 }}>
+            <Input disabled value={t('default_title_value')} />
+          </Form.Item>
+          <S.Days>
+            <S.DaysTitle>{t('week_days_hours_label')}</S.DaysTitle>
+            <S.DaysList>
+              {WEEK_DAYS.map(({ dayOfWeek }, index) => (
+                <TimeRangeFields
+                  key={dayOfWeek}
+                  title={t(getDayNameKey(dayOfWeek))}
+                  namePrefix={['days', index]}
+                  optional
+                />
+              ))}
+            </S.DaysList>
+          </S.Days>
         </Box>
-      </Box>
-      <Box justifyContent='flex-end' gap='1.2rem' fillChildren={false}>
-        <Button
-          htmlType='button'
-          type='primaryOutlined'
-          onClick={() => {
-            form.resetFields();
-            reset();
-          }}
-        >
-          {t('cancel')}
-        </Button>
-        <Button htmlType='button' type='primary' disabled={!from || !to} onClick={() => setIsConfirmOpen(true)}>
-          {t('continue_and_confirm')}
-        </Button>
-      </Box>
-      <ConfirmCreateModal
-        open={isConfirmOpen}
-        from={from}
-        to={to}
-        loading={createMutation.isPending}
-        onConfirm={handleConfirm}
-        onCancel={() => setIsConfirmOpen(false)}
-      />
-    </Box>
+      </Form>
+    </FormPage>
   );
 };
 

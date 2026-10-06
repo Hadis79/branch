@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { useTr } from '@branch-services/translation';
 import { dateLocale } from '@branch-services/utils';
 import { Box, Button } from '@branch-services/ui-kit';
 
 import * as S from './exception-card.style';
-import { formatHour } from '../../utils/utils';
+import DayHoursChips from '../day-hours/day-hours-chips';
 import type { WorkingHoursException } from '../../utils/types';
+import { getScopeText } from '../../utils/utils';
 
 type ExceptionCardProps = {
   exception: WorkingHoursException;
@@ -15,25 +16,22 @@ type ExceptionCardProps = {
   onDelete?: () => void;
 };
 
-type DetailItemProps = { label: string; value: string };
+type DetailItemProps = { label: string; value: ReactNode; fullWidth?: boolean };
 
-const DetailItem = ({ label, value }: DetailItemProps) => {
+const DetailItem = ({ label, value, fullWidth = false }: DetailItemProps) => {
   return (
-    <S.DetailItem>
+    <S.DetailItem $fullWidth={fullWidth}>
       <span className='detail-label'>{label}</span>
       <span className='detail-value'>{value}</span>
     </S.DetailItem>
   );
 };
 
-// A working-hours exception; expands to its scope, dates and hours
+// A working-hours exception; expands to its scope, dates and each weekday's hours
 const ExceptionCard = ({ exception, isExpired = false, onDelete }: ExceptionCardProps) => {
   const [t] = useTr();
   const [isExpanded, setIsExpanded] = useState(false);
-  const scopeText =
-    exception.scope.type === 'PROVINCIAL'
-      ? `${t('scope_provincial')} - ${t('province_prefix')} ${exception.scope.provinceName}`
-      : t('scope_national');
+  const scopeText = getScopeText(exception.scope, t);
 
   return (
     <S.Card $expired={isExpired} flexDirection='column'>
@@ -57,13 +55,10 @@ const ExceptionCard = ({ exception, isExpired = false, onDelete }: ExceptionCard
       </S.Header>
       {isExpanded && (
         <S.DetailsGrid>
-          <DetailItem label={t('scope')} value={scopeText} />
-          <DetailItem
-            label={t('new_working_hours')}
-            value={t('hours_range', { from: formatHour(exception.from), to: formatHour(exception.to) })}
-          />
+          <DetailItem label={t('affected_scope')} value={scopeText} fullWidth />
           <DetailItem label={t('start_date')} value={dateLocale(exception.startDate) ?? '-'} />
-          <DetailItem label={t('end_date')} value={dateLocale(exception.endDate) ?? '-'} />
+          <DetailItem label={t('end_date')} value={(exception.endDate && dateLocale(exception.endDate)) || '-'} />
+          <DetailItem label={t('new_working_hours')} value={<DayHoursChips days={exception.days} />} fullWidth />
         </S.DetailsGrid>
       )}
     </S.Card>

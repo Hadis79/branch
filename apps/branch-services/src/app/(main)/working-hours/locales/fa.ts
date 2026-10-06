@@ -5,6 +5,7 @@ export default {
   'define-default': 'تعریف ساعت کاری پیش‌فرض',
   define_default_hours: 'تعریف ساعت کاری پیش‌فرض',
   'add-exception': 'افزودن ساعت کاری استثنا',
+  'edit-default': 'ویرایش ساعت کاری پیش‌فرض',
   branch_management: 'مدیریت شعب',
 
   empty_guide_description:
@@ -12,32 +13,40 @@ export default {
 
   default_title_value: 'ساعت کاری پیش‌فرض بانک ملی ایران',
   title_label: 'عنوان',
-  working_hours_label: 'ساعت روزهای کاری',
-  working_days: 'روزهای کاری',
   from_hour: 'از ساعت',
   to_hour: 'تا ساعت',
   hour_select_placeholder: 'انتخاب',
   hour_required: 'ساعت را انتخاب کنید.',
+  end_before_start: 'ساعت پایان باید بعد از ساعت شروع باشد.',
   cancel: 'انصراف',
-  continue_and_confirm: 'ادامه و تایید',
 
-  confirm_create_title: 'تعریف ساعت کاری پیش‌فرض',
-  confirm_create_description:
-    'ساعت کاری پیش‌فرض بانک ملی ایران از ساعت {{from}} تا {{to}} تعریف خواهد شد. پس از تایید، این ساعت کاری بلافاصله به‌عنوان مبنای فعالیت واحدها اعمال می‌شود. آیا از ثبت این ساعت کاری اطمینان دارید؟',
+  week_days_hours_label: 'ساعات کاری روزهای هفته',
+  holiday_days_note:
+    'توجه داشته‌باشید، روزهایی که برای آن‌ها ساعت کاری تعیین نشود، به‌عنوان روز تعطیل در نظر گرفته خواهند شد.',
+  day_saturday: 'شنبه',
+  day_sunday: 'یک‌شنبه',
+  day_monday: 'دوشنبه',
+  day_tuesday: 'سه‌شنبه',
+  day_wednesday: 'چهارشنبه',
+  day_thursday: 'پنج‌شنبه',
+  day_friday: 'جمعه',
+  day_hours: '{{day}} - {{from}} تا {{to}}',
+  day_holiday: '{{day}} - تعطیل',
+  review_hours: 'از ساعت {{from}} تا ساعت {{to}}',
+  holiday: 'تعطیل',
+
   confirm_final: 'تایید نهایی',
   create_success:
     'ساعت کاری پیش‌فرض بانک ملی ایران با موفقیت ثبت شد و به‌عنوان تنظیمات مبنای فعالیت واحدها اعمال خواهد شد.',
 
   add_exception: 'افزودن ساعت کاری استثنا',
-  hours_range: 'روزهای کاری {{from}} تا {{to}}',
   edit: 'ویرایش',
 
-  edit_title: 'ویرایش ساعت کاری پیش‌فرض',
-  edit_warning: 'توجه داشته باشید، تغییر در ساعت کاری بر همه واحدهای بانک ملی ایران اعمال خواهد شد.',
   save_changes: 'ذخیره تغییرات',
   delete: 'حذف',
   delete_exception_title: 'حذف ساعت کاری استثنا',
-  delete_exception_confirmation: 'آیا از حذف ساعت کاری استثنا «{{title}}» اطمینان دارید؟',
+  delete_exception_confirmation:
+    'آیا از حذف ساعت کاری استثنا «{{title}}» اطمینان دارید؟ با حذف این تنظیم، ساعت کاری واحدهایی که تحت تأثیر این استثنا هستند، به ساعت کاری پیش‌فرض بانک ملی ایران بازخواهد گشت.',
   delete_exception_success: 'ساعت کاری استثنا با موفقیت حذف شد.',
   update_success: 'ساعت کاری پیش‌فرض بانک ملی ایران با موفقیت ویرایش شد.',
   exception_info_description:
@@ -45,6 +54,9 @@ export default {
   scope_label: 'محدوده',
   scope_national: 'کشوری (تمام استان‌ها)',
   scope_provincial: 'استانی (ادارات امور)',
+  scope_group: 'گروه‌های ساعت کاری',
+  group_placeholder: 'یک مورد را انتخاب نمایید.',
+  group_required: 'گروه را انتخاب کنید.',
   scope_required: 'محدوده را انتخاب کنید.',
   province_prefix: 'استان',
   province_placeholder: 'استان مورد نظر را انتخاب کنید.',
@@ -55,20 +67,22 @@ export default {
   exception_title_required: 'عنوان را وارد کنید.',
   start_date: 'تاریخ شروع',
   end_date: 'تاریخ پایان',
+  end_date_optional: 'تاریخ پایان (اختیاری)',
   from_date_placeholder: 'از تاریخ',
-  to_date_placeholder: 'تا تاریخ',
   start_date_required: 'تاریخ شروع را انتخاب کنید.',
-  end_date_required: 'تاریخ پایان را انتخاب کنید.',
   continue: 'ادامه',
   preview_title: 'پیش‌نمایش',
   affected_scope: 'محدوده متاثر',
-  scope: 'محدوده',
-  rule_start: 'شروع قانون',
-  rule_end: 'پایان قانون',
   range_length: 'طول بازه',
   day_count: '{{count}} روز',
-  new_working_hours: 'ساعت کاری جدید',
-  new_hours_preview: 'نمای ساعت کاری جدید',
+  new_working_hours: 'ساعات کاری جدید',
+  exception_notes_title: 'توجه داشته باشید:',
+  exception_note_days:
+    'روزهای نمایش‌داده‌شده بر اساس روزهای کاری تعریف‌شده در ساعت کاری پیش‌فرض تعیین می‌شوند؛ بنابراین روزهایی که در ساعت کاری پیش‌فرض تعطیل تعریف شده‌اند، در این بخش نمایش داده نمی‌شوند. اگر پس از ویرایش ساعت کاری پیش‌فرض، روزی در این بازه به‌عنوان تعطیل ثبت شود، ساعت کاری برای آن روز اعمال نخواهد شد.',
+  exception_note_end_date:
+    'تاریخ پایان اختیاری است؛ در صورت وارد نکردن تاریخ پایان، این تنظیمات بدون محدودیت زمانی ادامه خواهد داشت و برای بازگشت به ساعت کاری پیش‌فرض، باید تنظیم استثنا حذف شود.',
+  exception_days_empty:
+    'روزهای هفته بر اساس بازه تاریخی انتخاب‌شده نمایش داده می‌شوند و می‌توانید برای هر روز، ساعت کاری موردنظر را تعیین کنید.',
   exception_create_success: 'ساعات کاری استثنا با موفقیت ثبت شد.',
   exceptions_section_title: 'ساعات کاری استثنا',
   expired_exceptions_section_title: 'منقضی‌شده',

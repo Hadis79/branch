@@ -13,7 +13,8 @@ import useWorkingHoursQuery from './queries/use-working-hours-query';
 import { WorkingHoursPage } from './utils/constants';
 
 const getHeaderTitle = (currentPage: WorkingHoursPage) => {
-  if (currentPage === WorkingHoursPage.CREATE) return 'define_default_hours';
+  // The edit page keeps the define page's title; its breadcrumb tells them apart
+  if (currentPage === WorkingHoursPage.CREATE || currentPage === WorkingHoursPage.EDIT) return 'define_default_hours';
   if (currentPage === WorkingHoursPage.ADD_EXCEPTION) return 'add_exception';
   return 'working_hours';
 };

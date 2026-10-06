@@ -1,13 +1,15 @@
 import ExceptionForm from '../exception-form/exception-form';
-import WorkingHoursForm from '../working-hours-form/working-hours-form';
+import CreateWorkingHours from '../working-hours-form/create-working-hours';
+import EditWorkingHours from '../working-hours-form/edit-working-hours';
 import WorkingHoursList from '../working-hours-list/working-hours-list';
 import WorkingHoursMessage from '../working-hours-message/working-hours-message';
 import useWorkingHoursPage from '../../hooks/use-working-hours-page';
 import useWorkingHoursStore from '../../store/use-widget-store';
 import { WorkingHoursPage } from '../../utils/constants';
 
-const PAGE_COMPONENTS: Partial<Record<WorkingHoursPage, () => JSX.Element>> = {
-  [WorkingHoursPage.CREATE]: WorkingHoursForm,
+const PAGE_COMPONENTS: Partial<Record<WorkingHoursPage, () => JSX.Element | null>> = {
+  [WorkingHoursPage.CREATE]: CreateWorkingHours,
+  [WorkingHoursPage.EDIT]: EditWorkingHours,
   [WorkingHoursPage.ADD_EXCEPTION]: ExceptionForm,
 };
 

@@ -1,38 +1,60 @@
+import { i18nBase } from '@branch-services/translation';
 import { Dayjs, dayjs, toIsoStringWithoutTimezone } from '@branch-services/utils';
+
+import { WEEK_DAYS } from './constants';
+import type { DayOfWeek, ExceptionScope, WorkingDay } from './types';
 
 const PERSIAN_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
 // These are plain "HH:mm" values with no calendar date attached, so digits are mapped directly
 // instead of going through a timezone-aware date formatter.
-export const toPersianDigits = (value: string): string => value?.replace(/[0-9]/g, (digit) => PERSIAN_DIGITS[+digit]);
+const toPersianDigits = (value: string): string => value?.replace(/[0-9]/g, (digit) => PERSIAN_DIGITS[+digit]);
 
-// "06:00" -> "۰۶:۰۰", used to show a saved hour as text
-export const formatHour = toPersianDigits;
+// A saved hour shown as text: "06:00" -> "۰۶:۰۰" in Persian, unchanged in English
+export const formatHour = (value: string): string => (i18nBase.language === 'fa' ? toPersianDigits(value) : value);
 
-// Whole-hour options for the working-hours time selects ("00:00".."23:00")
-export const getHourOptions = (): { label: string; value: string }[] =>
-  Array.from({ length: 24 }, (_, hour) => {
-    const value = `${String(hour).padStart(2, '0')}:00`;
-    return { label: toPersianDigits(value), value };
-  });
+// How an exception's scope reads in its preview and card
+export const getScopeText = (scope: ExceptionScope, t: (key: string) => string): string => {
+  if (scope.type === 'PROVINCIAL') return `${t('scope_provincial')} - ${t('province_prefix')} ${scope.provinceName}`;
+  if (scope.type === 'GROUP') return `${t('scope_group')} - ${scope.groupName}`;
+  return t('scope_national');
+};
+
+// A weekday with no hours is a holiday
+export const isWorkingDay = (day: WorkingDay): day is WorkingDay & { from: string; to: string } =>
+  Boolean(day.from && day.to);
+
+// Translation key of a weekday's name ("SATURDAY" -> "day_saturday")
+export const getDayNameKey = (dayOfWeek: DayOfWeek): string => `day_${dayOfWeek.toLowerCase()}`;
+
+// dayjs's day() numbering: 0 is Sunday
+const DAY_OF_WEEK_BY_INDEX: DayOfWeek[] = [
+  'SUNDAY',
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+];
+
+// The weekdays a date range covers: each day of a range shorter than a week, in date order;
+// otherwise (a week or longer, or no end date at all) every weekday
+export const getRangeWeekDays = (startDate?: Dayjs | null, endDate?: Dayjs | null): DayOfWeek[] => {
+  if (!startDate) return [];
+
+  const dayCount = endDate ? endDate.startOf('day').diff(startDate.startOf('day'), 'day') + 1 : Infinity;
+  if (dayCount >= WEEK_DAYS.length) return WEEK_DAYS.map(({ dayOfWeek }) => dayOfWeek);
+
+  return Array.from(
+    { length: Math.max(dayCount, 0) },
+    (_, index) => DAY_OF_WEEK_BY_INDEX[startDate.add(index, 'day').day()]
+  );
+};
 
 // Inclusive day count of an exception's date range, shown in its preview
 export const getDayCount = (startDate: string, endDate: string): number =>
   dayjs(endDate).diff(dayjs(startDate), 'day') + 1;
-
-// Minutes since midnight, so an hour range can be positioned on the preview's hour bar
-export const toMinutesOfDay = (time: string): number => {
-  const [hour, minute] = time.split(':').map(Number);
-  return hour * 60 + minute;
-};
-
-// Whole hours from the range's start to a few hours past its end (capped at 23:00), so the bar's
-// visible track lines up with its tick labels instead of always spanning the full day
-export const getHourWindow = (from: string, to: string): number[] => {
-  const fromHour = Math.floor(toMinutesOfDay(from) / 60);
-  const toHour = Math.min(23, Math.ceil(toMinutesOfDay(to) / 60) + 3);
-  return Array.from({ length: toHour - fromHour + 1 }, (_, index) => fromHour + index);
-};
 
 // Date picker value -> api date (YYYY-MM-DD)
 export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
@@ -43,8 +65,17 @@ export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
 export const fromJalaliDate = (value: string): string =>
   toApiDate(dayjs(value.replace(/\//g, '-'), { jalali: true })) as string;
 
-// An exception expires at its exact end date and time, not merely at the end of its end date.
-export const isExpiredException = (endDate: string, endTime: string): boolean => {
+// An exception expires at its exact end date and time (the latest end hour among its days), not
+// merely at the end of its end date. One with no end date never expires.
+export const isExpiredException = (endDate: string | null, days: WorkingDay[]): boolean => {
+  if (!endDate) return false;
+
+  const endTime =
+    days
+      .filter(isWorkingDay)
+      .map((day) => day.to)
+      .sort()
+      .pop() ?? '23:59';
   const [hour, minute, second = 0] = endTime.split(':').map(Number);
   const expiresAt = dayjs(endDate).hour(hour).minute(minute).second(second).millisecond(0);
 

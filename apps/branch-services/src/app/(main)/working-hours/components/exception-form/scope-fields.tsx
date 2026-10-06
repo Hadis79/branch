@@ -3,18 +3,21 @@ import { Form } from 'antd';
 import { useTr } from '@branch-services/translation';
 import { Box, Select, Text } from '@branch-services/ui-kit';
 
+import useGroupsQuery from '../../queries/use-groups-query';
 import useProvincesQuery from '../../queries/use-provinces-query';
 
-// The scope an exception applies to: every province, or a single one
+// The scope an exception applies to: every province, a single one, or a working-hours group
 const ScopeFields = () => {
   const [t] = useTr();
   const form = Form.useFormInstance();
   const scopeType = Form.useWatch('scopeType', form);
   const { data: provinceOptions, isFetching } = useProvincesQuery();
+  const { data: groupOptions, isFetching: isFetchingGroups } = useGroupsQuery();
 
   const scopeTypeOptions = [
     { value: 'NATIONAL', label: t('scope_national') },
     { value: 'PROVINCIAL', label: t('scope_provincial') },
+    { value: 'GROUP', label: t('scope_group') },
   ];
 
   return (
@@ -31,7 +34,7 @@ const ScopeFields = () => {
           <Select
             options={scopeTypeOptions}
             placeholder={t('select_placeholder')}
-            onChange={() => form.setFieldValue('provinceName', undefined)}
+            onChange={() => form.setFieldsValue({ provinceName: undefined, group: undefined })}
           />
         </Form.Item>
         {scopeType === 'PROVINCIAL' && (
@@ -46,6 +49,23 @@ const ScopeFields = () => {
               options={provinceOptions}
               loading={isFetching}
               placeholder={t('province_placeholder')}
+            />
+          </Form.Item>
+        )}
+        {scopeType === 'GROUP' && (
+          // labelInValue keeps the group's name alongside its id, for the preview
+          <Form.Item
+            name='group'
+            style={{ marginBottom: 0, flex: 1 }}
+            rules={[{ required: true, message: t('group_required') }]}
+          >
+            <Select
+              labelInValue
+              showSearch
+              optionFilterProp='label'
+              options={groupOptions}
+              loading={isFetchingGroups}
+              placeholder={t('group_placeholder')}
             />
           </Form.Item>
         )}

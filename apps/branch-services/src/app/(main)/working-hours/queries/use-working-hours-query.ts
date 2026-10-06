@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-import { isEmptyObjectValues } from '@branch-services/utils';
-
 import { Api } from '../services';
 import { toWorkingHours } from '../services/mappers';
 import { workingHoursQueryKeys } from '../utils/constants';
+import { isWorkingDay } from '../utils/utils';
 
 const NOT_FOUND_STATUS = 404;
 
@@ -17,7 +16,7 @@ const useWorkingHoursQuery = () =>
     queryFn: async () => {
       try {
         const workingHours = toWorkingHours(await Api.getWorkingHours());
-        return isEmptyObjectValues(workingHours) ? null : workingHours;
+        return workingHours.title || workingHours.days.some(isWorkingDay) ? workingHours : null;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === NOT_FOUND_STATUS) return null;
         throw error;

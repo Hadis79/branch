@@ -1,6 +1,7 @@
 import type RealApi from './api';
-import { NATIONAL_PROVINCE_NAME, PROVINCE_NAMES } from '../utils/constants';
+import { NATIONAL_PROVINCE_NAME, PROVINCE_NAMES, WEEK_DAYS } from '../utils/constants';
 import type {
+  GroupResponse,
   ProvinceResponse,
   WorkingHoursExceptionRequest,
   WorkingHoursExceptionResponse,
@@ -22,6 +23,11 @@ const provinces: ProvinceResponse[] = [
   ...PROVINCE_NAMES.map((provinceName, index) => ({ provinceName, unitCodes: [String(index + 1)] })),
 ];
 
+const groups: GroupResponse[] = [
+  { id: 1, name: 'شعب استان تهران', size: 4, groupType: 'WORK_TIME' },
+  { id: 2, name: 'شعب مراکز استان', size: 3, groupType: 'WORK_TIME' },
+];
+
 // Dates are Jalali here, matching the real GET work-time/exception/list response
 let exceptions: WorkingHoursExceptionResponse[] = [
   {
@@ -32,15 +38,28 @@ let exceptions: WorkingHoursExceptionResponse[] = [
     endDate: '1405/06/31',
     startWorkingHour: '06:00',
     endWorkingHour: '11:00',
+    days: WEEK_DAYS.map(({ dayOfWeek, dayName }) => {
+      const isWorking = dayOfWeek !== 'THURSDAY' && dayOfWeek !== 'FRIDAY';
+      return {
+        dayOfWeek,
+        dayName,
+        startWorkingHour: isWorking ? '06:00' : null,
+        endWorkingHour: isWorking ? '11:00' : null,
+      };
+    }),
   },
   {
     id: 2,
     title: 'تغییر ساعت کاری زمستان',
     provinceName: NATIONAL_PROVINCE_NAME,
     startDate: '1405/09/30',
-    endDate: '1405/12/29',
+    endDate: null,
     startWorkingHour: '07:00',
     endWorkingHour: '14:00',
+    days: [
+      { dayOfWeek: 'SATURDAY', dayName: 'شنبه', startWorkingHour: '07:00', endWorkingHour: '14:00' },
+      { dayOfWeek: 'SUNDAY', dayName: 'یکشنبه', startWorkingHour: '07:00', endWorkingHour: '13:00' },
+    ],
   },
 ];
 
@@ -70,6 +89,8 @@ const MockApi: typeof RealApi = {
   },
 
   getProvinces: (): Promise<ProvinceResponse[]> => delay(provinces),
+
+  getGroups: (): Promise<GroupResponse[]> => delay(groups),
 
   getExceptions: (): Promise<WorkingHoursExceptionResponse[]> => delay(exceptions),
 

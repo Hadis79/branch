@@ -48,7 +48,8 @@ export const DetailsGrid = styled.div`
   }
 `;
 
-export const DetailItem = styled.div`
+export const DetailItem = styled.div<{ $fullWidth: boolean }>`
+  grid-column: ${(p) => (p.$fullWidth ? '1 / -1' : 'auto')};
   min-width: 0;
   min-height: 6.4rem;
   display: flex;

@@ -33,3 +33,41 @@ export const InfoMessage = styled(MessageBox)`
     font-size: 1.8rem;
   }
 `;
+
+export const Notes = styled.ul`
+  margin: 0;
+  padding-inline-start: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  font-size: 1.2rem;
+  line-height: 2rem;
+`;
+
+export const Days = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+`;
+
+export const DaysTitle = styled.div`
+  color: ${(props) => props.theme.textPrimary};
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 2rem;
+`;
+
+// Shown until a start date picks which weekdays get hours
+export const DaysEmpty = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 2.4rem 1.6rem;
+  border: 1px solid ${(props) => props.theme.border};
+  border-radius: 0.8rem;
+  color: ${(props) => props.theme.textPrimary};
+  font-size: 1.2rem;
+  line-height: 2rem;
+  text-align: center;
+`;
