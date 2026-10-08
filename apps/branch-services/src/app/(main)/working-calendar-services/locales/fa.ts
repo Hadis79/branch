@@ -4,7 +4,7 @@ export default {
   new_service: 'خدمت جدید',
   edit_service: 'ویرایش خدمت',
   service_name: 'نام خدمت',
-  service_english_name: 'نام خدمت (انگلیسی)',
+  service_english_name: 'نام خدمت به انگلیسی',
   service_name_placeholder: 'نام خدمت فارسی / انگلیسی',
   service_english_name_placeholder: 'Service Name',
   service_name_required: 'نام خدمت الزامی است',
@@ -13,10 +13,10 @@ export default {
   status: 'وضعیت فعال بودن خدمت',
   active: 'فعال',
   inactive: 'غیرفعال',
-  overridable_by_rules: 'قابلیت بازنویسی توسط قوانین',
-  overridable_status: 'وضعیت بازنویسی توسط قوانین',
-  overridable_description:
-    'قابلیت بازنویسی مشخص می‌کند که آیا امکان تغییر تنظیمات این خدمت از طریق قوانین وجود دارد یا خیر.',
+  override_by_rules: 'قابلیت بازنویسی توسط قوانین',
+  override_status: 'وضعیت بازنویسی توسط قوانین',
+  override_description:
+    'با فعال بودن این قابلیت، امکان تغییر ساعت کاری خدمت در گروه‌های کشیک و واحدهای کشیک و واحدهای خاص نیز فراهم می‌شود.',
   has: 'دارد',
   has_not: 'ندارد',
   actions: 'عملیات',

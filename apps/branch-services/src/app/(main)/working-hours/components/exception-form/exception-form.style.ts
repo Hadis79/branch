@@ -40,7 +40,8 @@ export const Notes = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 400;
   line-height: 2rem;
 `;
 

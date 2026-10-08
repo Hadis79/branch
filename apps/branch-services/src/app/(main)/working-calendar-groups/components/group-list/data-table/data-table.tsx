@@ -1,6 +1,7 @@
 import { TablePaginationConfig } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 
+import type { PaginatedData } from '@branch-services/types';
 import { Table } from '@branch-services/ui-kit';
 import { useTr } from '@branch-services/translation';
 
@@ -10,13 +11,17 @@ import RemoveModal from '../../modals/remove-modal';
 import useGroupStore from '../../../store/use-widget-store';
 import useGroupMessage from '../../../hooks/use-group-message';
 import { GroupListItem, GroupModalType } from '../../../utils/types';
-import useGroupListQuery from '../../../queries/use-group-list-query';
 import useDeleteGroupMutation from '../../../queries/use-remove-group-mutation';
 import useWorkingCalendarGroupPage from '../../../hooks/use-working-calendar-group-page';
 
 import * as S from './data-table.style';
 
-const DataTable = () => {
+type DataTableProps = {
+  data?: PaginatedData<GroupListItem>;
+  isFetching: boolean;
+};
+
+const DataTable = ({ data, isFetching }: DataTableProps) => {
   const [t] = useTr();
   const [activeModal, setActiveModal] = useState<GroupModalType | null>(null);
   // Kept after closing so the modal title does not blank out during the close animation
@@ -26,7 +31,6 @@ const DataTable = () => {
   const setSelectedGroupForEdit = useGroupStore((state) => state.setSelectedGroup);
 
   const { showSuccess, showError } = useGroupMessage();
-  const { data, isFetching } = useGroupListQuery();
   const { mutate, isPending: isRemoving } = useDeleteGroupMutation();
   const { navigateToGroupDetails } = useWorkingCalendarGroupPage();
 

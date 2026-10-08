@@ -3,13 +3,17 @@ import { useTr } from '@branch-services/translation';
 
 import { WorkingCalendarGroupPage } from '../../utils/constants';
 import useWorkingCalendarGroupPage from '../../hooks/use-working-calendar-group-page';
-import useEmptyGroupList from '../../hooks/use-empty-group-list';
+import { useGroupListQueryContext } from '../../queries/group-list-query-context';
+import useGroupStore from '../../store/use-widget-store';
 
 const WorkingCalendarGroupHeaderAction = () => {
   const [t] = useTr();
   const { currentPage, navigateTo, goBack } = useWorkingCalendarGroupPage();
   const isListPage = currentPage === WorkingCalendarGroupPage.LIST;
-  const isEmptyList = useEmptyGroupList(isListPage);
+  const filter = useGroupStore((state) => state.filter);
+  const query = useGroupListQueryContext();
+  const hasFilter = Boolean(filter.name?.trim() || filter.groupType);
+  const isEmptyList = isListPage && !hasFilter && query.isSuccess && !query.isFetching && query.data.totalElements === 0;
 
   if (isEmptyList) return null;
 

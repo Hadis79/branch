@@ -24,6 +24,8 @@ export type WorkingDayResponse = {
   endWorkingHour: string | null;
 };
 
+export type WorkingDayRequest = Omit<WorkingDayResponse, 'dayName'>;
+
 // Raw shape of GET work-time/default/info. `days` is missing on records saved before per-day hours.
 export type WorkingHoursInfoResponse = {
   id: number;
@@ -33,13 +35,10 @@ export type WorkingHoursInfoResponse = {
   days?: WorkingDayResponse[];
 };
 
-// Raw shape sent to POST work-time/default. startWorkingHour / endWorkingHour still go along with
-// the per-day hours: the earliest start and latest end among the working days.
+// Raw shape sent to POST work-time/default. Hours are defined per day only.
 export type WorkingHoursRequest = {
   title: string;
-  startWorkingHour: string | null;
-  endWorkingHour: string | null;
-  days: WorkingDayResponse[];
+  days: WorkingDayRequest[];
 };
 
 // A scope covering every province, a single named one, or one working-hours group of units
@@ -76,16 +75,14 @@ export type WorkingHoursExceptionResponse = {
   days?: WorkingDayResponse[];
 };
 
-// Raw shape sent to POST work-time/exception/create. Same fields as the response, but startDate /
-// endDate are ISO (YYYY-MM-DD) here and there is no id. startWorkingHour / endWorkingHour are the
-// earliest start and latest end among the working days, like the default hours' request.
-// A group-scoped exception sends its groupId and no provinceName.
+// Raw shape sent to POST work-time/exception/create. Dates are ISO (YYYY-MM-DD), hours are
+// defined per day only, and a group-scoped exception sends its groupId and no provinceName.
 export type WorkingHoursExceptionRequest = Omit<
   WorkingHoursExceptionResponse,
-  'id' | 'days' | 'groupId' | 'groupName'
+  'id' | 'days' | 'groupId' | 'groupName' | 'startWorkingHour' | 'endWorkingHour'
 > & {
   groupId: string | null;
-  days: WorkingDayResponse[];
+  days: WorkingDayRequest[];
 };
 
 // Raw shape of GET calendar/holiday/province/list (shared with working-calendar-holiday). A

@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Form } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Button, EmptyData, Select } from '@branch-services/ui-kit';
+import { EmptyData, Select } from '@branch-services/ui-kit';
 
 import GroupNameField from './group-name-field';
 import GroupTypeField from './group-type-field';
@@ -42,9 +42,10 @@ const ManualEditEntry = ({ group }: ManualEditEntryProps) => {
 
   const serverPages = getServerPages(layout.serverIndexes, pagination.size);
   const unitsPages = useGroupUnitsPagesQuery(group.id, serverPages, pagination.size);
-  if (unitsPages.totalElements !== undefined && unitsPages.totalElements !== serverTotal) {
-    setServerTotal(unitsPages.totalElements);
-  }
+
+  useEffect(() => {
+    if (unitsPages.totalElements !== undefined) setServerTotal(unitsPages.totalElements);
+  }, [unitsPages.totalElements]);
 
   const serverRows = layout.serverIndexes.flatMap((serverIndex): GroupUnitRow[] => {
     const page = Math.floor(serverIndex / pagination.size) + 1;

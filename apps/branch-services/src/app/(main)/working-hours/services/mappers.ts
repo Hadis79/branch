@@ -3,6 +3,7 @@ import { fromJalaliDate, isWorkingDay } from '../utils/utils';
 import type {
   ExceptionScope,
   WorkingDay,
+  WorkingDayRequest,
   WorkingDayResponse,
   WorkingHours,
   WorkingHoursDto,
@@ -26,27 +27,17 @@ const toWorkingDays = ({ startWorkingHour, endWorkingHour, days }: HoursRecord):
     ? days.map((day) => ({ dayOfWeek: day.dayOfWeek, from: day.startWorkingHour, to: day.endWorkingHour }))
     : WEEK_DAYS.map(({ dayOfWeek }) => ({ dayOfWeek, from: startWorkingHour, to: endWorkingHour }));
 
-// The per-day hours plus the single range still sent alongside them: the earliest start and the
-// latest end among the working days ("HH:mm" values sort chronologically as plain strings)
-const toHoursRecord = (days: WorkingDay[]): Required<HoursRecord> => {
-  const workingDays = days.filter(isWorkingDay);
-  const starts = workingDays.map((day) => day.from).sort();
-  const ends = workingDays.map((day) => day.to).sort();
-
-  return {
-    startWorkingHour: starts[0] ?? null,
-    endWorkingHour: ends[ends.length - 1] ?? null,
-    days: days.map((day) => {
-      const isWorking = isWorkingDay(day);
-      return {
-        dayOfWeek: day.dayOfWeek,
-        dayName: WEEK_DAYS.find((item) => item.dayOfWeek === day.dayOfWeek)?.dayName ?? '',
-        startWorkingHour: isWorking ? day.from : null,
-        endWorkingHour: isWorking ? day.to : null,
-      };
-    }),
-  };
-};
+// Request endpoints accept the working range only inside each day.
+const toHoursRecord = (days: WorkingDay[]): { days: WorkingDayRequest[] } => ({
+  days: days.map((day) => {
+    const isWorking = isWorkingDay(day);
+    return {
+      dayOfWeek: day.dayOfWeek,
+      startWorkingHour: isWorking ? day.from : null,
+      endWorkingHour: isWorking ? day.to : null,
+    };
+  }),
+});
 
 export const toWorkingHours = (response: WorkingHoursInfoResponse): WorkingHours => {
   const days = toWorkingDays(response);

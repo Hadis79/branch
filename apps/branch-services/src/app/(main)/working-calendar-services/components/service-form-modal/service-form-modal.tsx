@@ -35,7 +35,7 @@ const ServiceFormModal = () => {
       {error && <ServiceMessage message={ApiUtil.getErrorMessage(error)} margin='0 0 2.4rem' />}
       <ServiceForm
         isEdit={isEdit}
-        initialValues={selectedService ?? { active: true, overridable: true }}
+        initialValues={selectedService ?? { active: true, override: true }}
         isPending={isPending}
         onSubmit={save}
         onCancel={handleCancel}

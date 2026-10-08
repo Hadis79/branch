@@ -23,12 +23,12 @@ export const getServiceColumns = ({ t, theme, pagination, onEdit }: ColumnsParam
   { title: t('service_name'), dataIndex: 'persianName', align: 'center' },
   { title: t('service_english_name'), dataIndex: 'englishName', align: 'center' },
   {
-    title: t('overridable_by_rules'),
-    dataIndex: 'overridable',
+    title: t('override_by_rules'),
+    dataIndex: 'override',
     align: 'center',
-    render: (overridable: boolean) => (
-      <Text as='span' color={overridable ? theme.textPrimary : theme.error}>
-        {t(overridable ? 'has' : 'has_not')}
+    render: (override: boolean) => (
+      <Text as='span' color={override ? theme.cardColor : theme.error}>
+        {t(override ? 'has' : 'has_not')}
       </Text>
     ),
   },

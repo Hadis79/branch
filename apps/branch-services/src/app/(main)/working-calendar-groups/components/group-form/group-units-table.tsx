@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TablePaginationConfig } from 'antd';
 
 import { useTr } from '@branch-services/translation';
-import { Box, Button, ColumnsType, Table, Text } from '@branch-services/ui-kit';
+import { Box, Button, ColumnsType, Table } from '@branch-services/ui-kit';
 
 import RemoveUnitModal from '../modals/remove-unit-modal';
 import type { GroupUnit, PageParams } from '../../utils/types';

@@ -24,7 +24,7 @@ const WorkingHoursReview = ({ days, loading, onConfirm, onCancel }: WorkingHours
           <Button htmlType='button' type='primaryOutlined' disabled={loading} onClick={onCancel}>
             {t('cancel')}
           </Button>
-          <Button htmlType='button' type='primary' loading={loading} onClick={onConfirm}>
+          <Button htmlType='button' type='primary' disabled={loading} loading={loading} onClick={onConfirm}>
             {t('confirm_final')}
           </Button>
         </>

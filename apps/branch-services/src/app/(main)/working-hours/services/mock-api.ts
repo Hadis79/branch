@@ -3,6 +3,7 @@ import { NATIONAL_PROVINCE_NAME, PROVINCE_NAMES, WEEK_DAYS } from '../utils/cons
 import type {
   GroupResponse,
   ProvinceResponse,
+  WorkingDayRequest,
   WorkingHoursExceptionRequest,
   WorkingHoursExceptionResponse,
   WorkingHoursInfoResponse,
@@ -73,18 +74,33 @@ const reject = (message: string, status = 400): Promise<never> =>
 
 const notFound = () => reject('ساعت کاری پیش‌فرض یافت نشد.', 404);
 
+const toResponseHours = (days: WorkingDayRequest[]) => {
+  const workingDays = days.filter((day) => day.startWorkingHour && day.endWorkingHour);
+  const starts = workingDays.map((day) => day.startWorkingHour as string).sort();
+  const ends = workingDays.map((day) => day.endWorkingHour as string).sort();
+
+  return {
+    startWorkingHour: starts[0] ?? null,
+    endWorkingHour: ends[ends.length - 1] ?? null,
+    days: days.map((day) => ({
+      ...day,
+      dayName: WEEK_DAYS.find((item) => item.dayOfWeek === day.dayOfWeek)?.dayName ?? '',
+    })),
+  };
+};
+
 const MockApi: typeof RealApi = {
-  getWorkingHours: (): Promise<WorkingHoursInfoResponse> => (workingHours ? delay(workingHours) : notFound()),
+  getWorkingHours: (): Promise<WorkingHoursInfoResponse | null> => delay(workingHours),
 
   createWorkingHours: (payload: WorkingHoursRequest): Promise<WorkingHoursInfoResponse> => {
-    workingHours = { id: ++lastId, ...payload };
+    workingHours = { id: ++lastId, title: payload.title, ...toResponseHours(payload.days) };
     return delay(workingHours);
   },
 
   updateWorkingHours: (payload: WorkingHoursRequest): Promise<WorkingHoursInfoResponse> => {
     if (!workingHours) return notFound();
 
-    workingHours = { ...workingHours, ...payload };
+    workingHours = { ...workingHours, title: payload.title, ...toResponseHours(payload.days) };
     return delay(workingHours);
   },
 
@@ -95,7 +111,8 @@ const MockApi: typeof RealApi = {
   getExceptions: (): Promise<WorkingHoursExceptionResponse[]> => delay(exceptions),
 
   createException: (payload: WorkingHoursExceptionRequest): Promise<WorkingHoursExceptionResponse> => {
-    const exception: WorkingHoursExceptionResponse = { id: ++lastId, ...payload };
+    const { days, ...values } = payload;
+    const exception: WorkingHoursExceptionResponse = { id: ++lastId, ...values, ...toResponseHours(days) };
     exceptions = [exception, ...exceptions];
     return delay(exception);
   },

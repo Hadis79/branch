@@ -4,19 +4,22 @@ import { Box, EmptyData, Text } from '@branch-services/ui-kit';
 import { useState } from 'react';
 
 import ExceptionCard from './exception-card';
+import { ExceptionCardsSkeleton } from '../loading-skeletons/loading-skeletons';
 import DeleteExceptionModal from '../working-hours-modal/delete-exception-modal';
 import useDeleteExceptionMutation from '../../queries/use-delete-exception-mutation';
 import useExceptionsQuery from '../../queries/use-exceptions-query';
 import useWorkingHoursStore from '../../store/use-widget-store';
+import useQueryErrorMessage from '../../hooks/use-query-error-message';
 import { isExpiredException } from '../../utils/utils';
 import type { WorkingHoursException } from '../../utils/types';
 
 const ExceptionsSection = () => {
   const [t] = useTr();
-  const { data: exceptions } = useExceptionsQuery();
+  const { data: exceptions, isLoading, error } = useExceptionsQuery();
   const deleteMutation = useDeleteExceptionMutation();
   const setMessage = useWorkingHoursStore((state) => state.setMessage);
   const [selectedException, setSelectedException] = useState<WorkingHoursException | null>(null);
+  useQueryErrorMessage(error);
 
   const handleCloseDelete = () => {
     if (deleteMutation.isPending) return;
@@ -38,6 +41,9 @@ const ExceptionsSection = () => {
       },
     });
   };
+
+  if (isLoading) return <ExceptionCardsSkeleton />;
+  if (error) return null;
 
   if (!exceptions?.length)
     return (

@@ -7,7 +7,6 @@ import EntryLayout from './entry-layout';
 import UploadResultBox from './upload-result-box';
 import { SampleFileLink, UploadedItem, UploadFileContainer } from './file-entry.style';
 import { GroupFormValues, UploadedGroupFile } from '../../utils/types';
-import useDownloadSampleFileMutation from '../../queries/use-download-sample-file-mutation';
 import Utils from '../../utils/utils';
 
 type FileEntryProps = {
@@ -35,7 +34,6 @@ const FileEntry = ({
   onViewPreviousDetails,
 }: FileEntryProps) => {
   const [t] = useTr();
-  const downloadSample = useDownloadSampleFileMutation();
   const form = Form.useFormInstance<GroupFormValues>();
   // Set even when the upload later fails, so the attempted file stays visible under the error
   const selectedFile = Form.useWatch('file', { form, preserve: true })?.[0];

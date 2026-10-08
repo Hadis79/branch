@@ -34,7 +34,7 @@ export const Chips = styled.div`
 
 export const Chip = styled.div<{ $holiday: boolean }>`
   padding: 0.8rem 1.2rem;
-  border: 0.1rem solid ${(props) => (props.$holiday ? 'transparent' : props.theme.border)};
+  /* border: 0.1rem solid ${(props) => (props.$holiday ? 'transparent' : props.theme.border)}; */
   border-radius: 0.6rem;
   background-color: ${(props) => (props.$holiday ? `${props.theme.warning}14` : props.theme.backgroundRefrence)};
   color: ${(props) => (props.$holiday ? props.theme.warning : props.theme.textPrimary)};

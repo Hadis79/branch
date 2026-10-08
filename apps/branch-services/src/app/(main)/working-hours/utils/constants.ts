@@ -3,7 +3,7 @@ import type { DayOfWeek } from './types';
 // Set to true to switch every request back to the mock service (services/mock-api.ts). Confirmed
 // endpoints: getWorkingHours (GET work-time/default/info), getExceptions/createException/deleteException
 // (work-time/exception/...). createWorkingHours/updateWorkingHours (the default hours) are still guesses.
-export const USE_MOCK_API = true;
+export const USE_MOCK_API = false;
 
 export const WORKING_HOURS_PATH = '/working-hours';
 

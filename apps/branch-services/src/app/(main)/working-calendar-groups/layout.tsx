@@ -9,6 +9,7 @@ import { WidgetWrapper } from '@branch-services/layouts';
 
 import WorkingCalendarGroupHeaderAction from './components/header-action';
 import useWorkingCalendarGroupPage from './hooks/use-working-calendar-group-page';
+import { GroupListQueryProvider } from './queries/group-list-query-context';
 import { WorkingCalendarGroupPage } from './utils/constants';
 
 const HEADER_TITLES: Record<WorkingCalendarGroupPage, string> = {
@@ -26,13 +27,15 @@ function WorkingCalendarGroupsLayout({ children }: { children: ReactNode }) {
   const titlePage = currentPage === WorkingCalendarGroupPage.DETAILS ? formPage : currentPage;
 
   return (
-    <WidgetWrapper
-      headerTitle={HEADER_TITLES[titlePage]}
-      headerAction={<WorkingCalendarGroupHeaderAction />}
-      breadcrumbPrefixTitle='calendar_and_base_information'
-    >
-      {children}
-    </WidgetWrapper>
+    <GroupListQueryProvider enabled={currentPage === WorkingCalendarGroupPage.LIST}>
+      <WidgetWrapper
+        headerTitle={HEADER_TITLES[titlePage]}
+        headerAction={<WorkingCalendarGroupHeaderAction />}
+        breadcrumbPrefixTitle='calendar_and_base_information'
+      >
+        {children}
+      </WidgetWrapper>
+    </GroupListQueryProvider>
   );
 }
 

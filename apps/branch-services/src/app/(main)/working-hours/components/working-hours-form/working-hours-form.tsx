@@ -75,7 +75,7 @@ const WorkingHoursForm = ({
           <Button
             htmlType='button'
             type='primary'
-            disabled={!hasWorkingDay}
+            disabled={!hasWorkingDay || submitLoading}
             loading={submitLoading}
             onClick={handleSubmit}
           >

@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const [t] = useTr();
   const router = useRouter();
   const { currentPage, navigateTo } = useWorkingHoursPage();
-  const { data } = useWorkingHoursQuery();
+  const { data } = useWorkingHoursQuery(currentPage === WorkingHoursPage.LIST);
   const headerTitle = getHeaderTitle(currentPage);
   const headerAction = getHeaderAction(
     currentPage,

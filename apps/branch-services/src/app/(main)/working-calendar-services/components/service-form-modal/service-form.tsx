@@ -25,7 +25,7 @@ const LabeledSwitch = ({ checked = false, onChange }: LabeledSwitchProps) => {
 };
 
 type SwitchBoxProps = {
-  name: 'active' | 'overridable';
+  name: 'active' | 'override';
   label: string;
   description?: string;
 };
@@ -74,7 +74,7 @@ const ServiceForm = ({ isEdit, initialValues, isPending, onSubmit, onCancel }: S
       <RoundedBox>
         {/* A new service always starts active, so its status is only editable afterwards */}
         {isEdit && <SwitchBox name='active' label={t('status')} />}
-        <SwitchBox name='overridable' label={t('overridable_status')} description={t('overridable_description')} />
+        <SwitchBox name='override' label={t('override_status')} description={t('override_description')} />
       </RoundedBox>
       <Box gap='1.6rem' marginTop='2.4rem'>
         <Button htmlType='button' type='primaryOutlined' onClick={onCancel}>

@@ -26,7 +26,7 @@ let services: ServiceItemResponse[] = [
   persianName,
   englishName,
   active: index % 4 !== 3,
-  overridable: index % 5 !== 2,
+  override: index % 5 !== 2,
 }));
 
 let lastId = services.length;
@@ -85,7 +85,7 @@ const MockApi: typeof RealApi = {
         persianName: values.persianName.trim(),
         englishName: values.englishName.trim(),
         active: values.active,
-        overridable: values.overridable,
+        override: values.override,
       },
       ...services,
     ];

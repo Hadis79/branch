@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { EntryMode, WORKING_CALENDAR_GROUP_PATH, WorkingCalendarGroupPage } from '../utils/constants';
 
@@ -26,29 +27,39 @@ const useWorkingCalendarGroupPage = () => {
     currentPage === WorkingCalendarGroupPage.GROUP_DETAILS &&
     searchParams.get(PARAMS.from) === WorkingCalendarGroupPage.LIST;
 
-  const navigateTo = (target: WorkingCalendarGroupPage, { id, mode, from }: NavigateOptions = {}) => {
-    if (target === WorkingCalendarGroupPage.LIST) {
-      router.push(WORKING_CALENDAR_GROUP_PATH);
-      return;
-    }
+  const navigateTo = useCallback(
+    (target: WorkingCalendarGroupPage, { id, mode, from }: NavigateOptions = {}) => {
+      if (target === WorkingCalendarGroupPage.LIST) {
+        router.push(WORKING_CALENDAR_GROUP_PATH);
+        return;
+      }
 
-    const params = new URLSearchParams({ [PARAMS.page]: target });
-    if (id !== undefined && id !== null) params.set(PARAMS.groupId, String(id));
-    if (mode) params.set(PARAMS.mode, mode);
-    if (from) params.set(PARAMS.from, from);
+      const params = new URLSearchParams({ [PARAMS.page]: target });
+      if (id !== undefined && id !== null) params.set(PARAMS.groupId, String(id));
+      if (mode) params.set(PARAMS.mode, mode);
+      if (from) params.set(PARAMS.from, from);
 
-    router.push(`${WORKING_CALENDAR_GROUP_PATH}?${params.toString()}`);
-  };
+      router.push(`${WORKING_CALENDAR_GROUP_PATH}?${params.toString()}`);
+    },
+    [router]
+  );
 
   // The details page is shared by the add and edit forms; `groupId` tells which one it came from.
   const formPage = groupId ? WorkingCalendarGroupPage.EDIT : WorkingCalendarGroupPage.ADD;
-  const navigateToForm = () => navigateTo(formPage, { id: groupId, mode: groupId ? editMode : null });
-  const navigateToDetails = () =>
-    navigateTo(WorkingCalendarGroupPage.DETAILS, { id: groupId, mode: groupId ? editMode : null });
+  const navigateToForm = useCallback(
+    () => navigateTo(formPage, { id: groupId, mode: groupId ? editMode : null }),
+    [editMode, formPage, groupId, navigateTo]
+  );
+  const navigateToDetails = useCallback(
+    () => navigateTo(WorkingCalendarGroupPage.DETAILS, { id: groupId, mode: groupId ? editMode : null }),
+    [editMode, groupId, navigateTo]
+  );
   // Opened from the list or from the edit form; either way, plain browser back returns to it
-  const navigateToGroupDetails = (id: string) =>
-    navigateTo(WorkingCalendarGroupPage.GROUP_DETAILS, { id, from: currentPage });
-  const goBack = () => router.back();
+  const navigateToGroupDetails = useCallback(
+    (id: string) => navigateTo(WorkingCalendarGroupPage.GROUP_DETAILS, { id, from: currentPage }),
+    [currentPage, navigateTo]
+  );
+  const goBack = useCallback(() => router.back(), [router]);
 
   return {
     currentPage,

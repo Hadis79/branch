@@ -34,9 +34,11 @@ const CreateWorkingHours = () => {
     setFormKey((key) => key + 1);
   };
 
-  const handleConfirm = () =>
+  const handleConfirm = () => {
+    if (!days || createMutation.isPending) return;
+
     createMutation.mutate(
-      { days: days ?? [] },
+      { days },
       {
         onSuccess: () => {
           setMessage({ txt: t('create_success'), type: 'success', shouldTranslate: false });
@@ -45,6 +47,7 @@ const CreateWorkingHours = () => {
         onError: (error) => setMessage(ApiUtil.getErrorMessage(error)),
       }
     );
+  };
 
   if (isReviewing && days)
     return (

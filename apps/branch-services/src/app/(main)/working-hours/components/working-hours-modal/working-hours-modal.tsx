@@ -52,7 +52,14 @@ const WorkingHoursModal = ({
         <Button htmlType='button' type='primaryOutlined' disabled={confirmLoading} onClick={onCancel}>
           {cancelText ?? t('cancel')}
         </Button>
-        <Button htmlType='button' type='primary' danger={danger} loading={confirmLoading} onClick={onConfirm}>
+        <Button
+          htmlType='button'
+          type='primary'
+          danger={danger}
+          disabled={confirmLoading}
+          loading={confirmLoading}
+          onClick={onConfirm}
+        >
           {confirmText}
         </Button>
       </Box>

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { bbpUrl, client } from '@branch-services/client';
 
 import type {
@@ -14,15 +16,21 @@ const WORK_TIME_URL = `${bbpUrl}/calendar/work-time`;
 const PROVINCE_LIST_URL = `${bbpUrl}/calendar/holiday/province/list`;
 // Every group an exception can be scoped to, unpaginated
 const GROUP_LIST_URL = `${bbpUrl}/calendar/group/work-time-list`;
+const NOT_FOUND_STATUS = 404;
 
 // Confirmed: GET .../default/info, the exception/* endpoints below, and the province list. The
-// default-hours create/update endpoints are still guesses. This stays a plain pass-through:
-// request shaping and response mapping happen in the query/mutation hooks (services/mappers.ts),
-// not here, like the other working-calendar-* modules.
+// default-hours create/update endpoints are still guesses. Request shaping and response mapping
+// happen in services/mappers.ts; the only normalization here is treating a missing default record
+// (404) as null instead of an application error.
 const Api = {
-  getWorkingHours: async (): Promise<WorkingHoursInfoResponse> => {
-    const response = await client.get<WorkingHoursInfoResponse>(`${WORK_TIME_URL}/default/info`);
-    return response.data;
+  getWorkingHours: async (): Promise<WorkingHoursInfoResponse | null> => {
+    try {
+      const response = await client.get<WorkingHoursInfoResponse>(`${WORK_TIME_URL}/default/info`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === NOT_FOUND_STATUS) return null;
+      throw error;
+    }
   },
   createWorkingHours: async (payload: WorkingHoursRequest): Promise<WorkingHoursInfoResponse> => {
     const response = await client.post<WorkingHoursInfoResponse>(`${WORK_TIME_URL}/default`, payload);

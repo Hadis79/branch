@@ -4,7 +4,7 @@ export interface ServiceItem {
   englishName: string;
   active: boolean;
   // Whether rules may override this service's settings
-  overridable: boolean;
+  override: boolean;
 }
 
 // Raw list row of the service, normalized by services/mappers.ts

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import useCreateGroupsMutation from '../queries/use-create-group-mutation';
 import useUpdateGroupMutation from '../queries/use-update-group-mutation';
@@ -18,26 +18,33 @@ type SaveGroupParams = {
 const useSaveGroup = () => {
   const createGroup = useCreateGroupsMutation();
   const updateGroup = useUpdateGroupMutation();
-  const pending = useRef(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const isSaving = isPreparing || createGroup.isPending || updateGroup.isPending;
 
   const save = async ({ values, groupType, target, isFileEntry, uploadedUnits }: SaveGroupParams) => {
-    if (pending.current) return false;
-    pending.current = true;
-    setIsSaving(true);
-    try {
-      const currentUnits =
-        target.variant === 'edit' && (!isFileEntry || uploadedUnits === undefined)
-          ? await fetchAllGroupUnits(target.id)
-          : undefined;
-      const body = toGroupRequest({ values, groupType, isFileEntry, uploadedUnits, currentUnits });
-      if (target.variant === 'edit') await updateGroup.mutateAsync({ id: target.id, ...body });
-      else await createGroup.mutateAsync(body);
-      return true;
-    } finally {
-      pending.current = false;
-      setIsSaving(false);
+    if (isSaving) return false;
+
+    let currentUnits: GroupUnit[] | undefined;
+    const shouldFetchCurrentUnits = target.variant === 'edit' && (!isFileEntry || uploadedUnits === undefined);
+
+    if (shouldFetchCurrentUnits) {
+      setIsPreparing(true);
+      try {
+        currentUnits = await fetchAllGroupUnits(target.id);
+      } finally {
+        setIsPreparing(false);
+      }
     }
+
+    const body = toGroupRequest({ values, groupType, isFileEntry, uploadedUnits, currentUnits });
+
+    if (target.variant === 'edit') {
+      await updateGroup.mutateAsync({ id: target.id, ...body });
+      return true;
+    }
+
+    await createGroup.mutateAsync(body);
+    return true;
   };
 
   return { save, isSaving };

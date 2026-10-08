@@ -9,7 +9,7 @@ import * as S from './exception-form.style';
 import ExceptionNotes from './exception-notes';
 import ExceptionPreview from './exception-preview';
 import ScopeFields from './scope-fields';
-import SleepingCalendarSvg from '../../assets/sleeping-calendar';
+import DefaultHoursSummary from './default-hours-summary';
 import FormPage from '../working-hours-form/form-page';
 import TimeRangeFields from '../working-hours-form/time-range-fields';
 import { DaysList } from '../working-hours-form/working-hours-form.style';
@@ -58,7 +58,7 @@ const ExceptionForm = () => {
   const [form] = Form.useForm<FormValues>();
   const values = Form.useWatch([], form) as Partial<FormValues> | undefined;
   // Set once the form step is confirmed, so the preview step shows a stable snapshot
-  const [pending, setPending] = useState<WorkingHoursExceptionDto | null>(null);
+  const [preview, setPreview] = useState<WorkingHoursExceptionDto | null>(null);
   const { navigateTo } = useWorkingHoursPage();
   const setMessage = useWorkingHoursStore((state) => state.setMessage);
   const createMutation = useCreateExceptionMutation();
@@ -78,17 +78,17 @@ const ExceptionForm = () => {
   );
 
   const handleContinue = () =>
-    form.validateFields().then(() => setPending(toExceptionDto(form.getFieldsValue(true), weekDays)));
+    form.validateFields().then(() => setPreview(toExceptionDto(form.getFieldsValue(true), weekDays)));
 
   const handleReset = () => {
     form.resetFields();
-    setPending(null);
+    setPreview(null);
   };
 
   const handleConfirm = () => {
-    if (!pending) return;
+    if (!preview || createMutation.isPending) return;
 
-    createMutation.mutate(pending, {
+    createMutation.mutate(preview, {
       onSuccess: () => {
         setMessage({ txt: t('exception_create_success'), type: 'success', shouldTranslate: false });
         navigateTo(WorkingHoursPage.LIST);
@@ -99,39 +99,35 @@ const ExceptionForm = () => {
 
   return (
     <FormPage
+      illustration={<DefaultHoursSummary />}
       header={
         <>
           <S.InfoMessage type='info' message={t('exception_info_description')} closable />
-          {pending && (
+          {preview && (
             <MessageBox type='warning' message={t('exception_notes_title')} description={<ExceptionNotes />} closable />
           )}
         </>
       }
       footer={
-        pending ? (
-          <Box width={'25%'}>
-            <Button htmlType='button' type='primaryOutlined' disabled={createMutation.isPending} onClick={handleReset}>
-              {t('cancel')}
-            </Button>
-            <Button htmlType='button' type='primary' loading={createMutation.isPending} onClick={handleConfirm}>
-              {t('confirm_final')}
-            </Button>
-          </Box>
-        ) : (
-          <Box width={'25%'}>
-            <Button htmlType='button' type='primaryOutlined' onClick={handleReset}>
-              {t('cancel')}
-            </Button>
-            <Button htmlType='button' type='primary' disabled={!isFormComplete} onClick={handleContinue}>
-              {t('continue')}
-            </Button>
-          </Box>
-        )
+        <Box width={'15%'} marginTop={'6.7rem'}>
+          <Button htmlType='button' type='primaryOutlined' disabled={createMutation.isPending} onClick={handleReset}>
+            {t('cancel')}
+          </Button>
+          <Button
+            htmlType='button'
+            type='primary'
+            disabled={createMutation.isPending || (!preview && !isFormComplete)}
+            loading={createMutation.isPending}
+            onClick={preview ? handleConfirm : handleContinue}
+          >
+            {t(preview ? 'confirm_final' : 'continue')}
+          </Button>
+        </Box>
       }
     >
-      {pending && <ExceptionPreview exception={pending} />}
+      {preview && <ExceptionPreview exception={preview} />}
       {/* Hidden, not unmounted, behind the preview; cancel on either step resets it */}
-      <Form form={form} layout='vertical' hidden={Boolean(pending)}>
+      <Form form={form} layout='vertical' hidden={Boolean(preview)}>
         <Box flexDirection='column' gap='2.4rem'>
           <ScopeFields />
           <Form.Item

@@ -5,10 +5,14 @@ import { Box, Button, Input, SearchItemsContainer, Select } from '@branch-servic
 
 import { FilterWrapper } from './filter.style';
 import useGroupStore, { GroupListFilter } from '../../../store/use-widget-store';
-import useGroupListQuery from '../../../queries/use-group-list-query';
 import { GROUP_TYPE_FILTER_OPTIONS } from '../../../utils/constants';
 
-const Filter = () => {
+type FilterProps = {
+  isFetching: boolean;
+  onRefetch: () => void;
+};
+
+const Filter = ({ isFetching, onRefetch }: FilterProps) => {
   const [t] = useTr();
   const [form] = Form.useForm<GroupListFilter>();
 
@@ -16,8 +20,6 @@ const Filter = () => {
   const page = useGroupStore((state) => state.pagination.page);
   const setFilter = useGroupStore((state) => state.setFilter);
   const setPagination = useGroupStore((state) => state.setPagination);
-  const { refetch, isFetching } = useGroupListQuery();
-
   const onFinish = (values: GroupListFilter) => {
     // Same search again keeps the query key, so the (still fresh) result has to be refetched explicitly
     const isSameQuery =
@@ -25,7 +27,7 @@ const Filter = () => {
       (values.name?.trim() || '') === (filter.name?.trim() || '') &&
       (values.groupType || '') === (filter.groupType || '');
     if (isSameQuery) {
-      refetch();
+      onRefetch();
       return;
     }
 
