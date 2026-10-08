@@ -43,7 +43,10 @@ const mockMenu: MenuModel[] = [
     menuItem(45, 'مدیریت تعطیلات', 'working-calendar-holiday', '', [], 4),
     menuItem(46, 'نمای تقویم', '', '', [], 4),
   ]),
-  menuItem(5, 'مدیریت شعب', '', 'ri-bank-line', [menuItem(51, 'مدیریت ساعت کاری', 'working-hours', '', [], 5)]),
+  menuItem(5, 'مدیریت شعب', '', 'ri-bank-line', [
+    menuItem(51, 'مدیریت ساعت کاری', 'working-hours', '', [], 5),
+    menuItem(52, 'قوانین خدمات', 'service-rules', '', [], 5),
+  ]),
 ];
 
 const mockUser = {
