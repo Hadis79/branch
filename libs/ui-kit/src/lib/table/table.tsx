@@ -103,7 +103,8 @@ export const Table = (props: TableProps) => {
     return className;
   };
 
-  const _showHeader = showHeader ?? (isMobileOrTablet ? false : !!(props.dataSource && props.dataSource.length));
+  const hasRows = !!props.dataSource?.length;
+  const _showHeader = showHeader ?? (isMobileOrTablet ? false : hasRows);
 
   const _columns: ColumnsType<any> = [...(columns ?? []), ...(expandable ? [AntTable.EXPAND_COLUMN] : [])];
 
@@ -183,7 +184,8 @@ export const Table = (props: TableProps) => {
         expandable={_expandable}
         pagination={_pagination}
         showHeader={_showHeader}
-        scroll={{ x: 'fit-content' }}
+        // An empty table has nothing to scroll; with `x` set, antd's empty row can still overflow by a pixel
+        scroll={hasRows ? { x: 'fit-content' } : undefined}
         locale={{
           emptyText: <EmptyData />,
         }}

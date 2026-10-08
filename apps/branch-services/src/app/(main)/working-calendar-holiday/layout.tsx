@@ -8,31 +8,22 @@ import en from './locales/en';
 import fa from './locales/fa';
 import HolidayHeaderAction from './components/header-action/header-action';
 import useHolidayPage from './hooks/use-holiday-page';
-import useHolidayStore from './store/use-widget-store';
 import { HolidayPage } from './utils/constants';
 
-const CREATE_PAGES = [HolidayPage.UPLOAD, HolidayPage.UPLOAD_DETAILS, HolidayPage.MANUAL];
-
-const getHeaderTitle = (currentPage: HolidayPage, formOrigin: HolidayPage | null) => {
-  const isEdit =
-    currentPage === HolidayPage.EDIT ||
-    ((currentPage === HolidayPage.UPLOAD_DETAILS || currentPage === HolidayPage.DETAILS) &&
-      formOrigin === HolidayPage.EDIT);
-  if (isEdit) return 'edit_official_title';
-  if (CREATE_PAGES.includes(currentPage)) return 'new_holiday';
-  return 'working_calendar_holiday';
+const HEADER_TITLES: Record<HolidayPage, string> = {
+  [HolidayPage.LIST]: 'working_calendar_holiday',
+  [HolidayPage.CREATE]: 'new_holiday',
+  [HolidayPage.UPLOAD_DETAILS]: 'new_holiday',
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
   loadTr({ en, fa });
   const { currentPage } = useHolidayPage();
-  const formOrigin = useHolidayStore((state) => state.formOrigin);
-  const headerTitle = getHeaderTitle(currentPage, formOrigin);
 
   return (
     <WidgetWrapper
       breadcrumbPrefixTitle='calendar_and_base_information'
-      headerTitle={headerTitle}
+      headerTitle={HEADER_TITLES[currentPage]}
       headerAction={<HolidayHeaderAction />}
     >
       {children}

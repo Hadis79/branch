@@ -1,47 +1,24 @@
-import type { ComponentType } from 'react';
-
-import EditOfficialForm from '../edit-official-form/edit-official-form';
+import CreatePage from '../create-page/create-page';
 import HolidayList from '../holiday-list/holiday-list';
-import ManualForm from '../manual-form/manual-form';
-import OfficialDetails from '../official-details/official-details';
 import UploadDetails from '../upload-details/upload-details';
-import UploadForm from '../upload-form/upload-form';
 import { HolidayPage } from '../../utils/constants';
 
 type PageContentProps = {
   currentPage: HolidayPage;
-  formOrigin: HolidayPage | null;
 };
 
-const PAGE_COMPONENTS: Partial<Record<HolidayPage, ComponentType>> = {
-  [HolidayPage.LIST]: HolidayList,
-  [HolidayPage.MANUAL]: ManualForm,
-  [HolidayPage.DETAILS]: OfficialDetails,
-  [HolidayPage.UPLOAD_DETAILS]: UploadDetails,
-};
-
-const PageContent = ({ currentPage, formOrigin }: PageContentProps) => {
-  const CurrentPage = PAGE_COMPONENTS[currentPage];
+const PageContent = ({ currentPage }: PageContentProps) => {
   const isUploadDetails = currentPage === HolidayPage.UPLOAD_DETAILS;
-  const isOfficialDetails = currentPage === HolidayPage.DETAILS;
-  const isDetailsPage = isUploadDetails || isOfficialDetails;
-  const isFromEdit = isDetailsPage && formOrigin === HolidayPage.EDIT;
-  const shouldKeepUploadForm = currentPage === HolidayPage.UPLOAD || (isUploadDetails && !isFromEdit);
-  const shouldKeepEditForm = currentPage === HolidayPage.EDIT || isFromEdit;
 
   return (
     <>
-      {CurrentPage && <CurrentPage />}
+      {currentPage === HolidayPage.LIST && <HolidayList />}
+      {isUploadDetails && <UploadDetails />}
 
-      {/* Keep the source form mounted while its details page is open, so its state survives the round trip. */}
-      {shouldKeepUploadForm && (
+      {/* Kept mounted while its details page is open, so the uploaded file survives the round trip */}
+      {(currentPage === HolidayPage.CREATE || isUploadDetails) && (
         <div hidden={isUploadDetails}>
-          <UploadForm />
-        </div>
-      )}
-      {shouldKeepEditForm && (
-        <div hidden={isDetailsPage}>
-          <EditOfficialForm />
+          <CreatePage />
         </div>
       )}
     </>

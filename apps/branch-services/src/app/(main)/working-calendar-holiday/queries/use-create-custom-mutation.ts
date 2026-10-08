@@ -9,7 +9,7 @@ const useCreateCustomMutation = () => {
   return useMutation({
     mutationKey: holidayMutationKeys.createCustom,
     mutationFn: Api.createCustomHolidays,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: holidayQueryKeys.customLists() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: holidayQueryKeys.lists() }),
   });
 };
 

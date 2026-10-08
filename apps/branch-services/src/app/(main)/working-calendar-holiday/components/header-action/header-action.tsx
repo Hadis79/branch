@@ -1,51 +1,26 @@
-import { useState } from 'react';
-
 import { useTr } from '@branch-services/translation';
 import { Button } from '@branch-services/ui-kit';
 
-import CreateMethodModal from '../create-method-modal/create-method-modal';
+import NewHolidayButton from '../new-holiday-button/new-holiday-button';
+import useEmptyHolidayList from '../../hooks/use-empty-holiday-list';
 import useHolidayPage from '../../hooks/use-holiday-page';
-import useHolidayStore from '../../store/use-widget-store';
 import { HolidayPage } from '../../utils/constants';
 
-// List: "new holidays" (asks for the method first); other pages: back
+// List: "new holidays", hidden while the list is empty (the empty state has its own button); other pages: back
 const HolidayHeaderAction = () => {
   const [t] = useTr();
-  const { currentPage, year, navigateTo } = useHolidayPage();
-  const formOrigin = useHolidayStore((state) => state.formOrigin);
-  const [isMethodModalOpen, setIsMethodModalOpen] = useState(false);
+  const { currentPage, navigateTo } = useHolidayPage();
+  const isEmptyList = useEmptyHolidayList();
 
-  if (currentPage !== HolidayPage.LIST) {
-    const handleBack = () => {
-      const isDetailsPage = currentPage === HolidayPage.DETAILS || currentPage === HolidayPage.UPLOAD_DETAILS;
+  if (currentPage === HolidayPage.LIST) return isEmptyList ? null : <NewHolidayButton />;
 
-      if (isDetailsPage && formOrigin === HolidayPage.EDIT && year) {
-        navigateTo(HolidayPage.EDIT, { year });
-        return;
-      }
-
-      if (currentPage === HolidayPage.UPLOAD_DETAILS) {
-        navigateTo(HolidayPage.UPLOAD);
-        return;
-      }
-
-      navigateTo(HolidayPage.LIST);
-    };
-
-    return (
-      <Button type='link' icon={<i className='ri-arrow-left-line' />} onClick={handleBack}>
-        {t('button.return')}
-      </Button>
-    );
-  }
+  // The upload details page goes back to the create page, which goes back to the list
+  const backPage = currentPage === HolidayPage.UPLOAD_DETAILS ? HolidayPage.CREATE : HolidayPage.LIST;
 
   return (
-    <>
-      <Button type='primary' icon={<i className='ri-add-line' />} onClick={() => setIsMethodModalOpen(true)}>
-        {t('new_holiday')}
-      </Button>
-      <CreateMethodModal open={isMethodModalOpen} onCancel={() => setIsMethodModalOpen(false)} />
-    </>
+    <Button type='link' icon={<i className='ri-arrow-left-line' />} onClick={() => navigateTo(backPage)}>
+      {t('button.return')}
+    </Button>
   );
 };
 

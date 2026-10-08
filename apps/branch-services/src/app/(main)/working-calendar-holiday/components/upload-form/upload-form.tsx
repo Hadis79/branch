@@ -1,45 +1,31 @@
 import { useState } from 'react';
 import { Form } from 'antd';
 
-import { useTr } from '@branch-services/translation';
-import { Box, Select } from '@branch-services/ui-kit';
+import { Box } from '@branch-services/ui-kit';
 
 import FileEntry from './file-entry';
-import SampleFileLink from './sample-file-link';
 import FormPage from '../form-page/form-page';
 import ConfirmCreateModal from '../holiday-modal/confirm-create-modal';
 import useFinishCreate from '../../hooks/use-finish-create';
 import useHolidayFileUpload from '../../hooks/use-holiday-file-upload';
 import useHolidayPage from '../../hooks/use-holiday-page';
 import useCreateOfficialMutation from '../../queries/use-create-official-mutation';
-import useHolidayStore from '../../store/use-widget-store';
-import { HolidayPage, HolidayTab } from '../../utils/constants';
-import { getFutureYearOptions } from '../../utils/utils';
+import { HolidayPage } from '../../utils/constants';
 
-// Official holidays of a year, added by uploading an excel file
+// Official holidays, added by uploading an excel file
 const UploadForm = () => {
-  const [t] = useTr();
-  const [form] = Form.useForm<{ year?: number }>();
-  const year = Form.useWatch('year', form);
+  const [form] = Form.useForm();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { navigateTo } = useHolidayPage();
-  const setUploadedHolidays = useHolidayStore((state) => state.setUploadedHolidays);
   const fileUpload = useHolidayFileUpload(form);
   const createOfficial = useCreateOfficialMutation();
-  const finish = useFinishCreate(HolidayTab.OFFICIAL);
-  const holidays = fileUpload.result?.holidays ?? [];
-
-  const handleViewDetails = () => {
-    setUploadedHolidays(holidays, HolidayPage.UPLOAD);
-    navigateTo(HolidayPage.UPLOAD_DETAILS);
-  };
+  const finish = useFinishCreate();
 
   const handleConfirm = () =>
     createOfficial.mutate(
-      { year: year as number, holidays },
+      { holidays: fileUpload.result?.holidays ?? [] },
       {
-        onSuccess: () =>
-          finish.onSuccess({ txt: t('official_success', { year }), type: 'success', shouldTranslate: false }),
+        onSuccess: () => finish.onSuccess('official_success'),
         onError: finish.onError,
         onSettled: () => setIsConfirmOpen(false),
       }
@@ -53,8 +39,6 @@ const UploadForm = () => {
 
   return (
     <FormPage
-      info='upload_info'
-      infoDescription={<SampleFileLink />}
       submitText='create_holidays'
       submitDisabled={Boolean(fileUpload.result?.duplicateCount)}
       onReset={handleReset}
@@ -67,23 +51,18 @@ const UploadForm = () => {
     >
       <Form form={form} layout='vertical'>
         <Box flexDirection='column' width='50%'>
-          <Form.Item name='year' label={t('year')} rules={[{ required: true, message: t('year_required') }]}>
-            <Select options={getFutureYearOptions()} placeholder={t('select_placeholder')} />
-          </Form.Item>
           <FileEntry
             result={fileUpload.result}
             loading={fileUpload.isPending}
             onUpload={fileUpload.upload}
             onRemove={fileUpload.remove}
-            onViewDetails={handleViewDetails}
+            onViewDetails={() => navigateTo(HolidayPage.UPLOAD_DETAILS)}
           />
         </Box>
       </Form>
       <ConfirmCreateModal
         open={isConfirmOpen}
-        textKey='confirm_official'
-        params={{ year: year ?? '' }}
-        confirmText='confirm'
+        kind='official'
         loading={createOfficial.isPending}
         onConfirm={handleConfirm}
         onCancel={() => setIsConfirmOpen(false)}

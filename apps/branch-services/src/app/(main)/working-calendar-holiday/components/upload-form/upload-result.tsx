@@ -3,10 +3,9 @@ import { useTr } from '@branch-services/translation';
 import { Box, Button, Text } from '@branch-services/ui-kit';
 
 import type { UploadedHolidayFile } from '../../utils/types';
-import { formatCount } from '../../utils/utils';
+import { formatCount, withoutExtension } from '../../utils/utils';
 
 import * as S from './upload-form.style';
-import { Form } from 'antd';
 
 type UploadResultProps = {
   result: UploadedHolidayFile;
@@ -19,21 +18,24 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
   const [t] = useTr();
   const theme = useAppTheme();
   const hasDuplicates = result.duplicateCount > 0;
-  const form = Form.useFormInstance();
-  const fileName = form.getFieldValue('file');
   const rows = hasDuplicates
     ? [
         ['file_type', result.fileType],
-        ['day_count', formatCount(result.dayCount)],
+        ['day_count', formatCount(result.holidays.length)],
         ['duplicate_count', formatCount(result.duplicateCount)],
       ]
-    : [['day_count', formatCount(result.dayCount)]];
+    : [
+        ['file_name', withoutExtension(result.fileName)],
+        ['day_count', formatCount(result.holidays.length)],
+      ];
   return (
     <Box flexDirection='column' gap='1.2rem'>
       <S.UploadedFile $error={hasDuplicates}>
-        <Box className='uploaded-file'>
+        <Box className='uploaded-file' alignItems='center' gap='0.8rem' fillChildren={false}>
           <i className='ri-file-excel-line ri-2x' />
-          <span>{fileName?.[0]?.name}</span>
+          <span className='file-name' title={result.fileName}>
+            {result.fileName}
+          </span>
         </Box>
         <Button
           type='link'
@@ -72,7 +74,9 @@ const UploadResult = ({ result, onRemove, onViewDetails }: UploadResultProps) =>
             <Text as='span' fontWeight={400} color={theme.textSecondary}>
               {t(label)}
             </Text>
-            <Text as='span'>{value}</Text>
+            <Text as='span' className='file-name'>
+              <span title={value}>{value}</span>
+            </Text>
           </Box>
         ))}
       </S.FileInfo>

@@ -1,5 +1,16 @@
 import styled from 'styled-components';
 
+// A long file name stays on one line and is cut with an ellipsis; the full name shows on hover
+const fileNameStyle = `
+  .file-name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    direction: ltr;
+  }
+`;
+
 export const UploadFileContainer = styled.div`
   .ant-upload {
     border: 1px dashed ${(p) => p.theme.border};
@@ -18,10 +29,17 @@ export const UploadedFile = styled.div<{ $error: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.6rem;
   padding: 0.8rem 1.6rem;
   border: 0.1rem solid ${(props) => (props.$error ? props.theme.error : props.theme.border)};
   border-radius: 0.6rem;
   color: ${(props) => props.theme.primary};
+
+  .uploaded-file {
+    min-width: 0;
+  }
+
+  ${fileNameStyle}
 `;
 
 export const FileInfo = styled.div`
@@ -31,4 +49,6 @@ export const FileInfo = styled.div`
   padding: 1.6rem;
   border-radius: 0.6rem;
   background-color: ${(props) => props.theme.backgroundLight};
+
+  ${fileNameStyle}
 `;

@@ -9,36 +9,9 @@ export type PageParams = {
 // A province and the units it covers; the country-wide option is one of them
 export type Province = { provinceName: string; unitCodes: string[] };
 
-// ---- Official (calendar) holidays: uploaded per year
-export type OfficialYear = { id: string; year: number; modifiedOn: string };
-
-export type OfficialYearResponse = { id: string; year: number; modifiedOn: string };
-
-// `month` is a jalali month name, e.g. "فروردین"
-export type OfficialHoliday = { day: number; month: string; title: string };
-
-export type OfficialListFilter = { year?: number };
-
-export type OfficialListParams = OfficialListFilter;
-
-export type CreateOfficialHolidaysDto = { year: number; holidays: OfficialHoliday[] };
-
-// Raw response of the upload endpoint, normalized by services/mappers.ts.
-// `rowCount` counts every row of the file, `holidays` holds the rows that are left after the duplicates
-export type HolidayFileUploadResponse = { rowCount?: number; holidays?: OfficialHoliday[] };
-
-// The response carries no file information, so the name and the type are kept from the uploaded file
-export type UploadedHolidayFile = {
-  fileName: string;
-  fileType: string;
-  holidays: OfficialHoliday[];
-  dayCount: number;
-  duplicateCount: number;
-};
-
-// ---- Custom (non-calendar) holidays: added one by one
+// ---- Holidays of the list, also added one by one in the manual form
 // `date` is an api date (YYYY-MM-DD) and `holidayDay` its weekday, e.g. "دوشنبه"
-export type NewCustomHoliday = {
+export type NewHoliday = {
   title: string;
   date: string;
   holidayDay: string;
@@ -46,12 +19,32 @@ export type NewCustomHoliday = {
   provinceName: string;
 };
 
-export type CustomHoliday = NewCustomHoliday & { id: string };
+export type Holiday = NewHoliday & { id: string };
 
-export type CustomHolidayResponse = CustomHoliday;
+export type HolidayListFilter = {
+  title?: string;
+  provinceName?: string;
+  officialStatus?: OfficialStatus;
+  fromDate?: string;
+  toDate?: string;
+};
 
-export type CustomListFilter = { title?: string; provinceName?: string; fromDate?: string; toDate?: string };
+export type DeleteHolidayParams = { provinceName: string; date: string };
 
-export type DeleteCustomHolidayParams = { provinceName: string; date: string };
+export type HolidayModalType = 'edit' | 'delete';
 
-export type DownloadedFile = { data: Blob; type: string; fileName: string };
+// ---- Official holidays, uploaded as a file
+// The rows of the file have the same shape as the list rows
+export type CreateOfficialHolidaysDto = { holidays: NewHoliday[] };
+
+// Raw response of the upload endpoint, normalized by services/mappers.ts.
+// `rowCount` counts every row of the file, `holidays` holds the rows that are left after the duplicates
+export type HolidayFileUploadResponse = { rowCount?: number; holidays?: NewHoliday[] };
+
+// The response carries no file information, so the name and the type are kept from the uploaded file
+export type UploadedHolidayFile = {
+  fileName: string;
+  fileType: string;
+  holidays: NewHoliday[];
+  duplicateCount: number;
+};

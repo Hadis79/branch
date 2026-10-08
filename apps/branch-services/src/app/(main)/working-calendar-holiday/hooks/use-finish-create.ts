@@ -1,23 +1,18 @@
-import { MessageModel } from '@branch-services/types';
-import { ApiUtil } from '@branch-services/utils';
-
+import useHolidayMessage from './use-holiday-message';
 import useHolidayPage from './use-holiday-page';
-import useHolidayStore from '../store/use-widget-store';
-import { HolidayPage, HolidayTab } from '../utils/constants';
+import { HolidayPage } from '../utils/constants';
 
-// Outcome of a create form: success goes back to the list on the matching tab, errors are shown on the form
-const useFinishCreate = (tab: HolidayTab) => {
+// Outcome of a create form: success goes back to the list, errors are shown on the form
+const useFinishCreate = () => {
   const { navigateTo } = useHolidayPage();
-  const setMessage = useHolidayStore((state) => state.setMessage);
-  const setActiveTab = useHolidayStore((state) => state.setActiveTab);
+  const { showSuccess, showError } = useHolidayMessage();
 
   return {
-    onSuccess: (message: MessageModel) => {
-      setMessage(message);
-      setActiveTab(tab);
+    onSuccess: (messageKey: string) => {
+      showSuccess(messageKey);
       navigateTo(HolidayPage.LIST);
     },
-    onError: (error: unknown) => setMessage(ApiUtil.getErrorMessage(error)),
+    onError: showError,
   };
 };
 

@@ -4,16 +4,17 @@ import { useTr } from '@branch-services/translation';
 import { Box, Button, DatePicker, Input, SearchItemsContainer, Select } from '@branch-services/ui-kit';
 import { Dayjs } from '@branch-services/utils';
 
+import OfficialStatusSelect from '../official-status-select/official-status-select';
 import useProvincesQuery from '../../queries/use-provinces-query';
-import { OfficialStatus } from '../../utils/constants';
-import type { NewCustomHoliday } from '../../utils/types';
+import type { OfficialStatus } from '../../utils/constants';
+import type { NewHoliday } from '../../utils/types';
 import { formatDateWithWeekday, toApiDate, weekdayName } from '../../utils/utils';
 
-type EntryValues = { title: string; provinceName: string; date: Dayjs };
+type EntryValues = { title: string; officialStatus: OfficialStatus; provinceName: string; date: Dayjs };
 
 type HolidayEntryFormProps = {
-  isDuplicate: (holiday: NewCustomHoliday) => boolean;
-  onAdd: (holiday: NewCustomHoliday) => void;
+  isDuplicate: (holiday: NewHoliday) => boolean;
+  onAdd: (holiday: NewHoliday) => void;
 };
 
 // One holiday at a time; added rows are listed below the form
@@ -22,16 +23,16 @@ const HolidayEntryForm = ({ isDuplicate, onAdd }: HolidayEntryFormProps) => {
   const [form] = Form.useForm<EntryValues>();
   const { data: provinceOptions, isFetching } = useProvincesQuery();
 
-  const handleAdd = ({ title, provinceName, date }: EntryValues) => {
+  const handleAdd = ({ title, officialStatus, provinceName, date }: EntryValues) => {
     const province = provinceOptions?.find((option) => option.value === provinceName)?.province;
     if (!province) return;
 
     const apiDate = toApiDate(date) as string;
-    const holiday: NewCustomHoliday = {
+    const holiday: NewHoliday = {
       title: title.trim(),
       date: apiDate,
       holidayDay: weekdayName(apiDate),
-      officialStatus: OfficialStatus.UNOFFICIAL,
+      officialStatus,
       provinceName: province.provinceName,
     };
 
@@ -54,6 +55,14 @@ const HolidayEntryForm = ({ isDuplicate, onAdd }: HolidayEntryFormProps) => {
           rules={[{ required: true, whitespace: true, message: t('title_required') }]}
         >
           <Input placeholder={t('title_example')} />
+        </Form.Item>
+        <Form.Item
+          className='half-width'
+          name='officialStatus'
+          label={t('type')}
+          rules={[{ required: true, message: t('type_required') }]}
+        >
+          <OfficialStatusSelect placeholder={t('select_placeholder')} />
         </Form.Item>
         <Form.Item
           className='half-width'
@@ -80,7 +89,7 @@ const HolidayEntryForm = ({ isDuplicate, onAdd }: HolidayEntryFormProps) => {
             format={(value) => formatDateWithWeekday(toApiDate(value) as string)}
           />
         </Form.Item>
-        <Box className='half-width buttons-container'>
+        <Box className='full-width buttons-container'>
           <Button htmlType='submit' type='primaryOutlined'>
             {t('add')}
           </Button>

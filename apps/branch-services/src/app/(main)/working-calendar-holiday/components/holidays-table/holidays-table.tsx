@@ -3,41 +3,35 @@ import { ReactNode } from 'react';
 import { useTr } from '@branch-services/translation';
 import { Box, ColumnsType, Table, Text } from '@branch-services/ui-kit';
 
-import type { OfficialHoliday } from '../../utils/types';
-import { formatCount } from '../../utils/utils';
+import { getHolidayInfoColumns } from './holiday-info-columns';
+import type { NewHoliday } from '../../utils/types';
 
 type HolidaysTableProps = {
-  holidays: OfficialHoliday[];
-  loading?: boolean;
-  // Shown next to the title, e.g. a download button
-  extra?: ReactNode;
+  title: ReactNode;
+  holidays: NewHoliday[];
 };
 
-// Holidays of one year (about 26 rows), so the whole list is shown without pagination
-const HolidaysTable = ({ holidays, loading, extra }: HolidaysTableProps) => {
+// Holidays of one file (a few dozen rows), so the whole list is shown without pagination
+const HolidaysTable = ({ title, holidays }: HolidaysTableProps) => {
   const [t] = useTr();
 
-  const columns: ColumnsType<OfficialHoliday> = [
+  const columns: ColumnsType<NewHoliday> = [
     { title: '#', key: 'row', align: 'center', width: 70, render: (_value, _record, index) => index + 1 },
-    { title: t('day'), dataIndex: 'day', align: 'center' },
-    { title: t('month'), dataIndex: 'month', align: 'center' },
-    { title: t('title'), dataIndex: 'title', align: 'center' },
+    ...getHolidayInfoColumns<NewHoliday>(t),
   ];
 
   return (
-    <Box flexDirection='column' gap='1.6rem' padding='3.2rem'>
-      <Box justifyContent='space-between' alignItems='center' fillChildren={false}>
-        <Text fontWeight={500}>{t('holiday_list_title', { dayCount: formatCount(holidays.length) })}</Text>
-        {extra}
+    <Box flexDirection='column' gap='1.6rem' paddingTop='2.4rem'>
+      <Box padding='0 3.2rem' fillChildren={false}>
+        <Text fontWeight={500}>{title}</Text>
       </Box>
       <Table
-        loading={loading}
         dataSource={holidays}
         columns={columns}
         mobileColumns={columns}
         pagination={false}
         hasContainer={false}
-        rowKey={({ month, day, title }: OfficialHoliday) => `${month}-${day}-${title}`}
+        rowKey={({ date, provinceName }: NewHoliday) => `${date}-${provinceName}`}
       />
     </Box>
   );
