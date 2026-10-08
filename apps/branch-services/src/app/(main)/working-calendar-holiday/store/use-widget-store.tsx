@@ -1,59 +1,37 @@
 import { MessageModel } from '@branch-services/types';
 import { create } from 'zustand';
 
-import { HolidayPage, HolidayTab } from '../utils/constants';
-import type { CustomListFilter, OfficialHoliday, OfficialListFilter, PageParams } from '../utils/types';
+import type { HolidayListFilter, PageParams, UploadedHolidayFile } from '../utils/types';
 
-// Only state shared between pages lives here; single-component state stays local.
+// Only state shared between components lives here; single-component state stays local.
 type State = {
-  activeTab: HolidayTab;
-  officialFilter: OfficialListFilter;
-  officialPagination: PageParams;
-  customFilter: CustomListFilter;
-  customPagination: PageParams;
-  // Rows of the uploaded file, read by the upload details page
-  uploadedHolidays: OfficialHoliday[];
-  // Which form (if any) the current upload-details / details page was opened from, so it stays mounted for the round trip
-  formOrigin: HolidayPage.UPLOAD | HolidayPage.EDIT | null;
+  filter: HolidayListFilter;
+  pagination: PageParams;
+  // The uploaded file, shared by the upload form and its details page
+  uploadedFile: UploadedHolidayFile | null;
   message: MessageModel | null;
 };
 
 type Actions = {
-  setActiveTab: (activeTab: HolidayTab) => void;
-  setOfficialFilter: (filter: OfficialListFilter) => void;
-  setOfficialPagination: (pagination: Partial<PageParams>) => void;
-  setCustomFilter: (filter: CustomListFilter) => void;
-  setCustomPagination: (pagination: Partial<PageParams>) => void;
-  setUploadedHolidays: (holidays: OfficialHoliday[], origin: HolidayPage.UPLOAD | HolidayPage.EDIT) => void;
-  setFormOrigin: (origin: HolidayPage.UPLOAD | HolidayPage.EDIT | null) => void;
+  setFilter: (filter: HolidayListFilter) => void;
+  setPagination: (pagination: Partial<PageParams>) => void;
+  setUploadedFile: (file: UploadedHolidayFile | null) => void;
   setMessage: (message: MessageModel | null) => void;
   resetAll: () => void;
 };
 
 const initialState: State = {
-  activeTab: HolidayTab.OFFICIAL,
-  officialFilter: {},
-  officialPagination: { page: 1, size: 10 },
-  customFilter: {},
-  customPagination: { page: 1, size: 10 },
-  uploadedHolidays: [],
-  formOrigin: null,
+  filter: {},
+  pagination: { page: 1, size: 10 },
+  uploadedFile: null,
   message: null,
 };
 
 const useHolidayStore = create<State & Actions>()((set) => ({
   ...initialState,
-  setActiveTab: (activeTab) => set({ activeTab }),
-  setOfficialFilter: (officialFilter) =>
-    set((state) => ({ officialFilter, officialPagination: { ...state.officialPagination, page: 1 } })),
-  setOfficialPagination: (pagination) =>
-    set((state) => ({ officialPagination: { ...state.officialPagination, ...pagination } })),
-  setCustomFilter: (customFilter) =>
-    set((state) => ({ customFilter, customPagination: { ...state.customPagination, page: 1 } })),
-  setCustomPagination: (pagination) =>
-    set((state) => ({ customPagination: { ...state.customPagination, ...pagination } })),
-  setUploadedHolidays: (uploadedHolidays, formOrigin) => set({ uploadedHolidays, formOrigin }),
-  setFormOrigin: (formOrigin) => set({ formOrigin }),
+  setFilter: (filter) => set((state) => ({ filter, pagination: { ...state.pagination, page: 1 } })),
+  setPagination: (pagination) => set((state) => ({ pagination: { ...state.pagination, ...pagination } })),
+  setUploadedFile: (uploadedFile) => set({ uploadedFile }),
   setMessage: (message) => set({ message }),
   resetAll: () => set(initialState),
 }));

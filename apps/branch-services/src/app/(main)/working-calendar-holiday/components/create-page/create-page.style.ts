@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { Tabs } from 'antd';
 
 // Two tabs sharing the full width
-export const ListTabs = styled(Tabs)`
+export const CreateTabs = styled(Tabs)`
   .ant-tabs-nav {
-    margin: 0 3.2rem;
+    margin: 2.4rem 3.2rem 0;
   }
 
   .ant-tabs-nav-list {

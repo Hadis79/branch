@@ -1,27 +1,29 @@
-import { useTr } from '@branch-services/translation';
+import { Box } from '@branch-services/ui-kit';
+import { ApiUtil } from '@branch-services/utils';
 
-import CustomList from './custom/custom-list';
-import { HolidayTab } from '../../utils/constants';
-import OfficialList from './official/official-list';
-import useHolidayStore from '../../store/use-widget-store';
-
-import * as S from './holiday-list.style';
+import HolidayFilter from './filter/holiday-filter';
+import HolidayTable from './data-table/holiday-table';
+import HolidayEmptyState from './empty-state/holiday-empty-state';
+import HolidayMessage from '../holiday-message/holiday-message';
+import useEmptyHolidayList from '../../hooks/use-empty-holiday-list';
+import useHolidaysQuery from '../../queries/use-holidays-query';
 
 const HolidayList = () => {
-  const [t] = useTr();
-  const activeTab = useHolidayStore((state) => state.activeTab);
-  const setActiveTab = useHolidayStore((state) => state.setActiveTab);
+  const { error } = useHolidaysQuery();
+  const isEmptyList = useEmptyHolidayList();
+
+  if (isEmptyList) return <HolidayEmptyState />;
 
   return (
-    <S.ListTabs
-      activeKey={activeTab}
-      onChange={(key) => setActiveTab(key as HolidayTab)}
-      destroyInactiveTabPane
-      items={[
-        { key: HolidayTab.OFFICIAL, label: t('official_tab'), children: <OfficialList /> },
-        { key: HolidayTab.CUSTOM, label: t('custom_tab'), children: <CustomList /> },
-      ]}
-    />
+    <>
+      {error && (
+        <Box padding='2.4rem 3.2rem 0'>
+          <HolidayMessage message={ApiUtil.getErrorMessage(error)} />
+        </Box>
+      )}
+      <HolidayFilter />
+      <HolidayTable />
+    </>
   );
 };
 

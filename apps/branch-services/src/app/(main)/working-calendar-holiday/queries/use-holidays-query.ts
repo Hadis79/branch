@@ -5,13 +5,13 @@ import useHolidayStore from '../store/use-widget-store';
 import { holidayQueryKeys } from '../utils/constants';
 
 // The service returns the whole list; the table pages through it
-const useCustomHolidaysQuery = () => {
-  const filter = useHolidayStore((state) => state.customFilter);
+const useHolidaysQuery = () => {
+  const filter = useHolidayStore((state) => state.filter);
 
   return useQuery({
-    queryKey: holidayQueryKeys.customList(filter),
-    queryFn: () => Api.getCustomHolidays(filter),
+    queryKey: holidayQueryKeys.list(filter),
+    queryFn: () => Api.getHolidays(filter),
   });
 };
 
-export default useCustomHolidaysQuery;
+export default useHolidaysQuery;

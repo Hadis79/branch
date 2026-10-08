@@ -4,12 +4,12 @@ import { useTr } from '@branch-services/translation';
 import { Box, Button } from '@branch-services/ui-kit';
 
 import { GuideMessageBox } from './form-page.style';
+import useHolidayMessage from '../../hooks/use-holiday-message';
 import useHolidayStore from '../../store/use-widget-store';
 
 type FormPageProps = {
-  // Translation key of the guide banner
-  info: string;
-  infoDescription?: ReactNode;
+  // Translation key of the guide banner, if the page has one
+  info?: string;
   // Shown under the guide banner, e.g. a validation error of the whole form
   error?: ReactNode;
   children: ReactNode;
@@ -20,31 +20,29 @@ type FormPageProps = {
 };
 
 // Shared layout of the create pages: guide banner, content, and a cancel / submit footer
-const FormPage = ({
-  info,
-  infoDescription,
-  error,
-  children,
-  submitText,
-  submitDisabled,
-  onReset,
-  onSubmit,
-}: FormPageProps) => {
+const FormPage = ({ info, error, children, submitText, submitDisabled, onReset, onSubmit }: FormPageProps) => {
   const [t] = useTr();
-  const setMessage = useHolidayStore((state) => state.setMessage);
+  const { resetMessage } = useHolidayMessage();
 
-  // Drop messages left over from the list page
-  useEffect(() => setMessage(null), [setMessage]);
+  useEffect(() => {
+    resetMessage();
+
+    return () => {
+      // Form errors must not follow the user back to the list; success messages should.
+      const { message, setMessage } = useHolidayStore.getState();
+      if (message?.type === 'error') setMessage(null);
+    };
+  }, [resetMessage]);
 
   const handleReset = () => {
-    setMessage(null);
+    resetMessage();
     onReset();
   };
 
   return (
     <Box minHeight='75vh' flexDirection='column' justifyContent='space-between' gap='2.4rem' padding='3.2rem'>
       <Box flexDirection='column' gap='2.4rem'>
-        <GuideMessageBox type='info' message={t(info)} description={infoDescription} closable />
+        {info && <GuideMessageBox type='info' message={t(info)} closable />}
         {error}
         {children}
       </Box>

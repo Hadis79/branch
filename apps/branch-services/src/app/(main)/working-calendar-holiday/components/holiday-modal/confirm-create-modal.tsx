@@ -2,41 +2,32 @@ import { useTr } from '@branch-services/translation';
 import { Text } from '@branch-services/ui-kit';
 
 import HolidayModal from './holiday-modal';
+import { CONFIRM_CREATE_LABELS } from '../../utils/constants';
 
 type ConfirmCreateModalProps = {
   open: boolean;
-  // Translation keys of the texts, e.g. "confirm_official"
-  textKey: 'confirm_official' | 'confirm_custom';
-  params: Record<string, string | number>;
-  confirmText: string;
+  kind: keyof typeof CONFIRM_CREATE_LABELS;
   loading: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 };
 
 // Last check before a create form is saved
-const ConfirmCreateModal = ({
-  open,
-  textKey,
-  params,
-  confirmText,
-  loading,
-  onConfirm,
-  onCancel,
-}: ConfirmCreateModalProps) => {
+const ConfirmCreateModal = ({ open, kind, loading, onConfirm, onCancel }: ConfirmCreateModalProps) => {
   const [t] = useTr();
+  const { title, description } = CONFIRM_CREATE_LABELS[kind];
 
   return (
     <HolidayModal
       open={open}
-      title={t(`${textKey}_title`)}
-      confirmText={t(confirmText)}
+      title={t(title)}
+      confirmText={t('confirm')}
       confirmLoading={loading}
       onConfirm={onConfirm}
       onCancel={onCancel}
     >
       <Text as='span' fontWeight={400}>
-        {t(`${textKey}_description`)}
+        {t(description)}
       </Text>
     </HolidayModal>
   );

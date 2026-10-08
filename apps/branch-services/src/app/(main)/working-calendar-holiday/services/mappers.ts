@@ -13,7 +13,6 @@ export const toUploadedHolidayFile = (response: HolidayFileUploadResponse, file:
     fileName: file.name,
     fileType: getFileType(file.name),
     holidays,
-    dayCount: holidays.length,
     duplicateCount: Math.max((response.rowCount ?? holidays.length) - holidays.length, 0),
   };
 };

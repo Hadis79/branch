@@ -10,7 +10,7 @@ import type { UploadedHolidayFile } from '../../utils/types';
 import { useAppTheme } from '@branch-services/hooks';
 
 type FileEntryProps = {
-  result?: UploadedHolidayFile;
+  result: UploadedHolidayFile | null;
   loading: boolean;
   onUpload: UploadProps['customRequest'];
   onRemove: () => void;
@@ -61,9 +61,11 @@ const FileEntry = ({ result, loading, onUpload, onRemove, onViewDetails }: FileE
       {/* The error (if any) is antd's own Form.Item help text, rendered just above this row */}
       {selectedFile && (
         <S.UploadedFile $error={false}>
-          <Box className='uploaded-file'>
+          <Box className='uploaded-file' alignItems='center' gap='0.8rem' fillChildren={false}>
             <i className='ri-file-excel-line ri-2x' />
-            <span>{selectedFile.name}</span>
+            <span className='file-name' title={selectedFile.name}>
+              {selectedFile.name}
+            </span>
           </Box>
           <Button
             type='link'

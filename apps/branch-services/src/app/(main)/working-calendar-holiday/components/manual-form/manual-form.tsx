@@ -9,24 +9,20 @@ import FormPage from '../form-page/form-page';
 import ConfirmCreateModal from '../holiday-modal/confirm-create-modal';
 import useFinishCreate from '../../hooks/use-finish-create';
 import useCreateCustomMutation from '../../queries/use-create-custom-mutation';
-import { HolidayTab } from '../../utils/constants';
-import type { NewCustomHoliday } from '../../utils/types';
-import { formatCount } from '../../utils/utils';
-
-const isSameHoliday = (a: NewCustomHoliday, b: NewCustomHoliday) =>
-  a.date === b.date && a.provinceName === b.provinceName;
+import type { NewHoliday } from '../../utils/types';
+import { isSameHoliday } from '../../utils/utils';
 
 // Non-calendar holidays, entered one by one and saved together
 const ManualForm = () => {
   const [t] = useTr();
-  const [holidays, setHolidays] = useState<NewCustomHoliday[]>([]);
+  const [holidays, setHolidays] = useState<NewHoliday[]>([]);
   const [formResetKey, setFormResetKey] = useState(0);
   const [isEmptyErrorVisible, setIsEmptyErrorVisible] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const createCustom = useCreateCustomMutation();
-  const finish = useFinishCreate(HolidayTab.CUSTOM);
+  const finish = useFinishCreate();
 
-  const handleAdd = (holiday: NewCustomHoliday) => {
+  const handleAdd = (holiday: NewHoliday) => {
     setHolidays((current) => [...current, holiday]);
     setIsEmptyErrorVisible(false);
   };
@@ -46,7 +42,7 @@ const ManualForm = () => {
 
   const handleConfirm = () =>
     createCustom.mutate(holidays, {
-      onSuccess: () => finish.onSuccess({ txt: 'custom_success', type: 'success', shouldTranslate: true }),
+      onSuccess: () => finish.onSuccess('custom_success'),
       onError: finish.onError,
       onSettled: () => setIsConfirmOpen(false),
     });
@@ -70,9 +66,7 @@ const ManualForm = () => {
       />
       <ConfirmCreateModal
         open={isConfirmOpen}
-        textKey='confirm_custom'
-        params={{ holidayCount: formatCount(holidays.length) }}
-        confirmText='confirm'
+        kind='custom'
         loading={createCustom.isPending}
         onConfirm={handleConfirm}
         onCancel={() => setIsConfirmOpen(false)}

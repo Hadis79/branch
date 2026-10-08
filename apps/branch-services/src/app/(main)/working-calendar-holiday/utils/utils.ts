@@ -1,28 +1,10 @@
 import type { TablePaginationConfig } from 'antd';
 
-import { Dayjs, dateLocale, datetimeLocale, dayjs, toIsoStringWithoutTimezone } from '@branch-services/utils';
+import { Dayjs, dateLocale, toIsoStringWithoutTimezone } from '@branch-services/utils';
 
-import type { PageParams } from './types';
-
-export const JALALI_MONTHS = [
-  'فروردین',
-  'اردیبهشت',
-  'خرداد',
-  'تیر',
-  'مرداد',
-  'شهریور',
-  'مهر',
-  'آبان',
-  'آذر',
-  'دی',
-  'بهمن',
-  'اسفند',
-];
+import type { NewHoliday, PageParams } from './types';
 
 export const formatCount = (value: number): string => value.toLocaleString('fa-IR');
-
-// A year isn't grouped, unlike a count (e.g. 1404, not 1,404)
-export const formatYear = (year: number): string => year.toLocaleString('fa-IR', { useGrouping: false });
 
 export const weekdayName = (date: string): string => new Date(date).toLocaleDateString('fa-IR', { weekday: 'long' });
 
@@ -30,42 +12,19 @@ export const formatDate = (date: string): string => dateLocale(date) ?? '-';
 
 export const formatDateWithWeekday = (date: string): string => `${formatDate(date)} - ${weekdayName(date)}`;
 
-export const formatDateTime = (date?: string | null): string =>
-  date ? datetimeLocale(date, undefined, false, ' - ') : '-';
-
 // Date picker value → api date (YYYY-MM-DD)
 export const toApiDate = (date?: Dayjs | Date | null): string | undefined =>
   date ? toIsoStringWithoutTimezone(date).date : undefined;
 
-// A holiday that has already passed can no longer be deleted
+// Two holidays are the same when they fall on the same date in the same region
+export const isSameHoliday = (a: NewHoliday, b: NewHoliday): boolean =>
+  a.date === b.date && a.provinceName === b.provinceName;
+
+// A holiday that has already passed can no longer be edited or deleted
 export const isPastDate = (date: string): boolean => date < (toApiDate(new Date()) as string);
 
-// Current Jalali year and the previous 9 years, used by the list filter
-export const getYearOptions = (): { label: string; value: number }[] => {
-  const currentJalaliYear = dayjs().year();
-
-  return Array.from({ length: 10 }, (_, index) => currentJalaliYear - index).map((jalaliYear) => ({
-    label: String(jalaliYear),
-    value: Number(jalaliYear),
-  }));
-};
-
-// Current Jalali year and the next 9 years, used when creating an official holiday calendar
-export const getFutureYearOptions = (): { label: string; value: number }[] => {
-  const currentJalaliYear = dayjs().year();
-
-  return Array.from({ length: 10 }, (_, index) => currentJalaliYear + index).map((jalaliYear) => ({
-    label: String(jalaliYear),
-    value: Number(jalaliYear),
-  }));
-};
-
-// Convert a Gregorian year received from the service to its Jalali display year
-export const toJalaliYear = (gregorianYear: number): number => {
-  const date = new Date();
-  date.setFullYear(gregorianYear);
-  return dayjs(date).year();
-};
+// e.g. "holidays_1405.xlsx" -> "holidays_1405"
+export const withoutExtension = (fileName: string): string => fileName.replace(/\.[^.]+$/, '');
 
 export const calculateRow = (index: number, page = 1, size = 10): number => (page - 1) * size + index + 1;
 
