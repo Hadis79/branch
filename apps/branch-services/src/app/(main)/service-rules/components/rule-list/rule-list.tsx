@@ -1,7 +1,8 @@
 import { useTr } from '@branch-services/translation';
-import { Box, EmptyData } from '@branch-services/ui-kit';
+import { Box } from '@branch-services/ui-kit';
 
 import RuleSection from './rule-section';
+import RuleEmptyState from './rule-empty-state';
 import DeleteRuleModal from '../rule-modal/delete-rule-modal';
 import useDeleteRule from '../../hooks/use-delete-rule';
 import useRulesQuery from '../../queries/use-rules-query';
@@ -23,12 +24,7 @@ const RuleList = () => {
 
   if (isLoading) return null;
 
-  if (!rules?.length)
-    return (
-      <Box flexGrow={1} alignItems='center' justifyContent='center' fillChildren={false}>
-        <EmptyData />
-      </Box>
-    );
+  if (!rules?.length) return <RuleEmptyState />;
 
   const { active, expired } = splitByExpiry(rules);
 

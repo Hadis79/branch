@@ -9,6 +9,7 @@ import { Button } from '@branch-services/ui-kit';
 import en from './locales/en';
 import fa from './locales/fa';
 import useServiceRulesPage from './hooks/use-service-rules-page';
+import useEmptyRuleList from './hooks/use-empty-rule-list';
 import { ServiceRulesPage } from './utils/constants';
 
 const getHeaderTitle = (currentPage: ServiceRulesPage) =>
@@ -16,17 +17,22 @@ const getHeaderTitle = (currentPage: ServiceRulesPage) =>
 
 const getHeaderAction = (
   currentPage: ServiceRulesPage,
+  isEmptyList: boolean,
   onCreate: () => void,
   onBack: () => void,
   t: (key: string) => string
 ) => {
-  if (currentPage === ServiceRulesPage.LIST)
+  if (currentPage === ServiceRulesPage.LIST) {
+    // The empty state has its own create button
+    if (isEmptyList) return null;
+
     return (
       <Button type='primary' onClick={onCreate}>
         {t('new_rule')}
         <i className='ri-add-line' />
       </Button>
     );
+  }
 
   return (
     <Button type='link' icon={<i className='ri-arrow-left-line' />} iconPosition='end' onClick={onBack}>
@@ -40,8 +46,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   const [t] = useTr();
   const router = useRouter();
   const { currentPage, navigateTo } = useServiceRulesPage();
+  const isEmptyList = useEmptyRuleList(currentPage === ServiceRulesPage.LIST);
   const headerAction = getHeaderAction(
     currentPage,
+    isEmptyList,
     () => navigateTo(ServiceRulesPage.CREATE),
     () => router.back(),
     t
