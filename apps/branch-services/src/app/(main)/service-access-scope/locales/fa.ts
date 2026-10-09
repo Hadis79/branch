@@ -1,0 +1,92 @@
+export default {
+  // Titles and breadcrumb (URL segment and `step` values)
+  'service-access-scope': 'مدیریت محدوده دسترسی خدمات',
+  service_access_scope: 'مدیریت محدوده دسترسی خدمات',
+  'new-scope': 'قانون جدید',
+  new_scope: 'قانون جدید',
+  'affected-units': 'جزئیات واحدهای متاثر',
+  unit_managemnet: 'مدیریت واحدها',
+
+  // List
+  scopes_section_title: 'محدوده دسترسی خدمات',
+  expired_scopes_section_title: 'منقضی شده',
+  service_label: 'خدمت',
+  scope_label: 'محدوده',
+  target_label: 'نام گروه / واحد',
+  affected_units_label: 'واحدهای متاثر',
+  unit_count: '{{unitCount}} واحد',
+  scope_type_group: 'گروه‌های ساعت کاری',
+  scope_type_unit: 'واحد مجزا',
+  start_date: 'تاریخ شروع',
+  end_date: 'تاریخ پایان',
+  days_hours: 'ساعات روزها',
+  delete: 'حذف',
+  day_saturday: 'شنبه',
+  day_sunday: 'یک‌شنبه',
+  day_monday: 'دوشنبه',
+  day_tuesday: 'سه‌شنبه',
+  day_wednesday: 'چهارشنبه',
+  day_thursday: 'پنج‌شنبه',
+  day_friday: 'جمعه',
+  day_hours: '{{day}} - {{from}} تا {{to}}',
+  day_holiday: '{{day}} - تعطیل',
+  load_failed: 'دریافت اطلاعات با خطا مواجه شد.',
+  retry: 'تلاش مجدد',
+
+  // Delete
+  delete_scope_title: 'حذف "{{title}}"',
+  delete_scope_question: 'آیا از حذف این محدوده دسترسی خدمات اطمینان دارید؟',
+  delete_scope_description: 'با حذف این محدوده دسترسی خدمات، قوانین اعمال‌شده بر آن نیز حذف خواهند شد.',
+  delete_scope_success: 'محدوده دسترسی خدمات با موفقیت حذف شد.',
+
+  // Form
+  scope_info_description:
+    'کاربر گرامی، در این بخش می‌توانید برای هر واحد یا گروه‌های ساعت کاری، بازه زمانی ارائه یک خدمت را در تاریخ و ساعات مشخص تعیین کنید. خدمت در بازه تعیین‌شده برای واحد یا گروه انتخاب‌شده قابل استفاده خواهد بود.',
+  service_field_label: 'خدمت مورد نظر',
+  select_placeholder: 'یک مورد را انتخاب کنید.',
+  service_required: 'خدمت را انتخاب کنید.',
+  group_field_label: 'گروه مورد نظر',
+  group_required: 'گروه را انتخاب کنید.',
+  unit_field_label: 'واحد مورد نظر',
+  unit_required: 'واحد را انتخاب کنید.',
+  title_label: 'عنوان',
+  title_placeholder: 'عنوان را وارد نمایید. (جهت نمایش در گزارش‌ها)',
+  title_required: 'عنوان را وارد کنید.',
+  end_date_optional: 'تاریخ پایان (اختیاری)',
+  from_date_placeholder: 'از تاریخ',
+  start_date_required: 'تاریخ شروع را انتخاب کنید.',
+  end_date_before_start: 'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد.',
+  week_days_hours_label: 'ساعات کاری روزهای هفته',
+  days_empty:
+    'روزهای هفته بر اساس بازه تاریخی انتخاب‌شده نمایش داده می‌شوند و می‌توانید برای هر روز، ساعت کاری موردنظر را تعیین کنید.',
+  from_hour: 'از ساعت',
+  to_hour: 'تا ساعت',
+  hour_select_placeholder: 'انتخاب',
+  hour_required: 'ساعت را انتخاب کنید.',
+  end_before_start: 'ساعت پایان باید بعد از ساعت شروع باشد.',
+  scope_notes_title: 'توجه داشته باشید:',
+  scope_note_days:
+    'روزهای هفته بر اساس بازه تاریخی انتخاب‌شده نمایش داده می‌شوند و می‌توانید برای هر روز، ساعت کاری موردنظر را تعیین کنید.',
+  scope_note_holidays: 'روزهایی که برای آن‌ها ساعت کاری تعیین نشود، تعطیل در نظر گرفته خواهند شد.',
+  scope_note_end_date:
+    'در صورت تعیین نکردن تاریخ پایان، تمام روزهای هفته نمایش داده می‌شوند و الگوی ساعت کاری تعیین‌شده برای این روزها، هر هفته تا زمان حذف قانون تکرار خواهد شد.',
+  cancel: 'انصراف',
+  continue: 'ادامه',
+
+  // Preview
+  preview_title: 'پیش‌نمایش',
+  preview_service_label: 'خدمت متاثر',
+  preview_target_label: 'گروه / واحد متاثر',
+  preview_affected_units_label: 'جزئیات واحدهای متاثر',
+  view: 'مشاهده',
+  new_working_hours: 'ساعات کاری جدید',
+  review_hours: 'از ساعت {{from}} تا ساعت {{to}}',
+  holiday: 'تعطیل',
+  confirm_final: 'تایید نهایی',
+  create_success: 'محدوده دسترسی خدمات با موفقیت ثبت شد.',
+
+  // Affected units
+  affected_units_title: 'لیست واحدهای متاثر ({{unitCount}})',
+  unit_name: 'نام واحد',
+  unit_code: 'کد واحد',
+};
